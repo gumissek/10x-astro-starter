@@ -1,6 +1,7 @@
 ---
-applyTo: '*.tsx, *.astro'
+applyTo: "*.tsx, *.astro"
 ---
+
 ## Frontend
 
 ### General Guidelines

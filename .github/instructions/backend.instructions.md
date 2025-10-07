@@ -1,6 +1,7 @@
 ---
-applyTo: 'src/db/*.ts, src/middleware/*.ts, src/lib/*.ts'
+applyTo: "src/db/*.ts, src/middleware/*.ts, src/lib/*.ts"
 ---
+
 ### Backend and Database
 
 - Use Supabase for backend services, including authentication and database interactions.

@@ -1,6 +1,7 @@
 ---
-applyTo: '*.tsx'
+applyTo: "*.tsx"
 ---
+
 ### Guidelines for React
 
 - Use functional components with hooks instead of class components

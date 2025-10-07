@@ -1,9 +1,10 @@
 ---
-applyTo: '**'
+applyTo: "**"
 ---
-# AI Rules for 10x-astro-starter
 
-This document provides context and coding guidelines for AI when generating code, answering questions, or reviewing changes in the 10x-astro-starter project.
+# AI Rules for 10x-Cards-Flipper
+
+This document provides context and coding guidelines for AI when generating code, answering questions, or reviewing changes in the 10x-Cards-Flipper.
 
 ## Tech Stack
 
@@ -31,7 +32,6 @@ When introducing changes to the project, always follow the directory structure b
 - `./public` - public assets
 
 When modifying the directory structure, always update this section.
-
 
 ## CODING_PRACTICES
 
@@ -96,7 +96,7 @@ When modifying the directory structure, always update this section.
 - Leverage View Transitions API for smooth page transitions (use ClientRouter)
 - Use content collections with type safety for blog posts, documentation, etc.
 - Leverage Server Endpoints for API routes
-- Use POST, GET  - uppercase format for endpoint handlers
+- Use POST, GET - uppercase format for endpoint handlers
 - Use `export const prerender = false` for API routes
 - Use zod for input validation in API routes
 - Extract logic into services in `src/lib/services`
