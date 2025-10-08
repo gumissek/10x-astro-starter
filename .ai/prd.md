@@ -50,12 +50,6 @@ Manualne tworzenie wysokiej jakości fiszek jest czasochłonne i pracochłonne. 
   - Edycja fiszek odbywa się w modalach z formularzami.
   - Usunięcie folderu powoduje kaskadowe usunięcie wszystkich fiszek w nim zawartych.
 
-- Sesja nauki (Study Mode):
-  - Użytkownik rozpoczyna sesję z fiszkami (domyślnie 20 kart) prezentowanymi pojedynczo w trybie fullscreen.
-  - Proces wyświetlania fiszki: najpierw tylko przód, po przycisku "Show Answer" wyświetlany jest tył.
-  - Użytkownik ocenia odpowiedź (Got it right/Got it wrong), a system rejestruje statystyki (review_count, correct_count) i wyświetla animacje feedback.
-  - Po zakończeniu sesji prezentowane są statystyki oraz opcje "Study Again" i "Back to Dashboard".
-
 - Uwierzytelnienie i autoryzacja:
   - Rejestracja: email i hasło (min. 8 znaków) z inline walidacją (regex dla email).
   - Logowanie: przy użyciu email i hasła, co skutkuje uzyskaniem JWT tokena ważnego 24 godziny.
@@ -116,17 +110,6 @@ Co NIE wchodzi w zakres MVP:
   - Każda fiszka ma opcję edycji dostępną w widoku listy.
   - Edycja odbywa się w modalnym oknie z formularzem.
   - Po zapisaniu zmian, fiszka zostaje zaktualizowana.
-
-### US-005: Sesja nauki z fiszkami
-
-- ID: US-005
-- Tytuł: Sesja nauki
-- Opis: Jako użytkownik, chcę rozpocząć sesję nauki, w której prezentowane są fiszki w trybie pełnoekranowym, abym mógł sprawdzić i utrwalić swoją wiedzę.
-- Kryteria akceptacji:
-  - Użytkownik klika "Study Now" i rozpoczyna sesję z 20 fiszkami.
-  - Fiszki są prezentowane pojedynczo: najpierw przód, następnie tył po kliknięciu "Show Answer".
-  - Użytkownik ocenia odpowiedź (Got it right / Got it wrong), a system rejestruje statystyki (review_count, correct_count) oraz wyświetla animacje feedback.
-  - Po zakończeniu sesji wyświetlany jest ekran podsumowania z wynikami.
 
 ### US-006: Organizacja fiszek w foldery
 

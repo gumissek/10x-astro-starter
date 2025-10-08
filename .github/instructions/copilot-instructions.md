@@ -1,5 +1,5 @@
 ---
-applyTo: "**"
+
 ---
 
 # AI Rules for 10x-Cards-Flipper
