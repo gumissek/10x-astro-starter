@@ -3,10 +3,9 @@ description:
 globs: 
 alwaysApply: true
 ---
-# AI Rules for {app-name}
+# AI Rules for 10x-Cards-Flipper
 
-{project-description}
-
+This document provides context and coding guidelines for AI when generating code, answering questions, or reviewing changes in the 10x-Cards-Flipper.
 ## Tech Stack
 
 - Astro 5
