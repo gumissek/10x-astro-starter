@@ -11,12 +11,12 @@
 ### 2.1 Authentication
 
 ### 2.2 Folders
-
 #### 2.2.1 List Folders
 - **Method:** GET
 - **URL:** /folders
-- **Description:** Retrieves a paginated list of folders for the authenticated user.
+- **Description:** Retrieves a paginated list of folders for the authenticated user. A valid `user_id` must be provided to filter folders belonging to the specific user.
 - **Query Parameters:**
+  - `user_id` (required): The UUID of the user whose folders are being retrieved.
   - `page` (optional, default 1)
   - `limit` (optional, default 10)
 - **Response:**
@@ -33,7 +33,9 @@
 #### 2.2.2 Get Folder Details
 - **Method:** GET
 - **URL:** /folders/{folderId}
-- **Description:** Retrieves details for a specific folder including flashcard count.
+- **Description:** Retrieves details for a specific folder including flashcard count. A valid `user_id` query parameter must be provided to ensure the folder details are returned for the correct user.
+- **Query Parameters:**
+  - `user_id` (required): The UUID of the user whose folder details are being requested.
 - **Response:**
     ```json
     {
@@ -50,33 +52,38 @@
 #### 2.2.3 Create Folder
 - **Method:** POST
 - **URL:** /folders
-- **Description:** Creates a new folder for the authenticated user.
+- **Description:** Creates a new folder for the authenticated user. The request must include the user_id to associate the folder with the correct user.
 - **Request Payload:**
   ```json
   {
-    "name": "New Folder Name"
+    "name": "New Folder Name",
+    "user_id": "<UUID>"
   }
   ```
 - **Response:**
   - Success (201): Created folder details
-  - Error (400): Validation errors (e.g., missing name, duplicated name)
+  - Error (400): Validation errors (e.g., missing name, duplicated name, or missing user_id)
 
 #### 2.2.4 Update Folder
 - **Method:** PUT
 - **URL:** /folders/{folderId}
-- **Description:** Updates the name of an existing folder.
+- **Description:** Updates the name of an existing folder. A valid `user_id` query parameter is required to ensure the folder belongs to the authenticated user.
+- **Query Parameters:**
+  - `user_id` (required): The UUID of the user who owns the folder.
 - **Request Payload:**
   ```json
   { "name": "Updated Folder Name" }
   ```
 - **Response:**
   - Success (200): Updated folder details
-  - Error (400/404): Appropriate validation, not-found error or duplicated name
+  - Error (400/404): Appropriate validation errors, not-found error, or duplicated name
 
 #### 2.2.5 Delete Folder
 - **Method:** DELETE
 - **URL:** /folders/{folderId}
-- **Description:** Deletes a folder and cascades deletion to associated flashcards.
+- **Description:** Deletes a folder and cascades deletion to associated flashcards. A valid `user_id` query parameter must be provided to confirm ownership.
+- **Query Parameters:**
+  - `user_id` (required): The UUID of the user who owns the folder.
 - **Response:**
   - Success (200): Confirmation message
   - Error (404): Folder not found
@@ -204,27 +211,28 @@
     }
     ```
   - Error (400): Validation errors (e.g., text too long)
+  ### 2.4 Statistics and Bulk Operations (Optional)
 
-### 2.4 Statistics and Bulk Operations (Optional)
-
-- **Bulk Save Accepted Flashcards**
-  - **Method:** POST
-  - **URL:** /flashcards/bulk-save
-  - **Description:** Saves a batch of accepted flashcards to a specific folder after review.
-  - **Request Payload:**
-    ```json
-    {
-      "folder_id": "<UUID>",
-      "flashcards": [
-        { "front": "...", "back": "...", "generation_source": "ai" }
-      ]
-    }
-    ```
-  - **Response:**
-    - Success (200): Confirmation message with list of created flashcard IDs
-    - Error (400): Validation error
-  - **Validation:**
-    - `flashcards` each must include `front` max 200 characters, `back` max 500 characters, and valid `generation_source`
+  - **Bulk Save Accepted Flashcards**
+    - **Method:** POST
+    - **URL:** /flashcards/bulk-save
+    - **Description:** Saves a batch of accepted flashcards to a specific folder after review.
+    - **Request Payload:**
+      ```json
+      {
+        "user_id": "<UUID>",
+        "folder_id": "<UUID>",
+        "flashcards": [
+          { "front": "...", "back": "...", "generation_source": "ai" }
+        ]
+      }
+      ```
+    - **Response:**
+      - Success (200): Confirmation message with list of created flashcard IDs
+      - Error (400): Validation error
+    - **Validation:**
+      - `user_id` is required and must be a valid UUID.
+      - Each entry in `flashcards` must include `front` (max 200 characters), `back` (max 500 characters), and a valid `generation_source`.
 
 ## 3. Authentication and Authorization
 

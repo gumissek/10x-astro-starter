@@ -19,8 +19,8 @@ export interface FolderDTO extends Omit<Folder, 'user_id'> {
 }
 
 // Command Model for creating a new folder (POST /folders).
-// Only the 'name' field is needed from the Folder entity.
-export type CreateFolderCommand = Pick<Folder, 'name'>;
+// The 'name' and 'user_id' fields are needed from the request.
+export type CreateFolderCommand = Pick<Folder, 'name' | 'user_id'>;
 
 // Command Model for updating an existing folder (PUT /folders/{folderId}).
 // Payload requires a new name for the folder.
@@ -39,7 +39,9 @@ export type CreateFlashcardCommand = Pick<Flashcard, 'front' | 'back' | 'folder_
 
 // Command Model for updating an existing flashcard (PUT /flashcards/{flashcardId}).
 // The payload structure is similar to the creation command. Depending on the usage, you may allow partial updates.
-export type UpdateFlashcardCommand = Pick<Flashcard, 'front' | 'back' | 'folder_id' | 'generation_source'>;
+export type UpdateFlashcardCommand = Pick<Flashcard, 'front' | 'back' | 'generation_source'> & {
+  folder_id?: string; // Optional for updates - allows moving flashcard to different folder
+};
 
 // Command Model for generating flashcards via AI (POST /flashcards/generate).
 // Receives a text input and returns a suggested folder name and a list of flashcard proposals.
@@ -58,8 +60,9 @@ export interface GenerateFlashcardsResponseDTO {
 }
 
 // Command Model for bulk saving accepted flashcards (POST /flashcards/bulk-save).
-// Payload includes the target folder ID and an array of flashcards.
+// Payload includes the user ID, target folder ID and an array of flashcards.
 export type BulkSaveFlashcardsCommand = {
+  user_id: string;
   folder_id: string;
   flashcards: Array<{
     front: string;

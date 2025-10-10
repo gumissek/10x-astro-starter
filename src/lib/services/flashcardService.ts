@@ -1,4 +1,4 @@
-import type { GenerateFlashcardsResponseDTO } from "../../types";
+import type { GenerateFlashcardsResponseDTO, CreateFlashcardCommand, FlashcardDTO, UpdateFlashcardCommand, BulkSaveFlashcardsCommand } from "../../types";
 import type { SupabaseClient } from "../../db/supabase.client";
 import { DEFAULT_USER_ID } from "../../db/supabase.client";
 
@@ -12,6 +12,309 @@ export class FlashcardGenerationService {
   constructor(supabaseClient: SupabaseClient) {
     this.supabase = supabaseClient;
   }
+
+  /**
+   * Get a flashcard by its ID
+   * @param flashcardId - The UUID of the flashcard to retrieve
+   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @returns Promise<FlashcardDTO | null> - Flashcard data or null if not found
+   * @throws Error if database operation fails
+   */
+  async getFlashcardById(flashcardId: string, userId: string = DEFAULT_USER_ID): Promise<FlashcardDTO | null> {
+    try {
+      const { data: flashcardData, error: flashcardError } = await this.supabase
+        .from('flashcards')
+        .select('id, front, back, folder_id, generation_source, created_at, updated_at')
+        .eq('id', flashcardId)
+        .eq('user_id', userId) // Ensure user can only access their own flashcards
+        .single();
+
+      // Handle not found case
+      if (flashcardError) {
+        if (flashcardError.code === 'PGRST116') { // PostgREST "no rows returned" error
+          return null; // Flashcard not found
+        }
+        
+        // Log and throw for other database errors
+        console.error("Database error fetching flashcard:", flashcardError);
+        throw new Error("Failed to retrieve flashcard from database");
+      }
+
+      if (!flashcardData) {
+        return null;
+      }
+
+      // Transform to DTO (exclude user_id)
+      return {
+        id: flashcardData.id,
+        front: flashcardData.front,
+        back: flashcardData.back,
+        folder_id: flashcardData.folder_id,
+        generation_source: flashcardData.generation_source,
+        created_at: flashcardData.created_at,
+        updated_at: flashcardData.updated_at,
+      };
+
+    } catch (error) {
+      console.error("Error getting flashcard by ID:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to get flashcard");
+    }
+  }
+
+  /**
+   * Get paginated list of flashcards for a user with optional filtering and sorting
+   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @param options - Query options for filtering, pagination and sorting
+   * @returns Promise<{flashcards: FlashcardDTO[], pagination: PaginationInfo}> - Paginated flashcards data
+   * @throws Error if database operation fails
+   */
+  async getFlashcards(userId: string = DEFAULT_USER_ID, options: {
+    folderId?: string;
+    page: number;
+    limit: number;
+    sortBy: string;
+    order: string;
+  }): Promise<{
+    flashcards: FlashcardDTO[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+    try {
+      const { folderId, page, limit, sortBy, order } = options;
+      const offset = (page - 1) * limit;
+
+      // Build base query
+      let query = this.supabase
+        .from('flashcards')
+        .select('id, front, back, folder_id, generation_source, created_at, updated_at', { count: 'exact' })
+        .eq('user_id', userId);
+
+      // Add folder filter if provided
+      if (folderId) {
+        // First verify that the folder exists and belongs to the user
+        const { data: folderData, error: folderError } = await this.supabase
+          .from('folders')
+          .select('id')
+          .eq('id', folderId)
+          .eq('user_id', userId)
+          .single();
+
+        if (folderError || !folderData) {
+          throw new Error("Folder not found or access denied");
+        }
+
+        query = query.eq('folder_id', folderId);
+      }
+
+      // Add sorting
+      query = query.order(sortBy, { ascending: order === 'asc' });
+
+      // Add pagination
+      query = query.range(offset, offset + limit - 1);
+
+      // Execute query
+      const { data: flashcardsData, error: flashcardsError, count } = await query;
+
+      if (flashcardsError) {
+        console.error("Database error fetching flashcards:", flashcardsError);
+        throw new Error("Failed to retrieve flashcards from database");
+      }
+
+      // Calculate pagination info
+      const total = count || 0;
+      const totalPages = Math.ceil(total / limit);
+
+      // Transform data to DTOs (exclude user_id)
+      const flashcards: FlashcardDTO[] = (flashcardsData || []).map(flashcard => ({
+        id: flashcard.id,
+        front: flashcard.front,
+        back: flashcard.back,
+        folder_id: flashcard.folder_id,
+        generation_source: flashcard.generation_source,
+        created_at: flashcard.created_at,
+        updated_at: flashcard.updated_at,
+      }));
+
+      return {
+        flashcards,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages,
+        },
+      };
+
+    } catch (error) {
+      console.error("Error getting flashcards:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to get flashcards");
+    }
+  }
+
+  /**
+   * Create a new flashcard in the database
+   * @param flashcardData - Flashcard data to create
+   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @returns Promise<FlashcardDTO> - Created flashcard data
+   */
+  async createFlashcard(flashcardData: CreateFlashcardCommand, userId: string = DEFAULT_USER_ID): Promise<FlashcardDTO> {
+    try {
+      // First, verify that the folder exists and belongs to the user
+      const { data: folderData, error: folderError } = await this.supabase
+        .from('folders')
+        .select('id, user_id')
+        .eq('id', flashcardData.folder_id)
+        .eq('user_id', userId)
+        .single();
+
+      if (folderError || !folderData) {
+        throw new Error("Folder not found or access denied");
+      }
+
+      // Create the flashcard
+      const { data: flashcardResult, error: flashcardError } = await this.supabase
+        .from('flashcards')
+        .insert([{
+          front: flashcardData.front,
+          back: flashcardData.back,
+          folder_id: flashcardData.folder_id,
+          generation_source: flashcardData.generation_source,
+          user_id: userId,
+        }])
+        .select('id, front, back, folder_id, generation_source, created_at, updated_at')
+        .single();
+        console.log("Flashcard creation result:", flashcardResult, flashcardError);
+      if (flashcardError || !flashcardResult) {
+        console.error("Database error creating flashcard:", flashcardError);
+        throw new Error("Failed to create flashcard in database");
+      }
+
+      // Return the flashcard data as DTO (without user_id)
+      return {
+        id: flashcardResult.id,
+        front: flashcardResult.front,
+        back: flashcardResult.back,
+        folder_id: flashcardResult.folder_id,
+        generation_source: flashcardResult.generation_source,
+        created_at: flashcardResult.created_at,
+        updated_at: flashcardResult.updated_at,
+      };
+
+    } catch (error) {
+      console.error("Error creating flashcard:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to create flashcard");
+    }
+  }
+
+  /**
+   * Update an existing flashcard
+   * @param flashcardId - The UUID of the flashcard to update
+   * @param updateData - Data to update the flashcard with
+   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @returns Promise<FlashcardDTO> - Updated flashcard data
+   * @throws Error if flashcard not found, folder not found, or database operation fails
+   */
+  async updateFlashcard(
+    flashcardId: string, 
+    updateData: UpdateFlashcardCommand, 
+    userId: string = DEFAULT_USER_ID
+  ): Promise<FlashcardDTO> {
+    try {
+      // First, verify that the flashcard exists and belongs to the user
+      const { data: existingFlashcard, error: flashcardError } = await this.supabase
+        .from('flashcards')
+        .select('id, folder_id, user_id')
+        .eq('id', flashcardId)
+        .eq('user_id', userId)
+        .single();
+
+      if (flashcardError) {
+        if (flashcardError.code === 'PGRST116') { // PostgREST "no rows returned" error
+          throw new Error("Flashcard not found or access denied");
+        }
+        
+        console.error("Database error fetching flashcard for update:", flashcardError);
+        throw new Error("Failed to retrieve flashcard from database");
+      }
+
+      if (!existingFlashcard) {
+        throw new Error("Flashcard not found or access denied");
+      }
+
+      // If folder_id is being updated, verify the new folder exists and belongs to the user
+      if (updateData.folder_id && updateData.folder_id !== existingFlashcard.folder_id) {
+        const { data: folderData, error: folderError } = await this.supabase
+          .from('folders')
+          .select('id, user_id')
+          .eq('id', updateData.folder_id)
+          .eq('user_id', userId)
+          .single();
+
+        if (folderError || !folderData) {
+          throw new Error("Folder not found or access denied");
+        }
+      }
+
+      // Prepare update data
+      const updatePayload: any = {
+        front: updateData.front,
+        back: updateData.back,
+        generation_source: updateData.generation_source,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Only update folder_id if it's provided
+      if (updateData.folder_id) {
+        updatePayload.folder_id = updateData.folder_id;
+      }
+
+      // Update the flashcard
+      const { data: updatedFlashcard, error: updateError } = await this.supabase
+        .from('flashcards')
+        .update(updatePayload)
+        .eq('id', flashcardId)
+        .eq('user_id', userId) // Extra security check
+        .select('id, front, back, folder_id, generation_source, created_at, updated_at')
+        .single();
+
+      if (updateError || !updatedFlashcard) {
+        console.error("Database error updating flashcard:", updateError);
+        throw new Error("Failed to update flashcard in database");
+      }
+
+      // Return the updated flashcard data as DTO (without user_id)
+      return {
+        id: updatedFlashcard.id,
+        front: updatedFlashcard.front,
+        back: updatedFlashcard.back,
+        folder_id: updatedFlashcard.folder_id,
+        generation_source: updatedFlashcard.generation_source,
+        created_at: updatedFlashcard.created_at,
+        updated_at: updatedFlashcard.updated_at,
+      };
+
+    } catch (error) {
+      console.error("Error updating flashcard:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to update flashcard");
+    }
+  }
+
   /**
    * Generate flashcards from provided text
    * @param text - Input text to generate flashcards from (max 5000 characters)
@@ -99,6 +402,144 @@ export class FlashcardGenerationService {
       suggested_folder_name: suggestedName,
       flashcards_proposals: flashcardsProposals,
     };
+  }
+
+  /**
+   * Bulk save multiple flashcards to a specific folder
+   * Used primarily for saving AI-generated flashcards that user has accepted
+   * @param bulkData - Bulk save command containing user_id, folder_id and flashcards array
+   * @param userId - User ID (should match bulkData.user_id for security)
+   * @returns Promise<{saved_count: number, flashcard_ids: string[], message: string}> - Bulk save result
+   * @throws Error if folder not found, access denied, or database operation fails
+   */
+  async bulkSaveFlashcards(
+    bulkData: BulkSaveFlashcardsCommand, 
+    userId: string = DEFAULT_USER_ID
+  ): Promise<{
+    saved_count: number;
+    flashcard_ids: string[];
+    message: string;
+  }> {
+    try {
+      // Security check: ensure the user_id in the request matches the authenticated user
+      if (bulkData.user_id !== userId) {
+        throw new Error("User ID mismatch - access denied");
+      }
+
+      // Verify that the folder exists and belongs to the user
+      const { data: folderData, error: folderError } = await this.supabase
+        .from('folders')
+        .select('id, user_id, name')
+        .eq('id', bulkData.folder_id)
+        .eq('user_id', userId)
+        .single();
+
+      if (folderError) {
+        if (folderError.code === 'PGRST116') { // PostgREST "no rows returned" error
+          throw new Error("Folder not found or access denied");
+        }
+        
+        console.error("Database error fetching folder for bulk save:", folderError);
+        throw new Error("Failed to retrieve folder from database");
+      }
+
+      if (!folderData) {
+        throw new Error("Folder not found or access denied");
+      }
+
+      // Prepare flashcards data for bulk insert
+      const flashcardsToInsert = bulkData.flashcards.map(flashcard => ({
+        front: flashcard.front,
+        back: flashcard.back,
+        folder_id: bulkData.folder_id,
+        generation_source: flashcard.generation_source,
+        user_id: userId,
+      }));
+
+      // Use Supabase transaction-like bulk insert
+      const { data: insertedFlashcards, error: insertError } = await this.supabase
+        .from('flashcards')
+        .insert(flashcardsToInsert)
+        .select('id, front, back, folder_id, generation_source, created_at, updated_at');
+
+      if (insertError || !insertedFlashcards) {
+        console.error("Database error during bulk insert:", insertError);
+        throw new Error("Failed to save flashcards to database");
+      }
+
+      // Extract IDs of successfully created flashcards
+      const flashcardIds = insertedFlashcards.map(flashcard => flashcard.id);
+      const savedCount = insertedFlashcards.length;
+
+      console.log(`Successfully saved ${savedCount} flashcards to folder: ${folderData.name}`);
+
+      return {
+        saved_count: savedCount,
+        flashcard_ids: flashcardIds,
+        message: `Successfully saved ${savedCount} flashcard${savedCount > 1 ? 's' : ''} to folder "${folderData.name}"`,
+      };
+
+    } catch (error) {
+      console.error("Error in bulk save flashcards:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to bulk save flashcards");
+    }
+  }
+
+  /**
+   * Delete a flashcard by ID
+   * @param flashcardId - The UUID of the flashcard to delete
+   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @returns Promise<void> - No data returned on successful deletion
+   * @throws Error if flashcard not found, access denied, or database operation fails
+   */
+  async deleteFlashcard(flashcardId: string, userId: string = DEFAULT_USER_ID): Promise<void> {
+    try {
+      // First, verify that the flashcard exists and belongs to the user
+      const { data: existingFlashcard, error: flashcardError } = await this.supabase
+        .from('flashcards')
+        .select('id, user_id')
+        .eq('id', flashcardId)
+        .eq('user_id', userId)
+        .single();
+
+      if (flashcardError) {
+        if (flashcardError.code === 'PGRST116') { // PostgREST "no rows returned" error
+          throw new Error("Flashcard not found or access denied");
+        }
+        
+        console.error("Database error fetching flashcard for deletion:", flashcardError);
+        throw new Error("Failed to retrieve flashcard from database");
+      }
+
+      if (!existingFlashcard) {
+        throw new Error("Flashcard not found or access denied");
+      }
+
+      // Delete the flashcard
+      const { error: deleteError } = await this.supabase
+        .from('flashcards')
+        .delete()
+        .eq('id', flashcardId)
+        .eq('user_id', userId); // Extra security check to ensure user can only delete their own flashcards
+
+      if (deleteError) {
+        console.error("Database error deleting flashcard:", deleteError);
+        throw new Error("Failed to delete flashcard from database");
+      }
+
+      // No data returned on successful deletion
+      return;
+
+    } catch (error) {
+      console.error("Error deleting flashcard:", error);
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to delete flashcard");
+    }
   }
 
   /**
