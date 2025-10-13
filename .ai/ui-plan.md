@@ -77,11 +77,11 @@ Główny przepływ użytkownika (generowanie fiszek AI):
 ## 4. Układ i struktura nawigacji
 
 Nawigacja opiera się na bocznym panelu (Sidebar/Sheet), który zawiera linki do kluczowych widoków:
-- **Dashboard (`/`)**: Główny widok z folderami.
+- **Dashboard (`/dashboard`)**: Główny widok z folderami.
 - **Generuj AI (`/generate`)**: Strona do generowania fiszek.
 - **Ustawienia (`/settings`)**: Strona ustawień konta.
 
-Przycisk "Dodaj fiszkę manualnie" na dashboardzie otwiera modal z formularzem, bez zmiany widoku. Wejście do konkretnego folderu (`/folders/[folderId]`) lub sesji nauki (`/study`) odbywa się poprzez interakcje w widoku dashboardu lub folderu.
+Przycisk "Dodaj fiszkę" (`/manual-save`) na dashboardzie otwiera modal z formularzem, bez zmiany widoku. Wejście do konkretnego folderu (`/folders/[folderId]`) lub sesji nauki (`/study`) odbywa się poprzez interakcje w widoku dashboardu lub folderu.
 
 ## 5. Kluczowe komponenty
 

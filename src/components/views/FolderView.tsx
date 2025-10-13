@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LoadingSpinner from './LoadingSpinner';
+import FolderLoadingSpinner from './FolderLoadingSpinner';
 import FlashcardList from './FlashcardList';
 import EditFlashcardDialog from './EditFlashcardDialog';
 import DeleteFlashcardDialog from './DeleteFlashcardDialog';
@@ -189,7 +190,7 @@ const FolderView: React.FC<FolderViewProps> = ({ folderId }) => {
   if (isLoading && !folder) {
     return (
       <div className="flex items-center justify-center min-h-64">
-        <LoadingSpinner />
+        <FolderLoadingSpinner />
       </div>
     );
   }
