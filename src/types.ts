@@ -72,6 +72,50 @@ export type BulkSaveFlashcardsCommand = {
 };
 
 // -----------------------------------------------------------
+// 3. VIEW MODELS FOR UI STATE MANAGEMENT
+
+// ViewModel type for managing UI state of flashcard proposals during generation flow
+export interface FlashcardProposalViewModel {
+  id: string; // Unique client-side identifier (e.g., UUID)
+  front: string;
+  back: string;
+  generation_source: 'ai';
+  status: 'pending' | 'accepted' | 'rejected'; // User acceptance state
+}
+
+// ViewModel for folder, used in Dashboard view.
+// Combines basic folder data with flashcard count.
+export interface FolderViewModel {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  flashcard_count: number;
+}
+
+// -----------------------------------------------------------
+// 4. PAGINATION AND FOLDER VIEW MODELS
+
+// Pagination structure for list endpoints
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// ViewModel for flashcard used in the folder view UI
+export interface FlashcardViewModel {
+  id: string;
+  front: string;
+  back: string;
+  folder_id: string;
+  generation_source: 'manual' | 'ai';
+  created_at: string;
+  updated_at: string;
+}
+
+// -----------------------------------------------------------
 // Additional notes:
 // - All DTOs directly derive from the underlying database entity types ensuring consistent structure.
 // - Command Models use TypeScript utility types (Pick, Omit) to select only the necessary fields.
