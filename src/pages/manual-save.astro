@@ -8,7 +8,15 @@ export const prerender = false;
 <Layout title="Ręczne tworzenie fiszek">
   <main class="container mx-auto px-4 py-8">
     <div class="max-w-2xl mx-auto">
-      <h1 class="text-3xl font-bold mb-8">Ręczne tworzenie fiszek</h1>
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold">Ręczne tworzenie fiszek</h1>
+        <button 
+          class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          onclick="window.location.href = '/dashboard'"
+        >
+          ← Powrót na pulpit
+        </button>
+      </div>
       <ManualSaveView client:load />
     </div>
   </main>
