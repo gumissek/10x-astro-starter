@@ -35,12 +35,18 @@ const DashboardView: React.FC = () => {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <a href="/generate">
-              <Button className="w-full sm:w-auto">
+              <Button 
+                size="lg"
+                className="w-full sm:w-auto"
+              >
                 Generuj fiszki
               </Button>
             </a>
             <a href="/manual-save">
-              <Button variant="outline" className="w-full sm:w-auto">
+              <Button 
+                size="lg"
+                variant="outline" 
+                className="w-full sm:w-auto">
                 Dodaj fiszkę
               </Button>
             </a>

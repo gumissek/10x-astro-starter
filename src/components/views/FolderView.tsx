@@ -228,6 +228,13 @@ const FolderView: React.FC<FolderViewProps> = ({ folderId }) => {
             </p>
           </div>
           <div className="flex gap-3">
+            <Button 
+              size="lg"
+              variant="outline" 
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              ← Powrót na pulpit
+            </Button>
             {folder.flashcard_count >= 10 && (
               <Button 
                 size="lg" 

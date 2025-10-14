@@ -100,9 +100,10 @@ const FlashcardGeneratorForm: React.FC<FlashcardGeneratorFormProps> = ({
 
       <div className="flex justify-center">
         <Button
+          size="lg"
           type="submit"
           disabled={isSubmitDisabled}
-          className="px-8 py-2 text-lg"
+          className="px-8 py-2 text-md"
         >
           {isLoading ? 'Generuję...' : 'Generuj fiszki'}
         </Button>

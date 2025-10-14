@@ -150,11 +150,11 @@ const FlashcardList: React.FC<FlashcardListProps> = ({
       {pagination && (
         <div className="flex items-center justify-between text-sm text-gray-600 mt-6">
           <div>
-            Showing {Math.min((pagination.page - 1) * pagination.limit + 1, pagination.total)} to{' '}
-            {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} flashcards
+            Widok od {Math.min((pagination.page - 1) * pagination.limit + 1, pagination.total)} do {' '}
+            {Math.min(pagination.page * pagination.limit, pagination.total)} z {pagination.total} fiszek w folderze
           </div>
           <div>
-            Page {pagination.page} of {pagination.totalPages}
+            Strona {pagination.page} z {pagination.totalPages}
           </div>
         </div>
       )}
