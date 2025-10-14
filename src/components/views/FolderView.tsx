@@ -227,16 +227,27 @@ const FolderView: React.FC<FolderViewProps> = ({ folderId }) => {
               {folder.flashcard_count} {folder.flashcard_count === 1 ? 'fiszka' : 'fiszek'}
             </p>
           </div>
-          <div>
-            <Button 
-              size="lg" 
-              className="bg-blue-600 hover:bg-blue-700"
-              disabled={folder.flashcard_count === 0}
-            >
-              Ucz się z tego folderu
-            </Button>
+          <div className="flex gap-3">
+            {folder.flashcard_count >= 10 && (
+              <Button 
+                size="lg" 
+                className="bg-green-600 hover:bg-green-700"
+                onClick={() => window.location.href = `/study/${folderId}`}
+              >
+                Rozpocznij naukę
+              </Button>
+            )}
+            
           </div>
         </div>
+        {folder.flashcard_count > 0 && folder.flashcard_count < 10 && (
+          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 text-sm">
+              Potrzebujesz co najmniej 10 fiszek, aby rozpocząć sesję nauki. 
+              Obecnie masz {folder.flashcard_count} {folder.flashcard_count === 1 ? 'fiszkę' : 'fiszek'}.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Flashcards List Section */}

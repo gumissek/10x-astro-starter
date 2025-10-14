@@ -45,7 +45,7 @@ Główny układ aplikacji składa się ze stałego panelu bocznego (Sidebar) na 
 
 ### Widok: Sesja nauki
 - **Ścieżka:** `/study`
-- **Główny cel:** Przeprowadzenie interaktywnej sesji nauki z wybranego zestawu fiszek.
+- **Główny cel:** Przeprowadzenie interaktywnej sesji nauki z wybranego folderu fiszek lub z poziomu (`/dashboard` - wybiera folder do nauki z listy dostępnych folderów).
 - **Kluczowe informacje do wyświetlenia:** "Odwracana" karta fiszki, licznik postępu.
 - **Kluczowe komponenty widoku:** `Card` (interaktywna fiszka), `Button` (do oceny znajomości), `Progress`.
 - **UX, dostępność i względy bezpieczeństwa:** Minimalistyczny interfejs skupiony na nauce. Obsługa za pomocą klawiatury.
@@ -61,7 +61,7 @@ Główny układ aplikacji składa się ze stałego panelu bocznego (Sidebar) na 
 
 Główny przepływ użytkownika (generowanie fiszek AI):
 1. **Rejestracja/Logowanie:** Użytkownik trafia na stronę `/login` lub `/register`, tworzy konto lub loguje się.
-2. **Dashboard:** Po zalogowaniu jest przekierowywany na `/`, gdzie widzi swoje foldery (lub pusty stan).
+2. **Dashboard:** Po zalogowaniu jest przekierowywany na `/dashboard`, gdzie widzi swoje foldery (lub pusty stan).
 3. **Inicjacja generowania:** Klika przycisk "Generuj fiszki przez AI", co przenosi go do widoku `/generate`.
 4. **Generowanie:** Wkleja tekst do `Textarea` i klika "Generuj". Aplikacja wyświetla `Spinner` i komunikuje, że proces może potrwać.
 5. **Przegląd fiszek:** Po otrzymaniu odpowiedzi z API, widok `/generate` wyświetla listę propozycji fiszek. Użytkownik przegląda je, akceptując, edytując (w modalu) lub odrzucając każdą z nich.

@@ -50,41 +50,61 @@ const FolderCard: React.FC<FolderCardProps> = ({
         </div>
       </CardContent>
       
-      <CardFooter className="pt-0 flex justify-between">
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-blue-600 hover:text-blue-700"
-          onClick={() => window.location.href = `/folders/${folder.id}`}
-        >
-          <Eye className="mr-2 h-4 w-4" />
-          Podejrzyj folder
-        </Button>
+      <CardFooter className="pt-0 flex flex-col gap-2">
+        <div className="flex justify-between w-full">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-blue-600 hover:text-blue-700"
+            onClick={() => window.location.href = `/folders/${folder.id}`}
+          >
+            <Eye className="mr-2 h-4 w-4" />
+            Podejrzyj folder
+          </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label={`Opcje dla folderu ${folder.name}`}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={handleEdit} className="cursor-pointer">
+                <Edit className="mr-2 h-4 w-4" />
+                Edytuj nazwę
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleDelete} 
+                className="cursor-pointer text-red-600 focus:text-red-600"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Usuń folder
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-              aria-label={`Opcje dla folderu ${folder.name}`}
-            >
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={handleEdit} className="cursor-pointer">
-              <Edit className="mr-2 h-4 w-4" />
-              Edytuj nazwę
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={handleDelete} 
-              className="cursor-pointer text-red-600 focus:text-red-600"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Usuń folder
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {folder.flashcard_count >= 10 && (
+          <Button
+            className="w-full bg-green-600 hover:bg-green-700"
+            size="sm"
+            onClick={() => window.location.href = `/study/${folder.id}`}
+          >
+            Rozpocznij naukę
+          </Button>
+        )}
+        
+        {folder.flashcard_count > 0 && folder.flashcard_count < 10 && (
+          <div className="w-full text-left">
+            <p className="text-xs text-yellow-600">
+              Potrzebujesz {10 - folder.flashcard_count} więcej {10 - folder.flashcard_count === 1 ? 'fiszki' : 'fiszek'} do nauki
+            </p>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

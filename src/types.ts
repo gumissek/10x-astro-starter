@@ -116,6 +116,18 @@ export interface FlashcardViewModel {
 }
 
 // -----------------------------------------------------------
+// 5. STUDY SESSION VIEW MODELS
+
+// ViewModel for managing study session UI state
+export interface StudySessionViewModel {
+  flashcards: FlashcardViewModel[];
+  currentCardIndex: number;
+  knownFlashcards: number;
+  status: 'loading' | 'studying' | 'finished';
+  error: string | null;
+}
+
+// -----------------------------------------------------------
 // Additional notes:
 // - All DTOs directly derive from the underlying database entity types ensuring consistent structure.
 // - Command Models use TypeScript utility types (Pick, Omit) to select only the necessary fields.

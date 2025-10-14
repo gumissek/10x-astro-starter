@@ -131,6 +131,16 @@ Co NIE wchodzi w zakres MVP:
   - Po udanej rejestracji użytkownik zostaje automatycznie zalogowany i otrzymuje JWT token ważny 24 godziny.
   - Endpointy inne niż /register i /login wymagają autoryzacji JWT.
 
+### US-008: Sesja nauki z fiszkami
+- ID: US-008
+- Tytuł: Sesja nauki z fiszkami
+- Opis: Jako użytkownik, chcę móc przeprowadzić interaktywną sesje nauki z poziomu (`/dashboard` - z tego poziomu wybiera folder z którego ma rozpocząc naukę) lub z poziomu wybranego folderu (jeśli folder zawiera co najmniej 10 fiszek), aby efektywnie utrwalać wiedzę.
+- Kryteria akceptacji:
+  - Użytkownik wybiera folder lub z poziomu (`/dashboard`) rozpoczyna sesję nauki.
+  - Fiszki są wyświetlane pojedynczo z możliwością "odwrócenia" karty.
+  - Użytkownik ocenia swoją znajomość fiszki (np. "Znam", "Nie znam").
+  - Postęp sesji jest wizualizowany (np. licznik ukończonych fiszek).
+
 ## 6. Metryki sukcesu
 
 - Akceptacja AI: Co najmniej 75% fiszek wygenerowanych przez AI musi być zaakceptowanych przez użytkowników (wliczając fiszki edytowane).
