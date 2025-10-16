@@ -4,9 +4,11 @@ import FlashcardGeneratorForm from './FlashcardGeneratorForm';
 import FlashcardProposalList from './FlashcardProposalList';
 import LoadingSpinner from './LoadingSpinner';
 
+interface GenerateFlashcardsViewProps {
+  userId: string;
+}
 
-
-const GenerateFlashcardsView: React.FC = () => {
+const GenerateFlashcardsView: React.FC<GenerateFlashcardsViewProps> = ({ userId }) => {
   // State management
   const [text, setText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,12 +17,10 @@ const GenerateFlashcardsView: React.FC = () => {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<'form' | 'loading' | 'proposals'>('form');
-  const DEFAULT_USER_ID = "8335a994-19cf-4308-b2cd-fdbde3785dac";
-  
 
   const loadFolders = async () => {
         try {
-            const response = await fetch(`/api/folders?user_id=${DEFAULT_USER_ID}`);
+            const response = await fetch(`/api/folders?user_id=${userId}`);
             if (!response.ok) {
                 throw new Error('Failed to load folders');
             }
@@ -137,7 +137,7 @@ const GenerateFlashcardsView: React.FC = () => {
           },
           body: JSON.stringify({
             name: folderName,
-            user_id: DEFAULT_USER_ID,
+            user_id: userId,
           }),
         });
 
@@ -155,7 +155,6 @@ const GenerateFlashcardsView: React.FC = () => {
       }
 
       const saveCommand: BulkSaveFlashcardsCommand = {
-        user_id: DEFAULT_USER_ID,
         folder_id: targetFolderId,
         flashcards: acceptedFlashcards.map((card) => ({
           front: card.front,

@@ -1,7 +1,5 @@
 import type { GenerateFlashcardsResponseDTO, CreateFlashcardCommand, FlashcardDTO, UpdateFlashcardCommand, BulkSaveFlashcardsCommand } from "../../types";
 import type { SupabaseClient } from "../../db/supabase.client";
-import { DEFAULT_USER_ID } from "../../db/supabase.client";
-
 /**
  * Service for generating flashcards using AI
  * Currently uses mock data, but can be extended with actual AI integration
@@ -16,11 +14,11 @@ export class FlashcardGenerationService {
   /**
    * Get a flashcard by its ID
    * @param flashcardId - The UUID of the flashcard to retrieve
-   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @param userId - User ID 
    * @returns Promise<FlashcardDTO | null> - Flashcard data or null if not found
    * @throws Error if database operation fails
    */
-  async getFlashcardById(flashcardId: string, userId: string = DEFAULT_USER_ID): Promise<FlashcardDTO | null> {
+  async getFlashcardById(flashcardId: string, userId: string ): Promise<FlashcardDTO | null> {
     try {
       const { data: flashcardData, error: flashcardError } = await this.supabase
         .from('flashcards')
@@ -66,12 +64,12 @@ export class FlashcardGenerationService {
 
   /**
    * Get paginated list of flashcards for a user with optional filtering and sorting
-   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @param userId - User ID 
    * @param options - Query options for filtering, pagination and sorting
    * @returns Promise<{flashcards: FlashcardDTO[], pagination: PaginationInfo}> - Paginated flashcards data
    * @throws Error if database operation fails
    */
-  async getFlashcards(userId: string = DEFAULT_USER_ID, options: {
+  async getFlashcards(userId: string , options: {
     folderId?: string;
     page: number;
     limit: number;
@@ -164,10 +162,10 @@ export class FlashcardGenerationService {
   /**
    * Create a new flashcard in the database
    * @param flashcardData - Flashcard data to create
-   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @param userId - User ID 
    * @returns Promise<FlashcardDTO> - Created flashcard data
    */
-  async createFlashcard(flashcardData: CreateFlashcardCommand, userId: string = DEFAULT_USER_ID): Promise<FlashcardDTO> {
+  async createFlashcard(flashcardData: CreateFlashcardCommand, userId: string ): Promise<FlashcardDTO> {
     try {
       // First, verify that the folder exists and belongs to the user
       const { data: folderData, error: folderError } = await this.supabase
@@ -223,14 +221,14 @@ export class FlashcardGenerationService {
    * Update an existing flashcard
    * @param flashcardId - The UUID of the flashcard to update
    * @param updateData - Data to update the flashcard with
-   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @param userId - User ID 
    * @returns Promise<FlashcardDTO> - Updated flashcard data
    * @throws Error if flashcard not found, folder not found, or database operation fails
    */
   async updateFlashcard(
     flashcardId: string, 
     updateData: UpdateFlashcardCommand, 
-    userId: string = DEFAULT_USER_ID
+    userId: string 
   ): Promise<FlashcardDTO> {
     try {
       // First, verify that the flashcard exists and belongs to the user
@@ -320,7 +318,6 @@ export class FlashcardGenerationService {
    * @param text - Input text to generate flashcards from (max 5000 characters)
    * @returns Promise<GenerateFlashcardsResponseDTO> - Generated flashcards with suggested folder name
    * 
-   * Note: Currently uses DEFAULT_USER_ID for database operations. 
    * Authentication will be implemented comprehensively later.
    */
   async generateFlashcards(text: string): Promise<GenerateFlashcardsResponseDTO> {
@@ -330,8 +327,6 @@ export class FlashcardGenerationService {
 
       // Extract key concepts from text for mock generation
       const mockResponse = this.generateMockFlashcards(text);
-      
-      // TODO: When implementing actual database operations, use this.supabase with DEFAULT_USER_ID
       
       return mockResponse;
     } catch (error) {
@@ -407,25 +402,20 @@ export class FlashcardGenerationService {
   /**
    * Bulk save multiple flashcards to a specific folder
    * Used primarily for saving AI-generated flashcards that user has accepted
-   * @param bulkData - Bulk save command containing user_id, folder_id and flashcards array
-   * @param userId - User ID (should match bulkData.user_id for security)
+   * @param bulkData - Bulk save command containing folder_id and flashcards array
+   * @param userId - User ID from authenticated session
    * @returns Promise<{saved_count: number, flashcard_ids: string[], message: string}> - Bulk save result
    * @throws Error if folder not found, access denied, or database operation fails
    */
   async bulkSaveFlashcards(
     bulkData: BulkSaveFlashcardsCommand, 
-    userId: string = DEFAULT_USER_ID
+    userId: string
   ): Promise<{
     saved_count: number;
     flashcard_ids: string[];
     message: string;
   }> {
     try {
-      // Security check: ensure the user_id in the request matches the authenticated user
-      if (bulkData.user_id !== userId) {
-        throw new Error("User ID mismatch - access denied");
-      }
-
       // Verify that the folder exists and belongs to the user
       const { data: folderData, error: folderError } = await this.supabase
         .from('folders')
@@ -491,11 +481,11 @@ export class FlashcardGenerationService {
   /**
    * Delete a flashcard by ID
    * @param flashcardId - The UUID of the flashcard to delete
-   * @param userId - User ID (defaults to DEFAULT_USER_ID for now)
+   * @param userId - User ID 
    * @returns Promise<void> - No data returned on successful deletion
    * @throws Error if flashcard not found, access denied, or database operation fails
    */
-  async deleteFlashcard(flashcardId: string, userId: string = DEFAULT_USER_ID): Promise<void> {
+  async deleteFlashcard(flashcardId: string, userId: string): Promise<void> {
     try {
       // First, verify that the flashcard exists and belongs to the user
       const { data: existingFlashcard, error: flashcardError } = await this.supabase
@@ -559,7 +549,7 @@ export class FlashcardGenerationService {
     // Example of future database integration:
     // const { data, error } = await this.supabase
     //   .from('flashcards')
-    //   .insert([{ front: '...', back: '...', user_id: DEFAULT_USER_ID }]);
+    //   .insert([{ front: '...', back: '...', user_id:  }]);
     
     throw new Error("AI service integration not yet implemented");
   }

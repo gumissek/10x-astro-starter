@@ -60,9 +60,9 @@ export interface GenerateFlashcardsResponseDTO {
 }
 
 // Command Model for bulk saving accepted flashcards (POST /flashcards/bulk-save).
-// Payload includes the user ID, target folder ID and an array of flashcards.
+// Payload includes the target folder ID and an array of flashcards.
+// user_id is obtained from session by the backend.
 export type BulkSaveFlashcardsCommand = {
-  user_id: string;
   folder_id: string;
   flashcards: Array<{
     front: string;

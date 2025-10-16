@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import type { Folder, CreateFlashcardCommand } from '../../types';
 import ManualFlashcardForm from '../forms/ManualFlashcardForm';
-const DEFAULT_USER_ID = "8335a994-19cf-4308-b2cd-fdbde3785dac";
 
-interface ManualSaveViewProps {}
+interface ManualSaveViewProps {
+  userId: string;
+}
 
 interface ManualSaveViewState {
   folders: Folder[];
@@ -11,7 +12,7 @@ interface ManualSaveViewState {
   error: string | null;
 }
 
-const ManualSaveView: React.FC<ManualSaveViewProps> = () => {
+const ManualSaveView: React.FC<ManualSaveViewProps> = ({ userId }) => {
   const [state, setState] = useState<ManualSaveViewState>({
     folders: [],
     isLoading: true,
@@ -24,7 +25,7 @@ const ManualSaveView: React.FC<ManualSaveViewProps> = () => {
       try {
         setState(prev => ({ ...prev, isLoading: true, error: null }));
         
-        const response = await fetch(`/api/folders?user_id=${DEFAULT_USER_ID}`);
+        const response = await fetch(`/api/folders?user_id=${userId}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch folders: ${response.status}`);
@@ -60,7 +61,7 @@ const ManualSaveView: React.FC<ManualSaveViewProps> = () => {
         },
         body: JSON.stringify({ 
           name,
-          user_id: DEFAULT_USER_ID 
+          user_id: userId 
         }),
       });
 

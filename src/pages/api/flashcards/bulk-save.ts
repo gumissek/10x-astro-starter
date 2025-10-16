@@ -25,9 +25,6 @@ const FlashcardItemSchema = z.object({
 
 // Zod schema for POST request validation - bulk save
 const BulkSaveFlashcardsSchema = z.object({
-  user_id: z
-    .string()
-    .uuid("User ID must be a valid UUID"),
   folder_id: z
     .string()
     .uuid("Folder ID must be a valid UUID"),
@@ -108,10 +105,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // TODO: Add proper session token validation here
-    // For now, we'll use the user_id from the request body
-    // In production, this should be validated against the session token
-    const userId = requestData.user_id;
+    // Get user ID from session (set by middleware)
+    const userId = locals.user?.id;
+    
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Unauthorized",
+          message: "User must be authenticated",
+        }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
     
     console.log("Bulk save request for user ID:", userId);
 

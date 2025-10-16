@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import type { FlashcardDTO, UpdateFlashcardCommand } from "../../../types";
-import { supabaseClient, DEFAULT_USER_ID } from "../../../db/supabase.client";
+import { supabaseClient } from "../../../db/supabase.client";
 import { FlashcardGenerationService } from "../../../lib/services/flashcardService";
 
 export const prerender = false;
@@ -94,8 +94,23 @@ export const GET: APIRoute = async ({ params, locals }) => {
     }
 
     // TODO: Add authentication and authorization logic
-    // For now, using DEFAULT_USER_ID as per project setup
-    const userId = DEFAULT_USER_ID;
+    const userId = locals.user?.id;
+    
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Unauthorized",
+          message: "User must be authenticated",
+        }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
     // Initialize the flashcard service
     const flashcardService = new FlashcardGenerationService(supabaseClient);
@@ -255,8 +270,23 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     }
 
     // TODO: Add authentication and authorization logic
-    // For now, using DEFAULT_USER_ID as per project setup
-    const userId = DEFAULT_USER_ID;
+    const userId = locals.user?.id;
+    
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Unauthorized",
+          message: "User must be authenticated",
+        }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
     // Initialize the flashcard service
     const flashcardService = new FlashcardGenerationService(supabaseClient);
@@ -415,8 +445,23 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
     }
 
     // TODO: Add authentication and authorization logic
-    // For now, using DEFAULT_USER_ID as per project setup
-    const userId = DEFAULT_USER_ID;
+    const userId = locals.user?.id;
+    
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Unauthorized",
+          message: "User must be authenticated",
+        }),
+        {
+          status: 401,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
     // Initialize the flashcard service
     const flashcardService = new FlashcardGenerationService(supabaseClient);

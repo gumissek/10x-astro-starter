@@ -3,6 +3,13 @@ import AuthLayout from '../layouts/AuthLayout.astro';
 import ManualSaveView from '../components/views/ManualSaveView';
 
 export const prerender = false;
+
+// Sprawdź czy użytkownik jest zalogowany (middleware powinien przekierować, ale double-check)
+const { user } = Astro.locals;
+
+if (!user) {
+  return Astro.redirect('/login');
+}
 ---
 
 <AuthLayout title="Ręczne tworzenie fiszek">
@@ -16,6 +23,6 @@ export const prerender = false;
         ← Powrót na pulpit
       </button>
     </div>
-    <ManualSaveView client:load />
+    <ManualSaveView client:load userId={user.id} />
   </div>
 </AuthLayout>

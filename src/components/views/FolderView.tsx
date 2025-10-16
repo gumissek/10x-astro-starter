@@ -9,6 +9,7 @@ import type { FolderViewModel, FlashcardViewModel, Pagination, UpdateFlashcardCo
 
 interface FolderViewProps {
   folderId: string;
+  userId: string;
 }
 
 interface FolderViewState {
@@ -21,7 +22,7 @@ interface FolderViewState {
   deletingFlashcard: FlashcardViewModel | null;
 }
 
-const useFolderState = (folderId: string) => {
+const useFolderState = (folderId: string, userId: string) => {
   const [state, setState] = useState<FolderViewState>({
     isLoading: true,
     error: null,
@@ -35,10 +36,6 @@ const useFolderState = (folderId: string) => {
   const fetchFolderData = async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      // TODO: Get user_id from session/auth context
-      // For now, we'll need to get this from somewhere - likely from a user context or session
-      const userId = '8335a994-19cf-4308-b2cd-fdbde3785dac'; // This should be replaced with actual user ID from auth
       
       const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`);
       if (!response.ok) {
@@ -159,7 +156,7 @@ const useFolderState = (folderId: string) => {
   useEffect(() => {
     fetchFolderData();
     fetchFlashcards();
-  }, [folderId]);
+  }, [folderId, userId]);
 
   return {
     ...state,
@@ -171,7 +168,7 @@ const useFolderState = (folderId: string) => {
   };
 };
 
-const FolderView: React.FC<FolderViewProps> = ({ folderId }) => {
+const FolderView: React.FC<FolderViewProps> = ({ folderId, userId }) => {
   const {
     isLoading,
     error,
@@ -185,7 +182,7 @@ const FolderView: React.FC<FolderViewProps> = ({ folderId }) => {
     setEditingFlashcard,
     setDeletingFlashcard,
     changePage,
-  } = useFolderState(folderId);
+  } = useFolderState(folderId, userId);
 
   if (isLoading && !folder) {
     return (
