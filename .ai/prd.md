@@ -74,7 +74,7 @@ Co NIE wchodzi w zakres MVP:
 
 - ID: US-001
 - Tytuł: Generowanie fiszek przez AI
-- Opis: Jako użytkownik uczący się angielskiego, chcę wkleić tekst do pola (maks. 5000 znaków) i automatycznie otrzymać zestaw fiszek wygenerowanych przez AI, aby zaoszczędzić czas przy ręcznym tworzeniu fiszek.
+- Opis: Jako zalogowany użytkownik uczący się angielskiego, chcę wkleić tekst do pola (maks. 5000 znaków) i automatycznie otrzymać zestaw fiszek wygenerowanych przez AI, aby zaoszczędzić czas przy ręcznym tworzeniu fiszek.
 - Kryteria akceptacji:
   - Użytkownik wkleja tekst do pola tekstowego.
   - Po kliknięciu "Generate" pojawia się loading spinner.
@@ -85,7 +85,7 @@ Co NIE wchodzi w zakres MVP:
 
 - ID: US-002
 - Tytuł: Akceptacja wygenerowanych fiszek przez AI
-- Opis: Jako użytkownik, chcę mieć możliwość przeglądu wygenerowanych przez AI fiszek i ich akceptacji, edycji lub odrzucenia, aby kontrolować jakość materiałów do nauki.
+- Opis: Jako zalogowany użytkownik, chcę mieć możliwość przeglądu wygenerowanych przez AI fiszek i ich akceptacji, edycji lub odrzucenia, aby kontrolować jakość materiałów do nauki.
 - Kryteria akceptacji:
   - Lista wygenerowanych fiszek zawiera przyciski: Accept, Edit, Reject.
   - Użytkownik widzi licznik zaakceptowanych fiszek.
@@ -95,7 +95,7 @@ Co NIE wchodzi w zakres MVP:
 
 - ID: US-003
 - Tytuł: Manualne tworzenie fiszki
-- Opis: Jako użytkownik, chcę móc ręcznie tworzyć fiszki poprzez formularz, aby dodać te informacje, których AI mogło nie wygenerować.
+- Opis: Jako zalogowany użytkownik, chcę móc ręcznie tworzyć fiszki poprzez formularz, aby dodać te informacje, których AI mogło nie wygenerować.
 - Kryteria akceptacji:
   - Formularz zawiera pola: Front (max 200 znaków), Back (max 500 znaków) oraz wybór folderu.
   - Pola są walidowane w czasie rzeczywistym (liczniki znaków, wymagane pola).
@@ -105,7 +105,7 @@ Co NIE wchodzi w zakres MVP:
 
 - ID: US-004
 - Tytuł: Edycja fiszki
-- Opis: Jako użytkownik, chcę móc edytować zapisane fiszki, aby poprawić błędy lub uaktualnić treść.
+- Opis: Jako zalogowany użytkownik, chcę móc edytować zapisane fiszki, aby poprawić błędy lub uaktualnić treść.
 - Kryteria akceptacji:
   - Każda fiszka ma opcję edycji dostępną w widoku listy.
   - Edycja odbywa się w modalnym oknie z formularzem.
@@ -115,7 +115,7 @@ Co NIE wchodzi w zakres MVP:
 
 - ID: US-006
 - Tytuł: Organizacja fiszek w foldery
-- Opis: Jako użytkownik, chcę móc organizować moje fiszki w foldery, aby łatwiej zarządzać materiałem i odnajdywać tematyczne fiszki.
+- Opis: Jako zalogowany użytkownik, chcę móc organizować moje fiszki w foldery, aby łatwiej zarządzać materiałem i odnajdywać tematyczne fiszki.
 - Kryteria akceptacji:
   - Użytkownik może tworzyć foldery podczas zapisywania fiszek lub bezpośrednio z dashboardu.
   - Na dashboardzie widoczna jest lista folderów z nazwami i liczbą fiszek w każdym folderze.
@@ -134,7 +134,7 @@ Co NIE wchodzi w zakres MVP:
 ### US-008: Sesja nauki z fiszkami
 - ID: US-008
 - Tytuł: Sesja nauki z fiszkami
-- Opis: Jako użytkownik, chcę móc przeprowadzić interaktywną sesje nauki z poziomu (`/dashboard` - z tego poziomu wybiera folder z którego ma rozpocząc naukę) lub z poziomu wybranego folderu (jeśli folder zawiera co najmniej 10 fiszek), aby efektywnie utrwalać wiedzę.
+- Opis: Jako zalogowany użytkownik, chcę móc przeprowadzić interaktywną sesje nauki z poziomu (`/dashboard` - z tego poziomu wybiera folder z którego ma rozpocząc naukę) lub z poziomu wybranego folderu (jeśli folder zawiera co najmniej 10 fiszek), aby efektywnie utrwalać wiedzę.
 - Kryteria akceptacji:
   - Użytkownik wybiera folder lub z poziomu (`/dashboard`) rozpoczyna sesję nauki.
   - Fiszki są wyświetlane pojedynczo z możliwością "odwrócenia" karty.

@@ -33,7 +33,7 @@
 #### 2.2.2 Get Folder Details
 - **Method:** GET
 - **URL:** /folders/{folderId}
-- **Description:** Retrieves details for a specific folder including flashcard count. A valid `user_id` query parameter must be provided to ensure the folder details are returned for the correct user.
+- **Description:** ONLY for authenticated users. Retrieves details for a specific folder including flashcard count. A valid `user_id` query parameter must be provided to ensure the folder details are returned for the correct user.
 - **Query Parameters:**
   - `user_id` (required): The UUID of the user whose folder details are being requested.
 - **Response:**
@@ -52,7 +52,7 @@
 #### 2.2.3 Create Folder
 - **Method:** POST
 - **URL:** /folders
-- **Description:** Creates a new folder for the authenticated user. The request must include the user_id to associate the folder with the correct user.
+- **Description:** ONLY for authenticated users. Creates a new folder for the authenticated user. The request must include the user_id to associate the folder with the correct user.
 - **Request Payload:**
   ```json
   {
@@ -67,7 +67,7 @@
 #### 2.2.4 Update Folder
 - **Method:** PUT
 - **URL:** /folders/{folderId}
-- **Description:** Updates the name of an existing folder. A valid `user_id` query parameter is required to ensure the folder belongs to the authenticated user.
+- **Description:** ONLY for authenticated users. Updates the name of an existing folder. A valid `user_id` query parameter is required to ensure the folder belongs to the authenticated user.
 - **Query Parameters:**
   - `user_id` (required): The UUID of the user who owns the folder.
 - **Request Payload:**
@@ -81,7 +81,7 @@
 #### 2.2.5 Delete Folder
 - **Method:** DELETE
 - **URL:** /folders/{folderId}
-- **Description:** Deletes a folder and cascades deletion to associated flashcards. A valid `user_id` query parameter must be provided to confirm ownership.
+- **Description:** ONLY for authenticated users. Deletes a folder and cascades deletion to associated flashcards. A valid `user_id` query parameter must be provided to confirm ownership.
 - **Query Parameters:**
   - `user_id` (required): The UUID of the user who owns the folder.
 - **Response:**
@@ -93,7 +93,7 @@
 #### 2.3.1 List Flashcards
 - **Method:** GET
 - **URL:** /flashcards
-- **Description:** Retrieves a list of flashcards for the authenticated user, with optional filtering by folder.
+- **Description:** ONLY for authenticated users. Retrieves a list of flashcards for the authenticated user, with optional filtering by folder.
 - **Query Parameters:**
   - `folderId` (optional)
   - `page` (default 1)
@@ -141,7 +141,7 @@
 #### 2.3.3 Create Flashcard (Manual or AI Acceptance)
 - **Method:** POST
 - **URL:** /flashcards
-- **Description:** Creates a new flashcard. Can be from manual input or from AI generation acceptance. The payload must include `front`, `back`, `folder_id`, and a field `generation_source` set to either `manual` or `ai`.
+- **Description:** ONLY for authenticated users. Creates a new flashcard. Can be from manual input or from AI generation acceptance. The payload must include `front`, `back`, `folder_id`, and a field `generation_source` set to either `manual` or `ai`.
 - **Request Payload:**
     ```json
     {
@@ -159,7 +159,7 @@
 #### 2.3.4 Update Flashcard
 - **Method:** PUT
 - **URL:** /flashcards/{flashcardId}
-- **Description:** Updates an existing flashcard (e.g., editing text).
+- **Description:** ONLY for authenticated users. Updates an existing flashcard (e.g., editing text).
 - **Request Payload:**
   ```json
   {
@@ -181,7 +181,7 @@
 #### 2.3.5 Delete Flashcard
 - **Method:** DELETE
 - **URL:** /flashcards/{flashcardId}
-- **Description:** Deletes a specific flashcard.
+- **Description:** ONLY for authenticated users. Deletes a specific flashcard.
 - **Response:**
   - Success (200): Confirmation message
   - Error (404): Not found
@@ -189,7 +189,7 @@
 #### 2.3.6 Generate Flashcards via AI
 - **Method:** POST
 - **URL:** /flashcards/generate
-- **Description:** Submits a text (max 5000 characters) to generate a list of flashcards proposals with a suggested folder name using the GPT-4o-mini API.
+- **Description:** ONLY for authenticated users. Submits a text (max 5000 characters) to generate a list of flashcards proposals with a suggested folder name using the GPT-4o-mini API.
 - **Request Payload:**
   ```json
   {
@@ -216,7 +216,7 @@
   - **Bulk Save Accepted Flashcards**
     - **Method:** POST
     - **URL:** /flashcards/bulk-save
-    - **Description:** Saves a batch of accepted flashcards to a specific folder after review.
+    - **Description:** ONLY for authenticated users. Saves a batch of accepted flashcards to a specific folder after review.
     - **Request Payload:**
       ```json
       {
