@@ -152,24 +152,37 @@ const RegisterForm: React.FC = () => {
     setValidationErrors({});
     
     try {
-      // TODO: Implementacja rejestracji z Supabase
-      // await supabase.auth.signUp({
-      //   email: formData.email.trim(),
-      //   password: formData.password,
-      // });
-      
-      // Symulacja wywołania API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // TODO: Po sukcesie użytkownik będzie automatycznie zalogowany i przekierowany do /dashboard
-      console.log('Rejestracja pomyślna:', formData.email);
+      // Wywołanie API endpoint rejestracji
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Obsługa błędów z serwera
+        setValidationErrors({
+          [data.field || 'general']: data.error || 'Wystąpił błąd podczas rejestracji',
+        });
+        return;
+      }
+
+      // Rejestracja pomyślna - użytkownik jest automatycznie zalogowany
+      // Przekieruj do dashboardu
+      window.location.href = '/dashboard';
       
     } catch (error) {
       console.error('Error during registration:', error);
       setValidationErrors({
-        general: error instanceof Error 
-          ? error.message 
-          : 'Wystąpił błąd podczas rejestracji'
+        general: 'Wystąpił błąd połączenia. Sprawdź swoje połączenie internetowe i spróbuj ponownie.'
       });
     } finally {
       setIsLoading(false);

@@ -5,7 +5,7 @@
 System autoryzacji został zaimplementowany z wykorzystaniem **Supabase Auth** i **Astro SSR**. 
 
 Data implementacji: 16 października 2025
-Status: ✅ **Działający system logowania**
+Status: ✅ **Działający system logowania i rejestracji**
 
 ---
 
@@ -47,8 +47,10 @@ src/
 │   ├── api/
 │   │   └── auth/
 │   │       ├── login.ts            # POST endpoint logowania
+│   │       ├── register.ts         # POST endpoint rejestracji ✨ NOWY
 │   │       └── logout.ts           # POST endpoint wylogowania
 │   ├── login.astro                 # Strona logowania (SSR)
+│   ├── register.astro              # Strona rejestracji (SSR) ✨ NOWY
 │   └── dashboard.astro             # Chroniona strona (SSR)
 └── env.d.ts                        # TypeScript types (Astro.locals)
 ```
@@ -59,9 +61,11 @@ src/
 src/
 ├── components/
 │   └── auth/
-│       └── LoginForm.tsx           # Formularz logowania
+│       ├── LoginForm.tsx           # Formularz logowania
+│       └── RegisterForm.tsx        # Formularz rejestracji ✨ NOWY
 └── layouts/
-    └── AuthLayout.astro            # Layout dla zalogowanych (z logout)
+    ├── AuthLayout.astro            # Layout dla zalogowanych (z logout)
+    └── GuestLayout.astro           # Layout dla gości (login/register)
 ```
 
 ---
@@ -156,7 +160,58 @@ POST /api/auth/logout
 2. Czyści cookies sesji
 3. Zwraca pustą odpowiedź
 
-### 5. LoginForm Component
+### 5. API Endpoint Rejestracji ✨ NOWY
+**Plik**: `src/pages/api/auth/register.ts`
+
+**Request**:
+```json
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "Test123!@#",
+  "confirmPassword": "Test123!@#"
+}
+```
+
+**Response (sukces)**:
+```json
+200 OK
+{
+  "success": true,
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com"
+  }
+}
+```
+
+**Response (błąd)**:
+```json
+400 Bad Request
+{
+  "error": "Hasło musi zawierać co najmniej jedną wielką literę",
+  "field": "password"
+}
+```
+
+**Walidacja** (Zod):
+- Email: niepuste + format email (regex)
+- Password: 
+  - Min. 8 znaków
+  - Co najmniej jedna wielka litera
+  - Co najmniej jedna cyfra
+  - Co najmniej jeden znak specjalny
+- ConfirmPassword: Musi być identyczne z password
+
+**Logika**:
+1. Walidacja Zod
+2. `supabase.auth.signUp()` z email + password
+3. Automatyczne logowanie (email confirmation wyłączone)
+4. Zwrócenie danych użytkownika
+
+### 6. LoginForm Component
 **Plik**: `src/components/auth/LoginForm.tsx`
 
 React component z:
@@ -174,7 +229,38 @@ React component z:
 4. Sukces → `window.location.href = '/dashboard'`
 5. Błąd → Wyświetl komunikat w UI
 
-### 6. AuthLayout
+### 7. RegisterForm Component ✨ NOWY
+**Plik**: `src/components/auth/RegisterForm.tsx`
+
+React component z kompleksową walidacją:
+
+**Pola formularza**:
+- Email (walidacja regex)
+- Password (walidacja złożoności)
+- Confirm Password (walidacja zgodności)
+
+**Walidacja client-side**:
+- Real-time validation on-blur
+- Password complexity checks:
+  - Min. 8 znaków
+  - Wielka litera (regex `/[A-Z]/`)
+  - Cyfra (regex `/[0-9]/`)
+  - Znak specjalny (regex `/[!@#$%^&*(),.?":{}|<>]/`)
+- Zgodność haseł
+
+**Flow**:
+1. User wypełnia formularz
+2. Walidacja on-blur każdego pola
+3. Submit → `fetch('/api/auth/register')`
+4. Sukces → `window.location.href = '/dashboard'` (auto login)
+5. Błąd → Mapowanie na pola formularza lub błąd globalny
+
+**Wskazówki dla użytkownika**:
+- Lista wymagań dla hasła pod polem password
+- Inline błędy pod każdym polem
+- Loading state z komunikatem "Tworzenie konta..."
+
+### 8. AuthLayout
 **Plik**: `src/layouts/AuthLayout.astro`
 
 Layout dla stron wymagających autoryzacji.
@@ -273,6 +359,34 @@ SUPABASE_KEY=eyJhbGc...
 3. Oczekiwane: Przekierowanie na `/login`
 4. Sprawdź: Sesja wyczyszczona (nie można wejść na `/dashboard`)
 
+#### ✅ Test 7: Rejestracja z poprawnymi danymi ✨ NOWY
+1. Wejdź na `/register`
+2. Wprowadź: `newuser@example.com` / `Test1234!@#` / `Test1234!@#`
+3. Kliknij "Utwórz konto"
+4. Oczekiwane: Automatyczne zalogowanie + przekierowanie na `/dashboard`
+
+#### ✅ Test 8: Walidacja hasła (rejestracja) ✨ NOWY
+1. Wejdź na `/register`
+2. Wprowadź hasło: `weak` (za krótkie, brak cyfr, znaków specjalnych)
+3. Opuść pole (blur)
+4. Oczekiwane: Komunikaty o brakujących elementach
+
+#### ✅ Test 9: Niezgodne hasła ✨ NOWY
+1. Wejdź na `/register`
+2. Wprowadź: `Test1234!@#` / `Test1234!`
+3. Opuść pole confirm password
+4. Oczekiwane: "Hasła muszą być identyczne"
+
+#### ✅ Test 10: Duplikat email ✨ NOWY
+1. Wejdź na `/register`
+2. Użyj emaila, który już istnieje (np. `test@example.com`)
+3. Kliknij "Utwórz konto"
+4. Oczekiwane: "Ten adres email jest już zarejestrowany"
+
+#### ✅ Test 11: Ochrona tras - zalogowany na /register ✨ NOWY
+1. Będąc zalogowanym, wejdź na `/register`
+2. Oczekiwane: Przekierowanie na `/dashboard`
+
 ---
 
 ## Bezpieczeństwo
@@ -367,9 +481,12 @@ SUPABASE_KEY=eyJhbGc...
 - [x] LoginForm component
 - [x] Ochrona tras
 - [x] Wylogowanie w UI
+- [x] **API register endpoint** ✨ NOWY
+- [x] **RegisterForm component z kompleksową walidacją** ✨ NOWY
+- [x] **Automatyczne logowanie po rejestracji** ✨ NOWY
+- [x] **Walidacja server-side dla rejestracji (Zod)** ✨ NOWY
 
 ### 🚧 W Planach (Kolejne Etapy)
-- [ ] Rejestracja użytkowników (US-007)
 - [ ] Odzyskiwanie hasła (US-008)
 - [ ] Email verification
 - [ ] Toast notifications
