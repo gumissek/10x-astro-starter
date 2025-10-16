@@ -67,47 +67,49 @@ const DeleteFlashcardDialog: React.FC<DeleteFlashcardDialogProps> = ({
             </svg>
             Delete Flashcard
           </DialogTitle>
-          <DialogDescription className="space-y-3">
-            <p>Are you sure you want to delete this flashcard? This action cannot be undone.</p>
-            
-            {flashcard && (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
-                <div>
-                  <span className="text-sm font-medium text-gray-700">Front:</span>
-                  <p className="text-sm text-gray-900 mt-1">
-                    {truncateText(flashcard.front)}
-                  </p>
+          <DialogDescription asChild>
+            <div className="space-y-3">
+              <p>Are you sure you want to delete this flashcard? This action cannot be undone.</p>
+              
+              {flashcard && (
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">Front:</span>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {truncateText(flashcard.front)}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">Back:</span>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {truncateText(flashcard.back)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                      {flashcard.generation_source === 'ai' ? (
+                        <>
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          AI Generated
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                          </svg>
+                          Manual
+                        </>
+                      )}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Created {new Date(flashcard.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-700">Back:</span>
-                  <p className="text-sm text-gray-900 mt-1">
-                    {truncateText(flashcard.back)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-                    {flashcard.generation_source === 'ai' ? (
-                      <>
-                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        AI Generated
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                        </svg>
-                        Manual
-                      </>
-                    )}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    Created {new Date(flashcard.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </DialogDescription>
         </DialogHeader>
 
