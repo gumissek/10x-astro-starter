@@ -209,14 +209,14 @@ const LoginForm: React.FC = () => {
         </Button>
 
         {/* Link do odzyskiwania hasła */}
-        <div className="text-center">
+        {/* <div className="text-center">
           <a 
             href="/forgot-password" 
             className="text-sm text-primary hover:underline"
           >
             Zapomniałeś hasła?
           </a>
-        </div>
+        </div> */}
       </form>
 
       {/* Link do rejestracji */}

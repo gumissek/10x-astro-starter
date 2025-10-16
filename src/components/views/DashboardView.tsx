@@ -5,11 +5,15 @@ import FolderGrid from './FolderGrid.tsx';
 import EditFolderDialog from './EditFolderDialog.tsx';
 import DeleteFolderDialog from './DeleteFolderDialog.tsx';
 
+interface DashboardViewProps {
+  userId: string;
+}
+
 /**
  * DashboardView - Main container for the dashboard page
  * Manages state, fetches data, and coordinates interactions between child components
  */
-const DashboardView: React.FC = () => {
+const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
   const {
     folders,
     isLoading,
@@ -23,7 +27,7 @@ const DashboardView: React.FC = () => {
     handleCloseDeleteDialog,
     handleSaveFolder,
     handleConfirmDelete,
-  } = useDashboardState();
+  } = useDashboardState(userId);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">

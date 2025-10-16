@@ -35,9 +35,8 @@ export const prerender = false;
  * - limit (optional): Items per page, defaults to 10, max 50
  * 
  * Response:
- * - 200: Success with folders list and pagination info
+ * - 200: Success with folders list (may be empty array) and pagination info
  * - 400: Bad request (invalid parameters)
- * - 404: No folders found for user
  * - 500: Internal server error
  */
 export const GET: APIRoute = async ({ request, locals }) => {
@@ -159,24 +158,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
       limit,
     });
 
-    // Check if any folders were found
-    if (result.folders.length === 0) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "No folders found",
-          message: `No folders found for user ${userIdParam}`,
-        }),
-        {
-          status: 404,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    }
-
     // Return successful response with folders and pagination
+    // Even if no folders are found, return success with empty array
+    // This allows frontend to show appropriate "empty state" UI
     return new Response(
       JSON.stringify({
         success: true,

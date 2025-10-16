@@ -20,14 +20,12 @@ interface UseDashboardStateReturn {
   handleConfirmDelete: (folderId: string) => Promise<void>;
 }
 
-// TODO: Replace with actual user_id from authentication context
-const MOCK_USER_ID = "8335a994-19cf-4308-b2cd-fdbde3785dac";
-
 /**
  * Custom hook for managing Dashboard state
  * Encapsulates logic for managing folders, loading, errors, and interactions with API
+ * @param userId - The ID of the currently authenticated user
  */
-export function useDashboardState(): UseDashboardStateReturn {
+export function useDashboardState(userId: string): UseDashboardStateReturn {
   const [folders, setFolders] = useState<FolderViewModel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +44,7 @@ export function useDashboardState(): UseDashboardStateReturn {
 
     try {
       // Step 1: Fetch list of folders
-      const foldersResponse = await fetch(`/api/folders?user_id=${MOCK_USER_ID}&limit=50`);
+      const foldersResponse = await fetch(`/api/folders?user_id=${userId}&limit=50`);
       
       if (!foldersResponse.ok) {
         const errorData = await foldersResponse.json();
@@ -69,7 +67,7 @@ export function useDashboardState(): UseDashboardStateReturn {
 
       // Step 2: Fetch details for each folder (including flashcard count)
       const folderDetailsPromises = foldersList.map(async (folder: any) => {
-        const detailsResponse = await fetch(`/api/folders/${folder.id}?user_id=${MOCK_USER_ID}`);
+        const detailsResponse = await fetch(`/api/folders/${folder.id}?user_id=${userId}`);
         
         if (!detailsResponse.ok) {
           // If details fetch fails, fallback to basic folder data with 0 count
@@ -115,7 +113,7 @@ export function useDashboardState(): UseDashboardStateReturn {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [userId]);
 
   /**
    * Initialize data loading on component mount
@@ -170,7 +168,7 @@ export function useDashboardState(): UseDashboardStateReturn {
    */
   const handleSaveFolder = useCallback(async (folderId: string, newName: string) => {
     try {
-      const response = await fetch(`/api/folders/${folderId}?user_id=${MOCK_USER_ID}`, {
+      const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -205,14 +203,14 @@ export function useDashboardState(): UseDashboardStateReturn {
       console.error('Error updating folder:', err);
       throw err; // Re-throw to let the component handle the error display
     }
-  }, []);
+  }, [userId]);
 
   /**
    * Confirm folder deletion
    */
   const handleConfirmDelete = useCallback(async (folderId: string) => {
     try {
-      const response = await fetch(`/api/folders/${folderId}?user_id=${MOCK_USER_ID}`, {
+      const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`, {
         method: 'DELETE',
       });
 
@@ -237,7 +235,7 @@ export function useDashboardState(): UseDashboardStateReturn {
       console.error('Error deleting folder:', err);
       throw err; // Re-throw to let the component handle the error display
     }
-  }, []);
+  }, [userId]);
 
   return {
     folders,
