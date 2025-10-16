@@ -40,12 +40,20 @@ const { title = "10x Cards Flipper" } = Astro.props;
               </div>
             </div>
             <div class="flex items-center space-x-4">
-              <!-- User menu placeholder - will be enhanced later with actual user data -->
-              <form action="/api/auth/logout" method="POST" class="inline">
-                <button type="submit" class="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                  Wyloguj
-                </button>
-              </form>
+              <!-- User email display -->
+              {Astro.locals.user && (
+                <span class="text-sm text-muted-foreground">
+                  {Astro.locals.user.email}
+                </span>
+              )}
+              <!-- Logout button -->
+              <button 
+                id="logout-btn" 
+                type="button"
+                class="text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                Wyloguj
+              </button>
             </div>
           </nav>
         </div>
@@ -58,6 +66,34 @@ const { title = "10x Cards Flipper" } = Astro.props;
     </div>
   </body>
 </html>
+
+<script>
+  // Obsługa wylogowania
+  const logoutBtn = document.getElementById('logout-btn');
+  
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          // Przekieruj do strony logowania po pomyślnym wylogowaniu
+          window.location.href = '/login';
+        } else {
+          console.error('Logout failed');
+          // Fallback - przekieruj mimo błędu
+          window.location.href = '/login';
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+        // Fallback - przekieruj mimo błędu
+        window.location.href = '/login';
+      }
+    });
+  }
+</script>
 
 <style>
   html,

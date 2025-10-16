@@ -1,6 +1,16 @@
 ---
 import GuestLayout from '../layouts/GuestLayout.astro';
 import LoginForm from '../components/auth/LoginForm';
+
+export const prerender = false;
+
+// Sprawdź czy użytkownik jest już zalogowany
+const { user } = Astro.locals;
+
+// Przekieruj zalogowanych użytkowników do dashboardu
+if (user) {
+  return Astro.redirect('/dashboard');
+}
 ---
 
 <GuestLayout title="Logowanie - 10x Cards Flipper">

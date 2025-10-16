@@ -107,17 +107,26 @@ const LoginForm: React.FC = () => {
     setValidationErrors({});
     
     try {
-      // TODO: Implementacja logowania z Supabase
-      // await supabase.auth.signInWithPassword({
-      //   email: formData.email.trim(),
-      //   password: formData.password,
-      // });
-      
-      // Symulacja wywołania API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // TODO: Po sukcesie przekieruj do /dashboard
-      console.log('Logowanie pomyślne:', formData.email);
+      // Wysłanie żądania do API logowania
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Nieprawidłowy email lub hasło');
+      }
+
+      // Przekieruj do dashboardu po pomyślnym logowaniu
+      window.location.href = '/dashboard';
       
     } catch (error) {
       console.error('Error during login:', error);
