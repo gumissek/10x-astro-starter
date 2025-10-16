@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import AuthLayout from '../layouts/AuthLayout.astro';
 import GenerateFlashcardsView from '../components/views/GenerateFlashcardsView';
 
 export const prerender = false;
 ---
 
-<Layout title="Generuj fiszki z AI">
+<AuthLayout title="Generuj fiszki z AI">
   <GenerateFlashcardsView client:load />
-</Layout>
+</AuthLayout>

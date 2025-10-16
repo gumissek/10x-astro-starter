@@ -1,8 +1,60 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+import GuestLayout from "../layouts/GuestLayout.astro";
 ---
 
-<Layout>
-  <Welcome />
-</Layout>
+<GuestLayout title="10x Cards Flipper - Inteligentne fiszki do nauki">
+  <div class="w-full max-w-4xl mx-auto space-y-8 text-center">
+    <!-- Hero Section -->
+    <div class="space-y-4">
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground">
+        10x Cards Flipper
+      </h1>
+      <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+        Inteligentne fiszki do nauki z wykorzystaniem AI. 
+        Twórz, organizuj i ucz się efektywniej niż kiedykolwiek.
+      </p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="grid md:grid-cols-3 gap-6 my-12">
+      <div class="space-y-3 p-6 border rounded-lg">
+        <div class="text-2xl">🤖</div>
+        <h3 class="text-lg font-semibold">Generowanie AI</h3>
+        <p class="text-sm text-muted-foreground">
+          Automatycznie twórz fiszki z tekstu dzięki sztucznej inteligencji
+        </p>
+      </div>
+      
+      <div class="space-y-3 p-6 border rounded-lg">
+        <div class="text-2xl">📁</div>
+        <h3 class="text-lg font-semibold">Organizacja</h3>
+        <p class="text-sm text-muted-foreground">
+          Porządkuj fiszki w foldery tematyczne dla lepszej organizacji
+        </p>
+      </div>
+      
+      <div class="space-y-3 p-6 border rounded-lg">
+        <div class="text-2xl">🎯</div>
+        <h3 class="text-lg font-semibold">Efektywna nauka</h3>
+        <p class="text-sm text-muted-foreground">
+          Ucz się w swoim tempie z intuicyjnym interfejsem
+        </p>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/register" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-10 rounded-md px-6 w-full sm:w-auto">
+        Rozpocznij za darmo
+      </a>
+      <a href="/login" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground h-10 rounded-md px-6 w-full sm:w-auto">
+        Mam już konto
+      </a>
+    </div>
+
+    <!-- Additional Info -->
+    <div class="text-sm text-muted-foreground mt-8">
+      <p>Darmowa rejestracja • Bez limitu fiszek • Natychmiastowy start</p>
+    </div>
+  </div>
+</GuestLayout>

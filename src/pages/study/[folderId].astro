@@ -1,5 +1,5 @@
 ---
-import Layout from '@/layouts/Layout.astro';
+import AuthLayout from '@/layouts/AuthLayout.astro';
 import StudySessionView from '@/components/views/StudySessionView';
 
 export const prerender = false;
@@ -11,8 +11,6 @@ if (!folderId) {
 }
 ---
 
-<Layout title="Sesja Nauki - 10x Cards Flipper">
-  <main class="min-h-screen bg-background">
-    <StudySessionView client:load folderId={folderId} />
-  </main>
-</Layout>
+<AuthLayout title="Sesja Nauki - 10x Cards Flipper">
+  <StudySessionView client:load folderId={folderId} />
+</AuthLayout>

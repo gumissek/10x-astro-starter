@@ -1,0 +1,10 @@
+---
+import GuestLayout from '../layouts/GuestLayout.astro';
+import LoginForm from '../components/auth/LoginForm';
+---
+
+<GuestLayout title="Logowanie - 10x Cards Flipper">
+  <div class="w-full max-w-md mx-auto">
+    <LoginForm client:load />
+  </div>
+</GuestLayout>

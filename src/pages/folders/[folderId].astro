@@ -1,5 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import AuthLayout from '../../layouts/AuthLayout.astro';
 import FolderView from '../../components/views/FolderView';
 
 export const prerender = false;
@@ -11,6 +11,6 @@ if (!folderId) {
 }
 ---
 
-<Layout title="Folder Details">
+<AuthLayout title="Folder Details">
   <FolderView folderId={folderId} client:load />
-</Layout>
+</AuthLayout>

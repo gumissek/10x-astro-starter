@@ -1,0 +1,10 @@
+---
+import GuestLayout from '../layouts/GuestLayout.astro';
+import RegisterForm from '../components/auth/RegisterForm';
+---
+
+<GuestLayout title="Rejestracja - 10x Cards Flipper">
+  <div class="w-full max-w-md mx-auto">
+    <RegisterForm client:load />
+  </div>
+</GuestLayout>

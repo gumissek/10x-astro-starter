@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import AuthLayout from '../layouts/AuthLayout.astro';
 import DashboardView from '../components/views/DashboardView';
 
 export const prerender = false;
 ---
 
-<Layout title="Dashboard - Twoje foldery">
+<AuthLayout title="Dashboard - Twoje foldery">
   <DashboardView client:load />
-</Layout>
+</AuthLayout>
