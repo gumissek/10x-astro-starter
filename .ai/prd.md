@@ -63,7 +63,6 @@ Co NIE wchodzi w zakres MVP:
 - Import fiszek z różnych formatów (PDF, DOCX, itp.) – dostępny tylko copy-paste tekstu
 - Współdzielenie fiszek między użytkownikami
 - Aplikacje mobilne (tylko wersja web)
-- Funkcja resetowania hasła
 - Dark mode
 - Zaawansowane testowanie automatyczne
 - Eksport fiszek do innych platform (Anki, Quizlet, itp.)
