@@ -131,7 +131,19 @@ Co NIE wchodzi w zakres MVP:
   - Po udanej rejestracji użytkownik zostaje automatycznie zalogowany i otrzymuje JWT token ważny 24 godziny.
   - Endpointy inne niż /register i /login wymagają autoryzacji JWT.
 
-### US-008: Sesja nauki z fiszkami
+  ### US-008: Odzyskiwanie hasła
+
+  - ID: US-008  
+  - Tytuł: Odzyskiwanie hasła  
+  - Opis: Jako użytkownik, który zapomniał swojego hasła, chcę mieć możliwość odzyskania dostępu do konta poprzez procedurę resetowania hasła, aby móc ponownie korzystać z aplikacji.  
+  - Kryteria akceptacji:
+    - Użytkownik wybiera opcję "Nie pamiętam hasła" na stronie logowania.
+    - System prosi o podanie adresu email powiązanego z kontem.
+    - Po wprowadzeniu emaila, użytkownik otrzymuje wiadomość z linkiem do resetowania hasła.
+    - Link umożliwia ustawienie nowego hasła, które spełnia wymogi bezpieczeństwa (min. 8 znaków).
+    - Po poprawnej zmianie hasła, użytkownik może zalogować się przy użyciu nowego hasła.
+
+### US-009: Sesja nauki z fiszkami
 - ID: US-008
 - Tytuł: Sesja nauki z fiszkami
 - Opis: Jako zalogowany użytkownik, chcę móc przeprowadzić interaktywną sesje nauki z poziomu (`/dashboard` - z tego poziomu wybiera folder z którego ma rozpocząc naukę) lub z poziomu wybranego folderu (jeśli folder zawiera co najmniej 10 fiszek), aby efektywnie utrwalać wiedzę.
