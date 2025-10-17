@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import type { CreateFlashcardCommand, FlashcardDTO } from "../../../types";
-import { supabaseClient } from "../../../db/supabase.client";
 import { FlashcardGenerationService } from "../../../lib/services/flashcardService";
 
 export const prerender = false;
@@ -130,8 +129,26 @@ export const GET: APIRoute = async ({ request, locals }) => {
       );
     }
 
+    // Get Supabase client from locals (with user session)
+    const supabase = locals.supabase;
+    if (!supabase) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Database connection unavailable",
+          message: "Internal server configuration error",
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     // Initialize the flashcard service
-    const flashcardService = new FlashcardGenerationService(supabaseClient);
+    const flashcardService = new FlashcardGenerationService(supabase);
 
     // Get flashcards using the service
     const result = await flashcardService.getFlashcards(userId, {
@@ -254,8 +271,27 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
     
     console.log("Using user ID:", userId);
+    
+    // Get Supabase client from locals (with user session)
+    const supabase = locals.supabase;
+    if (!supabase) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Database connection unavailable",
+          message: "Internal server configuration error",
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     // Initialize the flashcard service
-    const flashcardService = new FlashcardGenerationService(supabaseClient);
+    const flashcardService = new FlashcardGenerationService(supabase);
 
     // Create the flashcard using the service
     const createdFlashcard = await flashcardService.createFlashcard(requestData, userId);

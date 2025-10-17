@@ -37,15 +37,22 @@ const useFolderState = (folderId: string, userId: string) => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
       
-      const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`);
+      const url = `/api/folders/${folderId}?user_id=${userId}`;
+      const response = await fetch(url);
+      
       if (!response.ok) {
-        throw new Error(`Failed to fetch folder: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        if (response.status === 404) {
+          throw new Error('Folder nie został znaleziony. Prawdopodobnie został usunięty lub nie masz do niego dostępu.');
+        }
+        throw new Error(errorData?.message || `Błąd podczas pobierania folderu (${response.status})`);
       }
       
       const data = await response.json();
       const folderData = data.data;
       setState(prev => ({ ...prev, folder: folderData }));
     } catch (error) {
+      console.error('Fetch folder error:', error);
       setState(prev => ({ 
         ...prev, 
         error: error instanceof Error ? error.message : 'Unknown error occurred' 
@@ -57,13 +64,18 @@ const useFolderState = (folderId: string, userId: string) => {
     try {
       setState(prev => ({ ...prev, isLoading: true }));
       
-      const response = await fetch(`/api/flashcards?folderId=${folderId}&page=${page}&limit=10`);
+      const url = `/api/flashcards?folderId=${folderId}&page=${page}&limit=10`;
+      const response = await fetch(url);
+      
       if (!response.ok) {
-        throw new Error(`Failed to fetch flashcards: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        if (response.status === 404) {
+          throw new Error('Folder nie został znaleziony lub nie masz do niego dostępu. Sprawdź, czy folder istnieje i należy do Ciebie.');
+        }
+        throw new Error(errorData?.message || `Błąd podczas pobierania fiszek (${response.status})`);
       }
       
       const data = await response.json();
-
       const flashcardsData = data.data.flashcards;
       const paginationData = data.data.pagination;
 
@@ -74,6 +86,7 @@ const useFolderState = (folderId: string, userId: string) => {
         isLoading: false 
       }));
     } catch (error) {
+      console.error('Fetch flashcards error:', error);
       setState(prev => ({ 
         ...prev, 
         error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -195,11 +208,20 @@ const FolderView: React.FC<FolderViewProps> = ({ folderId, userId }) => {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-64">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Error: {error}</p>
-          <Button onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
+        <div className="text-center max-w-md mx-auto px-4">
+          <h2 className="text-xl font-semibold text-gray-900 mb-3">Wystąpił błąd</h2>
+          <p className="text-red-600 mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <Button 
+              variant="outline"
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              ← Powrót do pulpitu
+            </Button>
+            <Button onClick={() => window.location.reload()}>
+              Spróbuj ponownie
+            </Button>
+          </div>
         </div>
       </div>
     );

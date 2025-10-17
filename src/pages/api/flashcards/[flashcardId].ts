@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import type { FlashcardDTO, UpdateFlashcardCommand } from "../../../types";
-import { supabaseClient } from "../../../db/supabase.client";
 import { FlashcardGenerationService } from "../../../lib/services/flashcardService";
 
 export const prerender = false;
@@ -112,8 +111,26 @@ export const GET: APIRoute = async ({ params, locals }) => {
       );
     }
 
+    // Get Supabase client from locals (with user session)
+    const supabase = locals.supabase;
+    if (!supabase) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Database connection unavailable",
+          message: "Internal server configuration error",
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     // Initialize the flashcard service
-    const flashcardService = new FlashcardGenerationService(supabaseClient);
+    const flashcardService = new FlashcardGenerationService(supabase);
 
     // Get the flashcard using the service
     const flashcardData = await flashcardService.getFlashcardById(validatedFlashcardId, userId);
@@ -288,8 +305,26 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       );
     }
 
+    // Get Supabase client from locals (with user session)
+    const supabase = locals.supabase;
+    if (!supabase) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Database connection unavailable",
+          message: "Internal server configuration error",
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     // Initialize the flashcard service
-    const flashcardService = new FlashcardGenerationService(supabaseClient);
+    const flashcardService = new FlashcardGenerationService(supabase);
 
     // Update the flashcard using the service
     const updatedFlashcard = await flashcardService.updateFlashcard(
@@ -463,8 +498,26 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
       );
     }
 
+    // Get Supabase client from locals (with user session)
+    const supabase = locals.supabase;
+    if (!supabase) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Database connection unavailable",
+          message: "Internal server configuration error",
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     // Initialize the flashcard service
-    const flashcardService = new FlashcardGenerationService(supabaseClient);
+    const flashcardService = new FlashcardGenerationService(supabase);
 
     // Delete the flashcard using the service
     await flashcardService.deleteFlashcard(validatedFlashcardId, userId);
