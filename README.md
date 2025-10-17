@@ -31,6 +31,10 @@
 - **CI/CD & Hosting:**
   - **GitHub Actions** – Automate build and deployment pipelines.
   - **DigitalOcean** – Host the application via Docker images.
+- **Testing:**
+  - **Vitest** – JavaScript testing framework for unit and integration tests.
+  - **React Testing Library** – Test React components with focus on user behavior.
+  - **Playwright** – End-to-end testing framework for browser automation.
 
 ## Getting Started Locally
 

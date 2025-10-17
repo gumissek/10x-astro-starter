@@ -1,6 +1,12 @@
 Technologie:
 
-- Frontend - Astro z React dla komponentów interaktywnych:
+- - CI/CD i Hosting:
+  - Github Actions do tworzenia pipeline'ów CI/CD
+  - DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker
+- Testowanie:
+  - Vitest jako framework do testów jednostkowych i integracyjnych
+  - React Testing Library do testowania komponentów React
+  - Playwright do testów end-to-end w przeglądarcentend - Astro z React dla komponentów interaktywnych:
   - Astro 5 pozwala na tworzenie szybkich, wydajnych stron i aplikacji z minimalną ilością JavaScript
   - React 19 zapewni interaktywność tam, gdzie jest potrzebna
   - TypeScript 5 dla statycznego typowania kodu i lepszego wsparcia IDE
