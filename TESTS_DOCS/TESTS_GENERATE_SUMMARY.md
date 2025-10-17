@@ -57,7 +57,7 @@ Szczegółowa dokumentacja testów
 
 ## 🐛 Wykryty Bug - POPRAWIONY
 
-### Problem: Błędna kolejność w Zod schema
+### Problem: Błędna kolejność w Zod schema - POPRAWIONY
 **Lokalizacja**: `src/pages/api/flashcards/generate.ts:13-15`
 
 ```typescript
