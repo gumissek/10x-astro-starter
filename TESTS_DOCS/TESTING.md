@@ -80,6 +80,9 @@ Tests should follow the Page Object Model pattern:
 - Create page objects in `e2e/pages/`
 - Use custom fixtures from `e2e/fixtures/test.ts`
 - Utilize helper functions from `e2e/helpers/`
+- Use `data-testid` attributes for resilient selectors
+- Access elements via `page.getByTestId('selectorName')`
+- Follow Arrange-Act-Assert (AAA) pattern
 
 Example:
 ```typescript
@@ -88,13 +91,28 @@ import { LoginPage } from '../pages/LoginPage';
 
 test.describe('Login Flow', () => {
   test('should login successfully', async ({ page }) => {
+    // Arrange
     const loginPage = new LoginPage(page);
-    await loginPage.goto('/login');
+    await loginPage.navigate();
+    
+    // Act
     await loginPage.login('user@example.com', 'password');
+    
+    // Assert
     await expect(page).toHaveURL('/dashboard');
   });
 });
 ```
+
+#### Available Page Objects
+- **BasePage** - Base class with common page operations
+- **LoginPage** - Login page interactions and assertions
+- **RegisterPage** - Registration page interactions and assertions
+- **DashboardPage** - Dashboard page interactions and assertions
+
+See detailed documentation:
+- [POM Login Page](./POM_LOGIN_FLOW.md)
+- [POM Register Page](./POM_REGISTER_PAGE.md)
 
 ## Best Practices
 

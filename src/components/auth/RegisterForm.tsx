@@ -190,17 +190,17 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="register-form-container">
       <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold">Utwórz konto</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold" data-testid="register-form-title">Utwórz konto</h1>
+        <p className="text-muted-foreground" data-testid="register-form-description">
           Wprowadź swoje dane, aby utworzyć nowe konto
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" data-testid="register-form">
         {/* Pole email */}
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="register-email-field">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
@@ -214,14 +214,15 @@ const RegisterForm: React.FC = () => {
             className={validationErrors.email ? 'border-red-500' : ''}
             disabled={isLoading}
             autoComplete="email"
+            data-testid="register-email-input"
           />
           {validationErrors.email && (
-            <span className="text-sm text-red-600">{validationErrors.email}</span>
+            <span className="text-sm text-red-600" data-testid="register-email-error">{validationErrors.email}</span>
           )}
         </div>
 
         {/* Pole hasła */}
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="register-password-field">
           <Label htmlFor="password">Hasło</Label>
           <Input
             id="password"
@@ -235,12 +236,13 @@ const RegisterForm: React.FC = () => {
             className={validationErrors.password ? 'border-red-500' : ''}
             disabled={isLoading}
             autoComplete="new-password"
+            data-testid="register-password-input"
           />
           {validationErrors.password && (
-            <span className="text-sm text-red-600">{validationErrors.password}</span>
+            <span className="text-sm text-red-600" data-testid="register-password-error">{validationErrors.password}</span>
           )}
           {/* Wskazówki dotyczące hasła */}
-          <div className="text-xs text-muted-foreground space-y-1">
+          <div className="text-xs text-muted-foreground space-y-1" data-testid="register-password-hints">
             <p>Hasło musi zawierać:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>Co najmniej 8 znaków</li>
@@ -252,7 +254,7 @@ const RegisterForm: React.FC = () => {
         </div>
 
         {/* Pole potwierdzenia hasła */}
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="register-confirm-password-field">
           <Label htmlFor="confirmPassword">Powtórz hasło</Label>
           <Input
             id="confirmPassword"
@@ -266,15 +268,16 @@ const RegisterForm: React.FC = () => {
             className={validationErrors.confirmPassword ? 'border-red-500' : ''}
             disabled={isLoading}
             autoComplete="new-password"
+            data-testid="register-confirm-password-input"
           />
           {validationErrors.confirmPassword && (
-            <span className="text-sm text-red-600">{validationErrors.confirmPassword}</span>
+            <span className="text-sm text-red-600" data-testid="register-confirm-password-error">{validationErrors.confirmPassword}</span>
           )}
         </div>
 
         {/* Błąd globalny */}
         {validationErrors.general && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3" data-testid="register-error-message">
             <p className="text-sm text-red-700">{validationErrors.general}</p>
           </div>
         )}
@@ -284,15 +287,16 @@ const RegisterForm: React.FC = () => {
           type="submit"
           disabled={!isFormValid() || isLoading}
           className="w-full"
+          data-testid="register-submit-button"
         >
           {isLoading ? 'Tworzenie konta...' : 'Utwórz konto'}
         </Button>
       </form>
 
       {/* Link do logowania */}
-      <div className="text-center text-sm">
+      <div className="text-center text-sm" data-testid="register-login-link-section">
         <span className="text-muted-foreground">Masz już konto? </span>
-        <a href="/login" className="text-primary hover:underline">
+        <a href="/login" className="text-primary hover:underline" data-testid="register-login-link">
           Zaloguj się
         </a>
       </div>
