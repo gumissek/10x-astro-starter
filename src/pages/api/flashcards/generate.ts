@@ -11,9 +11,9 @@ export const prerender = false;
 const GenerateFlashcardsSchema = z.object({
   text: z
     .string()
+    .trim()
     .min(1, "Text cannot be empty")
     .max(5000, "Text cannot exceed 5000 characters")
-    .trim()
 });
 
 // POST endpoint /api/flashcards/generate - generate flashcards from text input
