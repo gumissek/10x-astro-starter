@@ -141,17 +141,17 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="login-form-container">
       <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold">Zaloguj się</h1>
+        <h1 className="text-2xl font-bold" data-testid="login-form-title">Zaloguj się</h1>
         <p className="text-muted-foreground">
           Wprowadź swoje dane, aby uzyskać dostęp do konta
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
         {/* Pole email */}
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="email-field-container">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
@@ -165,14 +165,15 @@ const LoginForm: React.FC = () => {
             className={validationErrors.email ? 'border-red-500' : ''}
             disabled={isLoading}
             autoComplete="email"
+            data-testid="login-email-input"
           />
           {validationErrors.email && (
-            <span className="text-sm text-red-600">{validationErrors.email}</span>
+            <span className="text-sm text-red-600" data-testid="email-error-message">{validationErrors.email}</span>
           )}
         </div>
 
         {/* Pole hasła */}
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="password-field-container">
           <Label htmlFor="password">Hasło</Label>
           <Input
             id="password"
@@ -186,15 +187,16 @@ const LoginForm: React.FC = () => {
             className={validationErrors.password ? 'border-red-500' : ''}
             disabled={isLoading}
             autoComplete="current-password"
+            data-testid="login-password-input"
           />
           {validationErrors.password && (
-            <span className="text-sm text-red-600">{validationErrors.password}</span>
+            <span className="text-sm text-red-600" data-testid="password-error-message">{validationErrors.password}</span>
           )}
         </div>
 
         {/* Błąd globalny */}
         {validationErrors.general && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3" data-testid="login-error-message">
             <p className="text-sm text-red-700">{validationErrors.general}</p>
           </div>
         )}
@@ -204,6 +206,7 @@ const LoginForm: React.FC = () => {
           type="submit"
           disabled={!isFormValid() || isLoading}
           className="w-full"
+          data-testid="login-submit-button"
         >
           {isLoading ? 'Logowanie...' : 'Zaloguj się'}
         </Button>
@@ -222,7 +225,7 @@ const LoginForm: React.FC = () => {
       {/* Link do rejestracji */}
       <div className="text-center text-sm">
         <span className="text-muted-foreground">Nie masz konta? </span>
-        <a href="/register" className="text-primary hover:underline">
+        <a href="/register" className="text-primary hover:underline" data-testid="register-link">
           Zarejestruj się
         </a>
       </div>

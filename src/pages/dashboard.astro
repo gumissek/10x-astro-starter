@@ -13,5 +13,5 @@ if (!user) {
 ---
 
 <AuthLayout title="Dashboard - Twoje foldery">
-  <DashboardView client:load userId={user.id} />
+  <DashboardView client:load userId={user.id} data-testid="dashboard-page" />
 </AuthLayout>

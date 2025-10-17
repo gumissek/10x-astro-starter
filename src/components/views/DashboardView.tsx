@@ -30,11 +30,11 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
   } = useDashboardState(userId);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="container mx-auto px-4 py-8 max-w-7xl" data-testid="dashboard-container">
       {/* Header */}
       <header className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-gray-900">Twoje foldery</h1>
+          <h1 className="text-3xl font-bold text-gray-900" data-testid="dashboard-title">Twoje foldery</h1>
           
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
@@ -42,6 +42,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
               <Button 
                 size="lg"
                 className="w-full sm:w-auto"
+                data-testid="generate-cards-button"
               >
                 Generuj fiszki
               </Button>
@@ -50,7 +51,8 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
               <Button 
                 size="lg"
                 variant="outline" 
-                className="w-full sm:w-auto">
+                className="w-full sm:w-auto"
+                data-testid="add-card-button">
                 Dodaj fiszkę
               </Button>
             </a>
