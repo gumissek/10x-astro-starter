@@ -51,22 +51,23 @@ const FolderCard: React.FC<FolderCardProps> = ({
       </CardContent>
       
       <CardFooter className="pt-0 flex flex-col gap-2">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between items-center w-full gap-2">
           <Button
             variant="outline"
             size="sm"
-            className="text-blue-600 hover:text-blue-700"
+            className="text-blue-600 hover:text-blue-700 flex-1 sm:flex-none"
             onClick={() => window.location.href = `/folders/${folder.id}`}
           >
             <Eye className="mr-2 h-4 w-4" />
-            Podejrzyj folder
+            <span className="hidden sm:inline">Podejrzyj folder</span>
+            <span className="sm:hidden">Podejrzyj</span>
           </Button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-8 w-8 p-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                 aria-label={`Opcje dla folderu ${folder.name}`}
               >
                 <MoreVertical className="h-4 w-4" />
