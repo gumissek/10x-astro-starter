@@ -161,11 +161,11 @@ export default function StudySessionView({ folderId }: StudySessionViewProps) {
             <div className="text-center space-y-4">
               <h1 className="text-2xl font-bold text-destructive">Błąd</h1>
               <p className="text-muted-foreground">{sessionState.error}</p>
-              <div className="flex gap-4 justify-center">
-                <Button onClick={handleRetry} variant="default">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Button onClick={handleRetry} variant="default" className="w-full">
                   Spróbuj ponownie
                 </Button>
-                <Button onClick={handleBackToDashboard} variant="outline">
+                <Button onClick={handleBackToDashboard} variant="outline" className="w-full">
                   Powrót do pulpitu
                 </Button>
               </div>
@@ -192,14 +192,14 @@ export default function StudySessionView({ folderId }: StudySessionViewProps) {
             </p>
             <p className="text-2xl font-bold text-primary">{percentage}%</p>
           </div>
-          <div className="flex gap-4 justify-center">
-            <Button onClick={handleRestartSession} variant="default">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
+            <Button onClick={handleRestartSession} variant="default" className="w-full">
               Rozpocznij ponownie
             </Button>
-            <Button onClick={handleBackToFolder} variant="outline">
+            <Button onClick={handleBackToFolder} variant="outline" className="w-full">
               Powrót do folderu
             </Button>
-            <Button onClick={handleBackToDashboard} variant="ghost">
+            <Button onClick={handleBackToDashboard} variant="ghost" className="w-full">
               Pulpit
             </Button>
           </div>
