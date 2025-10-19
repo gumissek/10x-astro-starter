@@ -62,7 +62,7 @@ const FlashcardListItem: React.FC<FlashcardListItemProps> = ({
               </span>
               
               <div className="text-xs text-gray-500">
-                Updated {new Date(flashcard.updated_at).toLocaleDateString()}
+                Zmodyfikowano {new Date(flashcard.updated_at).toLocaleDateString()}
               </div>
             </div>
           </div>

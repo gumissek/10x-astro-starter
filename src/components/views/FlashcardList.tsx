@@ -61,7 +61,7 @@ const PaginationControls: React.FC<{
         <svg className="w-4 h-4 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        <span className="hidden sm:inline">Previous</span>
+        <span className="hidden sm:inline">Poprzednia</span>
       </Button>
 
       {/* Page Numbers */}
@@ -92,7 +92,7 @@ const PaginationControls: React.FC<{
         disabled={page >= totalPages}
         className="px-2 sm:px-3 py-2"
       >
-        <span className="hidden sm:inline">Next</span>
+        <span className="hidden sm:inline">Następna</span>
         <svg className="w-4 h-4 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
