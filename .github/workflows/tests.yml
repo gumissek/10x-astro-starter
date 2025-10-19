@@ -2,10 +2,7 @@ name: Unit Tests
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
