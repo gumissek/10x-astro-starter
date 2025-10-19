@@ -10,6 +10,7 @@
 - [Available Scripts](#available-scripts)
 - [Project Scope](#project-scope)
 - [Project Status](#project-status)
+- [Testing Strategy](#testing-strategy)
 - [License](#license)
 
 ## Project Description
@@ -102,6 +103,26 @@ Within the project directory, the following npm scripts are available:
 ## Project Status
 
 The project is currently **in development**. The team is actively working on the MVP, with iterative improvements and incremental feature additions planned.
+
+## Testing Strategy
+
+The project employs a comprehensive testing strategy, combining unit tests for backend logic and end-to-end (E2E) tests for user-facing flows.
+
+### Unit Tests
+
+Unit tests are written with **Vitest** to ensure the reliability and correctness of individual API endpoints. The tests cover successful cases, validation rules, error handling, and edge cases.
+
+-   **Registration (`/api/auth/register`):** A suite of **37 tests** validates user registration logic, including password policies, email format, existing user checks, and secure data handling.
+-   **Login (`/api/auth/login`):** **20 tests** cover the authentication process, ensuring correct handling of valid and invalid credentials, input validation, and proper error responses.
+-   **Logout (`/api/auth/logout`):** **30 tests** verify the session termination process, including handling of active sessions, idempotency, and server-side errors.
+-   **AI Flashcard Generation (`/api/flashcards/generate`):** A comprehensive set of **37 tests** ensures the AI generation endpoint correctly validates input, handles errors from the AI service, and transforms data into the expected format.
+
+### End-to-End (E2E) Tests
+
+E2E tests are implemented using **Playwright** and follow the **Page Object Model (POM)** pattern to simulate real user interactions and ensure critical flows work as expected.
+
+-   **Registration Flow:** These tests validate the entire user registration journey. The `RegisterPage` POM handles form interactions, ensuring that input validation (for email and password) works correctly and that users receive appropriate feedback for both successful and failed registration attempts.
+-   **Login Flow:** This suite covers the complete login and dashboard access workflow. The `LoginPage` and `DashboardPage` POMs are used to test successful authentication, handling of incorrect credentials, and validation of the post-login user experience.
 
 ## License
 

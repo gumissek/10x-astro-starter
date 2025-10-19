@@ -7,7 +7,7 @@ Utworzono **kompleksowy zestaw 37 testów jednostkowych** dla endpointu generowa
 ### Wyniki testów
 ```
 ✅ Test Files:  1 passed
-✅ Tests:       35 passed | 2 skipped (37 total)
+✅ Tests:       37 passed 
 ⏱️  Duration:    ~1.5s
 ```
 
