@@ -236,28 +236,29 @@ const FolderView: React.FC<FolderViewProps> = ({ folderId, userId }) => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
       {/* Header Section */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{folder.name}</h1>
-            <p className="text-gray-600">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 break-words">{folder.name}</h1>
+            <p className="text-sm sm:text-base text-gray-600">
               {folder.flashcard_count} {folder.flashcard_count === 1 ? 'fiszka' : 'fiszek'}
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 shrink-0">
             <Button 
-              size="lg"
+              size="default"
               variant="outline" 
               onClick={() => window.location.href = '/dashboard'}
+              className="w-full sm:w-auto"
             >
               ← Powrót na pulpit
             </Button>
             {folder.flashcard_count >= 10 && (
               <Button 
-                size="lg" 
-                className="bg-green-600 hover:bg-green-700"
+                size="default"
+                className="bg-green-600 hover:bg-green-700 w-full sm:w-auto"
                 onClick={() => window.location.href = `/study/${folderId}`}
               >
                 Rozpocznij naukę
