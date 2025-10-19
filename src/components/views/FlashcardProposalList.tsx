@@ -51,6 +51,14 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
     });
   };
 
+  const handleAcceptAllIncludingRejected = () => {
+    proposals.forEach(proposal => {
+      if (proposal.status !== 'accepted') {
+        onUpdateProposal({ ...proposal, status: 'accepted' });
+      }
+    });
+  };
+
   const handleRejectAll = () => {
     proposals.forEach(proposal => {
       if (proposal.status === 'pending') {
@@ -75,17 +83,18 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
     (!selectedFolderId && customFolderName.trim().length === 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header with stats and bulk actions */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Wygenerowane propozycje fiszek</span>
+          <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span className="text-lg sm:text-xl">Wygenerowane propozycje fiszek</span>
             <Button
               variant="outline"
               size="sm"
               onClick={onStartOver}
               disabled={isLoading}
+              className="w-full sm:w-auto"
             >
               Zacznij od nowa
             </Button>
@@ -93,29 +102,30 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Statistics */}
-          <div className="flex flex-wrap gap-4 text-sm">
+          <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-              <span>Oczekujące: {proposalCounts.pending}</span>
+              <div className="w-3 h-3 bg-gray-300 rounded-full shrink-0"></div>
+              <span className="whitespace-nowrap">Oczekujące: {proposalCounts.pending}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span>Zaakceptowane: {proposalCounts.accepted}</span>
+              <div className="w-3 h-3 bg-green-500 rounded-full shrink-0"></div>
+              <span className="whitespace-nowrap">Zaakceptowane: {proposalCounts.accepted}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span>Odrzucone: {proposalCounts.rejected}</span>
+              <div className="w-3 h-3 bg-red-500 rounded-full shrink-0"></div>
+              <span className="whitespace-nowrap">Odrzucone: {proposalCounts.rejected}</span>
             </div>
           </div>
 
           {/* Bulk actions */}
           {proposalCounts.pending > 0 && (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleAcceptAll}
                 disabled={isLoading}
+                className="w-full sm:w-auto text-sm"
               >
                 Zaakceptuj wszystkie oczekujące
               </Button>
@@ -124,6 +134,7 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
                 size="sm"
                 onClick={handleRejectAll}
                 disabled={isLoading}
+                className="w-full sm:w-auto text-sm"
               >
                 Odrzuć wszystkie oczekujące
               </Button>
@@ -148,7 +159,7 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
       {acceptedProposals.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-lg sm:text-xl">
               Zapisz {acceptedProposals.length} zaakceptowanych fiszek
             </CardTitle>
           </CardHeader>
@@ -170,7 +181,7 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
                 onClick={handleSave}
                 disabled={isSaveDisabled}
                 size="lg"
-                className="px-8"
+                className="w-full sm:w-auto sm:px-8"
               >
                 {isLoading 
                   ? 'Zapisuję...' 
@@ -185,11 +196,15 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
       {/* Empty state for no accepted proposals */}
       {acceptedProposals.length === 0 && proposalCounts.total > 0 && (
         <Card>
-          <CardContent className="py-8 text-center">
-            <p className="text-gray-600 mb-4">
+          <CardContent className="py-6 sm:py-8 text-center px-4">
+            <p className="text-sm sm:text-base text-gray-600 mb-4">
               Zaakceptuj przynajmniej jedną fiszkę, aby móc je zapisać.
             </p>
-            <Button variant="outline" onClick={handleAcceptAll}>
+            <Button 
+              variant="outline" 
+              onClick={handleAcceptAllIncludingRejected}
+              className="w-full sm:w-auto"
+            >
               Zaakceptuj wszystkie
             </Button>
           </CardContent>

@@ -208,22 +208,13 @@ const GenerateFlashcardsView: React.FC<GenerateFlashcardsViewProps> = ({ userId 
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
+    <div className="w-full">
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Generuj fiszki z AI
-          </h1>
-          <button 
-            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-            onClick={() => window.location.href = '/dashboard'}
-          >
-            ← Powrót na pulpit
-          </button>
+        <div className="mb-4">
+          <p className="text-gray-600">
+            Wklej tekst, a AI wygeneruje dla Ciebie propozycje fiszek do nauki.
+          </p>
         </div>
-        <p className="text-gray-600">
-          Wklej tekst, a AI wygeneruje dla Ciebie propozycje fiszek do nauki.
-        </p>
       </div>
 
       {error && (

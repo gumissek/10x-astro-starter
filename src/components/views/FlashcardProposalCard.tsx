@@ -96,10 +96,10 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
   return (
     <Card className={getCardClassName()}>
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3">
           {/* Status indicator */}
           <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${
+            <div className={`w-3 h-3 rounded-full shrink-0 ${
               proposal.status === 'accepted' ? 'bg-green-500' :
               proposal.status === 'rejected' ? 'bg-red-500' :
               'bg-gray-300'
@@ -113,14 +113,14 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
 
           {/* Action buttons */}
           {!isEditing && (
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
               {proposal.status !== 'accepted' && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleAccept}
                   disabled={disabled}
-                  className="text-green-600 border-green-300 hover:bg-green-50"
+                  className="w-full sm:w-auto text-green-600 border-green-300 hover:bg-green-50"
                 >
                   Akceptuj
                 </Button>
@@ -132,7 +132,7 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
                   size="sm"
                   onClick={handleReject}
                   disabled={disabled}
-                  className="text-red-600 border-red-300 hover:bg-red-50"
+                  className="w-full sm:w-auto text-red-600 border-red-300 hover:bg-red-50"
                 >
                   Odrzuć
                 </Button>
@@ -143,6 +143,7 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
                 size="sm"
                 onClick={handleEdit}
                 disabled={disabled}
+                className="w-full sm:w-auto"
               >
                 Edytuj
               </Button>
@@ -151,13 +152,13 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
 
           {/* Edit action buttons */}
           {isEditing && (
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSaveEdit}
                 disabled={!isEditFormValid}
-                className="text-green-600 border-green-300 hover:bg-green-50"
+                className="w-full sm:w-auto text-green-600 border-green-300 hover:bg-green-50"
               >
                 Zapisz
               </Button>
@@ -165,6 +166,7 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={handleCancelEdit}
+                className="w-full sm:w-auto"
               >
                 Anuluj
               </Button>
