@@ -28,5 +28,11 @@ export default defineConfig({
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
+    env: {
+      SUPABASE_URL: process.env.SUPABASE_URL || '',
+      SUPABASE_KEY: process.env.SUPABASE_KEY || '',
+      OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || '',
+      AI_MODELNAME: process.env.AI_MODELNAME || '',
+    },
   },
 });
