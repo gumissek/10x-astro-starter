@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+
+// Załaduj zmienne środowiskowe z pliku .env
+dotenv.config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
