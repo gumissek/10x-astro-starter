@@ -61,9 +61,6 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           AI_MODELNAME: ${{ secrets.AI_MODELNAME }}
 
-      - name: Wait for server to be ready
-        run: npx wait-on http://localhost:4321 --timeout 15000
-
       - name: Run E2E tests
         run: npm run test:e2e
         env:
