@@ -37,11 +37,6 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     environment: integration
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      AI_MODELNAME: ${{ secrets.AI_MODELNAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -60,6 +55,11 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          AI_MODELNAME: ${{ secrets.AI_MODELNAME }}
 
       - name: Upload E2E test report
         uses: actions/upload-artifact@v4
