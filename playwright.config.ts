@@ -28,6 +28,8 @@ export default defineConfig({
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
+    stdout: 'pipe',
+    stderr: 'pipe',
     env: {
       SUPABASE_URL: process.env.SUPABASE_URL || '',
       SUPABASE_KEY: process.env.SUPABASE_KEY || '',
