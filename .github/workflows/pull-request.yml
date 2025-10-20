@@ -36,7 +36,6 @@ jobs:
   e2e-test:
     name: E2E Tests
     runs-on: ubuntu-latest
-    environment: integration
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
