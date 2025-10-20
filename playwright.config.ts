@@ -1,8 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 
-// Załaduj zmienne środowiskowe z pliku .env
-dotenv.config();
+// Załaduj zmienne środowiskowe z pliku .env (tylko lokalnie, w CI są już ustawione)
+if (!process.env.CI) {
+  dotenv.config();
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -35,10 +37,15 @@ export default defineConfig({
     stdout: 'pipe',
     stderr: 'pipe',
     env: {
+      // Przekaż wszystkie zmienne środowiskowe potrzebne aplikacji
       SUPABASE_URL: process.env.SUPABASE_URL || '',
       SUPABASE_KEY: process.env.SUPABASE_KEY || '',
       OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || '',
       AI_MODELNAME: process.env.AI_MODELNAME || '',
+      // W CI zmienne są już ustawione przez GitHub Actions
+      ...(process.env.CI && {
+        CI: 'true',
+      }),
     },
   },
 });
