@@ -97,15 +97,6 @@ jobs:
           name: test-results
           path: test-results/
           retention-days: 7
-  # dostaje jakis dziwny bład mimo ze mam ustawione wszystko [WebServer] 17:29:19 [ERROR] [MiddlewareCantBeLoaded] An unknown error was thrown while loading your middleware.
-  # [WebServer]   Error reference:
-  # [WebServer]     https://docs.astro.build/en/reference/errors/middleware-cant-be-loaded/
-  # [WebServer]   Stack trace:
-  # [WebServer]     at /home/runner/work/10x-astro-starter/10x-astro-starter/node_modules/astro/dist/core/middleware/loadMiddleware.js:8:24
-  # [WebServer]     [...] See full stack trace in the browser, or rerun with --verbose.
-  # [WebServer]   Caused by:
-  # [WebServer]   supabaseUrl is required.
-
 
   status-comment:
     name: Status Comment
