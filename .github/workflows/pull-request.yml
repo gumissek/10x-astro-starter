@@ -148,7 +148,9 @@ jobs:
 
             ### Test Results
             - ${lintStatus}
-            - ${unitTestStatus}`;
+            - ${unitTestStatus}
+            - ${e2eTestStatus}
+            `;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
