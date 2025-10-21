@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import type { FlashcardViewModel } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState, useEffect } from "react";
+import type { FlashcardViewModel } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface StudyFlashcardProps {
   flashcard: FlashcardViewModel;
@@ -18,14 +18,14 @@ export default function StudyFlashcard({ flashcard }: StudyFlashcardProps) {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.code === 'Space') {
+      if (event.code === "Space") {
         event.preventDefault();
         setIsFlipped(!isFlipped);
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isFlipped]);
 
   const handleFlip = () => {
@@ -43,21 +43,19 @@ export default function StudyFlashcard({ flashcard }: StudyFlashcardProps) {
               </p>
             </div>
           </div>
-          
+
           <div className="space-y-3 w-full">
-            <Button 
+            <Button
               onClick={handleFlip}
               variant="outline"
               className="min-w-[140px] transition-all duration-200 hover:scale-105"
               size="lg"
             >
-              {isFlipped ? 'Pokaż przód' : 'Pokaż tył'}
+              {isFlipped ? "Pokaż przód" : "Pokaż tył"}
             </Button>
-            
+
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">
-                {isFlipped ? 'Tył karty' : 'Przód karty'}
-              </p>
+              <p className="text-xs text-muted-foreground">{isFlipped ? "Tył karty" : "Przód karty"}</p>
               <p className="text-xs text-muted-foreground">
                 Naciśnij <kbd className="px-1 py-0.5 bg-gray-100 rounded text-xs">Spacja</kbd> aby odwrócić
               </p>

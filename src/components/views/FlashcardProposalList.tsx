@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Folder, FlashcardProposalViewModel } from '@/types';
-import FlashcardProposalCard from './FlashcardProposalCard';
-import FolderSelect from './FolderSelect';
+import React, { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Folder, FlashcardProposalViewModel } from "@/types";
+import FlashcardProposalCard from "./FlashcardProposalCard";
+import FolderSelect from "./FolderSelect";
 
 interface FlashcardProposalListProps {
   proposals: FlashcardProposalViewModel[];
@@ -24,12 +24,12 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
   onStartOver,
   isLoading,
 }) => {
-  const [selectedFolderId, setSelectedFolderId] = useState<string>('');
+  const [selectedFolderId, setSelectedFolderId] = useState<string>("");
   const [customFolderName, setCustomFolderName] = useState<string>(suggestedFolderName);
 
   // Calculate accepted proposals
   const acceptedProposals = useMemo(() => {
-    return proposals.filter(proposal => proposal.status === 'accepted');
+    return proposals.filter((proposal) => proposal.status === "accepted");
   }, [proposals]);
 
   // Calculate proposal counts
@@ -37,32 +37,32 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
     return {
       total: proposals.length,
       accepted: acceptedProposals.length,
-      rejected: proposals.filter(p => p.status === 'rejected').length,
-      pending: proposals.filter(p => p.status === 'pending').length,
+      rejected: proposals.filter((p) => p.status === "rejected").length,
+      pending: proposals.filter((p) => p.status === "pending").length,
     };
   }, [proposals, acceptedProposals]);
 
   // Handle bulk actions
   const handleAcceptAll = () => {
-    proposals.forEach(proposal => {
-      if (proposal.status === 'pending') {
-        onUpdateProposal({ ...proposal, status: 'accepted' });
+    proposals.forEach((proposal) => {
+      if (proposal.status === "pending") {
+        onUpdateProposal({ ...proposal, status: "accepted" });
       }
     });
   };
 
   const handleAcceptAllIncludingRejected = () => {
-    proposals.forEach(proposal => {
-      if (proposal.status !== 'accepted') {
-        onUpdateProposal({ ...proposal, status: 'accepted' });
+    proposals.forEach((proposal) => {
+      if (proposal.status !== "accepted") {
+        onUpdateProposal({ ...proposal, status: "accepted" });
       }
     });
   };
 
   const handleRejectAll = () => {
-    proposals.forEach(proposal => {
-      if (proposal.status === 'pending') {
-        onUpdateProposal({ ...proposal, status: 'rejected' });
+    proposals.forEach((proposal) => {
+      if (proposal.status === "pending") {
+        onUpdateProposal({ ...proposal, status: "rejected" });
       }
     });
   };
@@ -71,16 +71,15 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
   const handleSave = () => {
     if (acceptedProposals.length === 0) return;
 
-    const folderName = selectedFolderId ? '' : customFolderName.trim();
-    const folderId = selectedFolderId || 'new';
-    
+    const folderName = selectedFolderId ? "" : customFolderName.trim();
+    const folderId = selectedFolderId || "new";
+
     onSave(folderId, folderName, acceptedProposals);
   };
 
   // Validation
-  const isSaveDisabled = acceptedProposals.length === 0 || 
-    isLoading || 
-    (!selectedFolderId && customFolderName.trim().length === 0);
+  const isSaveDisabled =
+    acceptedProposals.length === 0 || isLoading || (!selectedFolderId && customFolderName.trim().length === 0);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -89,13 +88,7 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
         <CardHeader>
           <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <span className="text-lg sm:text-xl">Wygenerowane propozycje fiszek</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onStartOver}
-              disabled={isLoading}
-              className="w-full sm:w-auto"
-            >
+            <Button variant="outline" size="sm" onClick={onStartOver} disabled={isLoading} className="w-full sm:w-auto">
               Zacznij od nowa
             </Button>
           </CardTitle>
@@ -177,16 +170,8 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
 
             {/* Save button */}
             <div className="flex justify-center pt-4">
-              <Button
-                onClick={handleSave}
-                disabled={isSaveDisabled}
-                size="lg"
-                className="w-full sm:w-auto sm:px-8"
-              >
-                {isLoading 
-                  ? 'Zapisuję...' 
-                  : `Zapisz ${acceptedProposals.length} fiszek`
-                }
+              <Button onClick={handleSave} disabled={isSaveDisabled} size="lg" className="w-full sm:w-auto sm:px-8">
+                {isLoading ? "Zapisuję..." : `Zapisz ${acceptedProposals.length} fiszek`}
               </Button>
             </div>
           </CardContent>
@@ -200,11 +185,7 @@ const FlashcardProposalList: React.FC<FlashcardProposalListProps> = ({
             <p className="text-sm sm:text-base text-gray-600 mb-4">
               Zaakceptuj przynajmniej jedną fiszkę, aby móc je zapisać.
             </p>
-            <Button 
-              variant="outline" 
-              onClick={handleAcceptAllIncludingRejected}
-              className="w-full sm:w-auto"
-            >
+            <Button variant="outline" onClick={handleAcceptAllIncludingRejected} className="w-full sm:w-auto">
               Zaakceptuj wszystkie
             </Button>
           </CardContent>

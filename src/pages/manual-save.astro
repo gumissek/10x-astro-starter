@@ -1,6 +1,6 @@
 ---
-import AuthLayout from '../layouts/AuthLayout.astro';
-import ManualSaveView from '../components/views/ManualSaveView';
+import AuthLayout from "../layouts/AuthLayout.astro";
+import ManualSaveView from "../components/views/ManualSaveView";
 
 export const prerender = false;
 
@@ -8,7 +8,7 @@ export const prerender = false;
 const { user } = Astro.locals;
 
 if (!user) {
-  return Astro.redirect('/login');
+  return Astro.redirect("/login");
 }
 ---
 
@@ -16,7 +16,7 @@ if (!user) {
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Ręczne tworzenie fiszek</h1>
-      <button 
+      <button
         class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors w-full sm:w-auto shrink-0"
         onclick="window.location.href = '/dashboard'"
       >

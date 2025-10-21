@@ -7,56 +7,43 @@ export const prerender = false;
 
 // Zod schema for POST request validation
 const CreateFlashcardSchema = z.object({
-  front: z
-    .string()
-    .min(1, "Front text cannot be empty")
-    .max(200, "Front text cannot exceed 200 characters")
-    .trim(),
-  back: z
-    .string()
-    .min(1, "Back text cannot be empty")
-    .max(500, "Back text cannot exceed 500 characters")
-    .trim(),
-  folder_id: z
-    .string()
-    .uuid("Folder ID must be a valid UUID"),
-  generation_source: z
-    .enum(["manual", "ai"], {
-      errorMap: () => ({ message: "Generation source must be either 'manual' or 'ai'" })
-    }),
+  front: z.string().min(1, "Front text cannot be empty").max(200, "Front text cannot exceed 200 characters").trim(),
+  back: z.string().min(1, "Back text cannot be empty").max(500, "Back text cannot exceed 500 characters").trim(),
+  folder_id: z.string().uuid("Folder ID must be a valid UUID"),
+  generation_source: z.enum(["manual", "ai"], {
+    errorMap: () => ({ message: "Generation source must be either 'manual' or 'ai'" }),
+  }),
 });
 
 // Zod schema for GET request query parameters validation
 const GetFlashcardsQuerySchema = z.object({
-  folderId: z
-    .string()
-    .uuid("Folder ID must be a valid UUID")
-    .optional(),
+  folderId: z.string().uuid("Folder ID must be a valid UUID").optional(),
   page: z
     .string()
     .regex(/^\d+$/, "Page must be a positive integer")
-    .transform(val => parseInt(val, 10))
-    .refine(val => val > 0, "Page must be greater than 0")
+    .transform((val) => parseInt(val, 10))
+    .refine((val) => val > 0, "Page must be greater than 0")
     .default("1"),
   limit: z
     .string()
     .regex(/^\d+$/, "Limit must be a positive integer")
-    .transform(val => parseInt(val, 10))
-    .refine(val => val > 0 && val <= 100, "Limit must be between 1 and 100")
+    .transform((val) => parseInt(val, 10))
+    .refine((val) => val > 0 && val <= 100, "Limit must be between 1 and 100")
     .default("10"),
   sortBy: z
     .enum(["created_at", "updated_at", "front", "back"], {
-      errorMap: () => ({ message: "Sort by must be one of: created_at, updated_at, front, back" })
+      errorMap: () => ({ message: "Sort by must be one of: created_at, updated_at, front, back" }),
     })
     .default("created_at"),
   order: z
     .enum(["asc", "desc"], {
-      errorMap: () => ({ message: "Order must be either 'asc' or 'desc'" })
+      errorMap: () => ({ message: "Order must be either 'asc' or 'desc'" }),
     })
     .default("desc"),
 });
 
 // Response type for GET flashcards
+//@typescript-eslint/no-unused-vars
 interface GetFlashcardsResponse {
   flashcards: FlashcardDTO[];
   pagination: {
@@ -73,7 +60,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Parse and validate query parameters
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    
+
     let validatedParams;
     try {
       validatedParams = GetFlashcardsQuerySchema.parse(queryParams);
@@ -83,7 +70,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           JSON.stringify({
             success: false,
             error: "Validation failed",
-            message: error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(", "),
+            message: error.errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", "),
             details: error.errors,
           }),
           {
@@ -94,7 +81,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -109,10 +96,10 @@ export const GET: APIRoute = async ({ request, locals }) => {
         }
       );
     }
-    
+
     // TODO: Add authentication and authorization logic
     const userId = locals.user?.id;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({
@@ -172,10 +159,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in GET /api/flashcards:", error);
-
     // Handle specific business logic errors
     if (error instanceof Error && error.message.includes("Folder not found")) {
       return new Response(
@@ -214,7 +198,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Parse and validate request body
     let requestData: CreateFlashcardCommand;
-    
+
     try {
       const body = await request.json();
       requestData = CreateFlashcardSchema.parse(body);
@@ -224,7 +208,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           JSON.stringify({
             success: false,
             error: "Validation failed",
-            message: error.errors.map(e => e.message).join(", "),
+            message: error.errors.map((e) => e.message).join(", "),
             details: error.errors,
           }),
           {
@@ -235,7 +219,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -253,7 +237,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // TODO: Add authentication and authorization logic
     const userId = locals.user?.id;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({
@@ -269,9 +253,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
       );
     }
-    
-    console.log("Using user ID:", userId);
-    
+
     // Get Supabase client from locals (with user session)
     const supabase = locals.supabase;
     if (!supabase) {
@@ -307,10 +289,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in POST /api/flashcards:", error);
-
     return new Response(
       JSON.stringify({
         success: false,

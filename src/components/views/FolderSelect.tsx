@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import type { Folder } from '@/types';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import type { Folder } from "@/types";
 
 interface FolderSelectProps {
   folders: Folder[];
@@ -22,23 +22,23 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
   onCustomFolderNameChange,
   disabled = false,
 }) => {
-  const [mode, setMode] = React.useState<'existing' | 'new'>('new');
+  const [mode, setMode] = React.useState<"existing" | "new">("new");
 
   // Ensure folders is always an array
   const safeFolders = Array.isArray(folders) ? folders : [];
 
   // Reset selection when switching modes
   React.useEffect(() => {
-    if (mode === 'new') {
-      onFolderSelect('');
+    if (mode === "new") {
+      onFolderSelect("");
     } else {
-      onCustomFolderNameChange('');
+      onCustomFolderNameChange("");
     }
   }, [mode, onFolderSelect, onCustomFolderNameChange]);
 
   // Use suggested name when switching to new folder mode
   React.useEffect(() => {
-    if (mode === 'new' && customFolderName === '') {
+    if (mode === "new" && customFolderName === "") {
       onCustomFolderNameChange(suggestedFolderName);
     }
   }, [mode, customFolderName, suggestedFolderName, onCustomFolderNameChange]);
@@ -49,18 +49,18 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
       <div className="flex space-x-2">
         <Button
           type="button"
-          variant={mode === 'new' ? 'default' : 'outline'}
+          variant={mode === "new" ? "default" : "outline"}
           size="sm"
-          onClick={() => setMode('new')}
+          onClick={() => setMode("new")}
           disabled={disabled}
         >
           Nowy folder
         </Button>
         <Button
           type="button"
-          variant={mode === 'existing' ? 'default' : 'outline'}
+          variant={mode === "existing" ? "default" : "outline"}
           size="sm"
-          onClick={() => setMode('existing')}
+          onClick={() => setMode("existing")}
           disabled={disabled || safeFolders.length === 0}
         >
           Istniejący folder
@@ -68,14 +68,15 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
       </div>
 
       {/* New folder input */}
-      {mode === 'new' && (
+      {mode === "new" && (
         <Card>
           <CardContent className="pt-4">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label htmlFor="new-folder-name" className="block text-sm font-medium text-gray-700">
                 Nazwa nowego folderu:
               </label>
               <input
+                id="new-folder-name"
                 type="text"
                 value={customFolderName}
                 onChange={(e) => onCustomFolderNameChange(e.target.value)}
@@ -86,9 +87,7 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
               />
               {suggestedFolderName && customFolderName !== suggestedFolderName && (
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">
-                    Sugerowana nazwa: "{suggestedFolderName}"
-                  </span>
+                  <span className="text-xs text-gray-500">Sugerowana nazwa: &quot;{suggestedFolderName}&quot;</span>
                   <Button
                     type="button"
                     variant="ghost"
@@ -101,33 +100,29 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
                   </Button>
                 </div>
               )}
-              <div className="text-xs text-gray-500">
-                {customFolderName.length} / 100 znaków
-              </div>
+              <div className="text-xs text-gray-500">{customFolderName.length} / 100 znaków</div>
             </div>
           </CardContent>
         </Card>
       )}
 
       {/* Existing folder selection */}
-      {mode === 'existing' && (
+      {mode === "existing" && (
         <Card>
           <CardContent className="pt-4">
             {safeFolders.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                Brak dostępnych folderów. Utwórz nowy folder.
-              </p>
+              <p className="text-gray-500 text-center py-4">Brak dostępnych folderów. Utwórz nowy folder.</p>
             ) : (
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor="folder-select" className="block text-sm font-medium text-gray-700">
                   Wybierz folder:
                 </label>
-                <div className="grid gap-2 max-h-48 overflow-y-auto">
+                <div id="folder-select" className="grid gap-2 max-h-48 overflow-y-auto">
                   {safeFolders.map((folder) => (
                     <Button
                       key={folder.id}
                       type="button"
-                      variant={selectedFolderId === folder.id ? 'default' : 'outline'}
+                      variant={selectedFolderId === folder.id ? "default" : "outline"}
                       className="justify-start text-left"
                       onClick={() => onFolderSelect(folder.id)}
                       disabled={disabled}
@@ -135,7 +130,7 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
                       <div className="flex items-center justify-between w-full">
                         <span className="truncate">{folder.name}</span>
                         <span className="text-xs text-gray-500 ml-2">
-                          {folder.created_at ? new Date(folder.created_at).toLocaleDateString() : ''}
+                          {folder.created_at ? new Date(folder.created_at).toLocaleDateString() : ""}
                         </span>
                       </div>
                     </Button>
@@ -148,16 +143,12 @@ const FolderSelect: React.FC<FolderSelectProps> = ({
       )}
 
       {/* Validation message */}
-      {mode === 'new' && customFolderName.trim().length === 0 && (
-        <p className="text-xs text-red-600">
-          Nazwa folderu nie może być pusta
-        </p>
+      {mode === "new" && customFolderName.trim().length === 0 && (
+        <p className="text-xs text-red-600">Nazwa folderu nie może być pusta</p>
       )}
-      
-      {mode === 'existing' && !selectedFolderId && safeFolders.length > 0 && (
-        <p className="text-xs text-red-600">
-          Wybierz folder
-        </p>
+
+      {mode === "existing" && !selectedFolderId && safeFolders.length > 0 && (
+        <p className="text-xs text-red-600">Wybierz folder</p>
       )}
     </div>
   );

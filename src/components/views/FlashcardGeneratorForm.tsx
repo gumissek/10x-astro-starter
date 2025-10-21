@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
 
 interface FlashcardGeneratorFormProps {
   onGenerate: (text: string) => void;
@@ -11,7 +11,7 @@ interface FlashcardGeneratorFormProps {
 const FlashcardGeneratorForm: React.FC<FlashcardGeneratorFormProps> = ({
   onGenerate,
   isLoading,
-  initialText = '',
+  initialText = "",
   onTextChange,
 }) => {
   const [text, setText] = useState<string>(initialText);
@@ -25,41 +25,44 @@ const FlashcardGeneratorForm: React.FC<FlashcardGeneratorFormProps> = ({
   const isSubmitDisabled = !isTextValid || isLoading;
 
   // Handle text change
-  const handleTextChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newText = event.target.value;
-    setText(newText);
-    onTextChange?.(newText);
-  }, [onTextChange]);
+  const handleTextChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const newText = event.target.value;
+      setText(newText);
+      onTextChange?.(newText);
+    },
+    [onTextChange]
+  );
 
   // Handle form submission
-  const handleSubmit = useCallback((event: React.FormEvent) => {
-    event.preventDefault();
-    
-    if (!isTextValid || isLoading) {
-      return;
-    }
+  const handleSubmit = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
 
-    onGenerate(text.trim());
-  }, [text, isTextValid, isLoading, onGenerate]);
+      if (!isTextValid || isLoading) {
+        return;
+      }
+
+      onGenerate(text.trim());
+    },
+    [text, isTextValid, isLoading, onGenerate]
+  );
 
   // Get character count styling
   const getCharCountClassName = () => {
     if (text.length > MAX_CHARS) {
-      return 'text-red-600';
+      return "text-red-600";
     }
     if (text.length > MAX_CHARS * 0.9) {
-      return 'text-amber-600';
+      return "text-amber-600";
     }
-    return 'text-gray-500';
+    return "text-gray-500";
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <label 
-          htmlFor="text-input" 
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="text-input" className="block text-sm font-medium text-gray-700">
           Tekst do analizy
         </label>
         <div className="relative">
@@ -73,12 +76,10 @@ const FlashcardGeneratorForm: React.FC<FlashcardGeneratorFormProps> = ({
             maxLength={MAX_CHARS + 100} // Allow slight overflow for better UX
           />
         </div>
-        
+
         {/* Character counter */}
         <div className="flex justify-between items-center text-sm">
-          <div className="text-gray-600">
-            Minimum {MIN_CHARS} znaków
-          </div>
+          <div className="text-gray-600">Minimum {MIN_CHARS} znaków</div>
           <div className={getCharCountClassName()}>
             {text.length} / {MAX_CHARS}
           </div>
@@ -86,34 +87,23 @@ const FlashcardGeneratorForm: React.FC<FlashcardGeneratorFormProps> = ({
 
         {/* Validation message */}
         {text.length > MAX_CHARS && (
-          <p className="text-sm text-red-600">
-            Tekst jest za długi. Maksymalna długość to {MAX_CHARS} znaków.
-          </p>
+          <p className="text-sm text-red-600">Tekst jest za długi. Maksymalna długość to {MAX_CHARS} znaków.</p>
         )}
-        
+
         {text.trim().length > 0 && text.trim().length < MIN_CHARS && (
-          <p className="text-sm text-red-600">
-            Tekst jest za krótki. Minimalna długość to {MIN_CHARS} znak.
-          </p>
+          <p className="text-sm text-red-600">Tekst jest za krótki. Minimalna długość to {MIN_CHARS} znak.</p>
         )}
       </div>
 
       <div className="flex justify-center">
-        <Button
-          size="lg"
-          type="submit"
-          disabled={isSubmitDisabled}
-          className="px-8 py-2 text-md"
-        >
-          {isLoading ? 'Generuję...' : 'Generuj fiszki'}
+        <Button size="lg" type="submit" disabled={isSubmitDisabled} className="px-8 py-2 text-md">
+          {isLoading ? "Generuję..." : "Generuj fiszki"}
         </Button>
       </div>
 
       {/* Tips for better results */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-blue-900 mb-2">
-          Wskazówki dla lepszych rezultatów:
-        </h4>
+        <h4 className="text-sm font-medium text-blue-900 mb-2">Wskazówki dla lepszych rezultatów:</h4>
         <ul className="text-sm text-blue-800 space-y-1">
           <li>• Używaj tekstu edukacyjnego z jasno zdefiniowanymi pojęciami</li>
           <li>• Unikaj zbyt ogólnych lub zbyt technicznych fragmentów</li>

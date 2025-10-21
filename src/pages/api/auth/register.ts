@@ -5,10 +5,7 @@ import { createSupabaseServerInstance } from "../../../db/supabase.client";
 // Schema walidacji dla żądania rejestracji
 const registerSchema = z
   .object({
-    email: z
-      .string()
-      .min(1, { message: "Email jest wymagany" })
-      .email({ message: "Wprowadź poprawny adres email" }),
+    email: z.string().min(1, { message: "Email jest wymagany" }).email({ message: "Wprowadź poprawny adres email" }),
     password: z
       .string()
       .min(8, { message: "Hasło musi mieć minimum 8 znaków" })
@@ -44,7 +41,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
 
@@ -87,7 +84,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
 
@@ -102,7 +99,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
 
@@ -120,10 +117,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   } catch (error) {
-    console.error("Registration error:", error);
     return new Response(
       JSON.stringify({
         error: "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.",
@@ -133,7 +129,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   }
 };

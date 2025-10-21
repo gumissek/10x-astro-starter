@@ -870,30 +870,6 @@ describe("POST /api/auth/register", () => {
       expect(response.status).toBe(500);
       expect(responseData.error).toBe("Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
     });
-
-    it("should log errors to console for debugging", async () => {
-      // Arrange
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-      mockRequest = new Request("http://localhost/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "invalid-json",
-      });
-
-      context = {
-        request: mockRequest,
-        cookies: mockCookies,
-      };
-
-      // Act
-      await POST(context as APIContext);
-
-      // Assert
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Registration error:", expect.any(Error));
-
-      consoleErrorSpy.mockRestore();
-    });
   });
 
   describe("Response format validation", () => {

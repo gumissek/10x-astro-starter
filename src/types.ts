@@ -1,7 +1,7 @@
-import type { Database } from './db/database.types';
+import type { Database } from "./db/database.types";
 
 // Base types extracted from the Supabase database definitions
-export type Folder = Database["public"]["Tables"]["folders"]["Row"]; 
+export type Folder = Database["public"]["Tables"]["folders"]["Row"];
 export type Flashcard = Database["public"]["Tables"]["flashcards"]["Row"];
 
 // -----------------------------------------------------------
@@ -13,63 +13,64 @@ export type Flashcard = Database["public"]["Tables"]["flashcards"]["Row"];
 // DTO used for listing and retrieving folder details.
 // For GET /folders and GET /folders/{folderId} endpoints.
 // In 'Get Folder Details', we include an additional property 'flashcard_count'.
-export interface FolderDTO extends Omit<Folder, 'user_id'> {
+export interface FolderDTO extends Omit<Folder, "user_id"> {
   // Optional field added for folder details endpoint
   flashcard_count?: number;
 }
 
 // Command Model for creating a new folder (POST /folders).
 // The 'name' and 'user_id' fields are needed from the request.
-export type CreateFolderCommand = Pick<Folder, 'name' | 'user_id'>;
+export type CreateFolderCommand = Pick<Folder, "name" | "user_id">;
 
 // Command Model for updating an existing folder (PUT /folders/{folderId}).
 // Payload requires a new name for the folder.
-export type UpdateFolderCommand = Pick<Folder, 'name'>;
+export type UpdateFolderCommand = Pick<Folder, "name">;
 
 // -----------------------------------------------------------
 // 2. FLASHCARDS
 
 // DTO for flashcards used in listing and detailed retrieval (GET endpoints for flashcards).
 // Excludes the internal 'user_id' field as it is managed from session context.
-export interface FlashcardDTO extends Omit<Flashcard, 'user_id'> {}
+//@typescript-eslint/no-empty-object-type
+export interface FlashcardDTO extends Omit<Flashcard, "user_id"> {}
 
 // Command Model for creating a new flashcard (POST /flashcards).
 // The payload must include 'front', 'back', 'folder_id', and 'generation_source'.
-export type CreateFlashcardCommand = Pick<Flashcard, 'front' | 'back' | 'folder_id' | 'generation_source'>;
+export type CreateFlashcardCommand = Pick<Flashcard, "front" | "back" | "folder_id" | "generation_source">;
 
 // Command Model for updating an existing flashcard (PUT /flashcards/{flashcardId}).
 // The payload structure is similar to the creation command. Depending on the usage, you may allow partial updates.
-export type UpdateFlashcardCommand = Pick<Flashcard, 'front' | 'back' | 'generation_source'> & {
+export type UpdateFlashcardCommand = Pick<Flashcard, "front" | "back" | "generation_source"> & {
   folder_id?: string; // Optional for updates - allows moving flashcard to different folder
 };
 
 // Command Model for generating flashcards via AI (POST /flashcards/generate).
 // Receives a text input and returns a suggested folder name and a list of flashcard proposals.
-export type GenerateFlashcardsCommand = {
+export interface GenerateFlashcardsCommand {
   text: string;
-};
+}
 
 // DTO representing the response from the AI flashcard generation endpoint.
 export interface GenerateFlashcardsResponseDTO {
   suggested_folder_name: string;
-  flashcards_proposals: Array<{
+  flashcards_proposals: {
     front: string;
     back: string;
-    generation_source: 'ai';
-  }>;
+    generation_source: "ai";
+  }[];
 }
 
 // Command Model for bulk saving accepted flashcards (POST /flashcards/bulk-save).
 // Payload includes the target folder ID and an array of flashcards.
 // user_id is obtained from session by the backend.
-export type BulkSaveFlashcardsCommand = {
+export interface BulkSaveFlashcardsCommand {
   folder_id: string;
-  flashcards: Array<{
+  flashcards: {
     front: string;
     back: string;
-    generation_source: 'ai';
-  }>;
-};
+    generation_source: "ai";
+  }[];
+}
 
 // -----------------------------------------------------------
 // 3. VIEW MODELS FOR UI STATE MANAGEMENT
@@ -79,8 +80,8 @@ export interface FlashcardProposalViewModel {
   id: string; // Unique client-side identifier (e.g., UUID)
   front: string;
   back: string;
-  generation_source: 'ai';
-  status: 'pending' | 'accepted' | 'rejected'; // User acceptance state
+  generation_source: "ai";
+  status: "pending" | "accepted" | "rejected"; // User acceptance state
 }
 
 // ViewModel for folder, used in Dashboard view.
@@ -110,7 +111,7 @@ export interface FlashcardViewModel {
   front: string;
   back: string;
   folder_id: string;
-  generation_source: 'manual' | 'ai';
+  generation_source: "manual" | "ai";
   created_at: string;
   updated_at: string;
 }
@@ -123,7 +124,7 @@ export interface StudySessionViewModel {
   flashcards: FlashcardViewModel[];
   currentCardIndex: number;
   knownFlashcards: number;
-  status: 'loading' | 'studying' | 'finished';
+  status: "loading" | "studying" | "finished";
   error: string | null;
 }
 

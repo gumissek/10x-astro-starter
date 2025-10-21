@@ -217,9 +217,7 @@ describe("POST /api/auth/logout", () => {
   describe("Server errors and exceptions", () => {
     it("should return 500 error when Supabase client throws exception", async () => {
       // Arrange
-      mockSupabaseClient.auth.signOut.mockRejectedValue(
-        new Error("Network error"),
-      );
+      mockSupabaseClient.auth.signOut.mockRejectedValue(new Error("Network error"));
 
       // Act
       const response = await POST(context as APIContext);
@@ -244,25 +242,6 @@ describe("POST /api/auth/logout", () => {
       // Assert
       expect(response.status).toBe(500);
       expect(responseData.error).toBe("Wystąpił błąd podczas wylogowania");
-    });
-
-    it("should log errors to console for debugging", async () => {
-      // Arrange
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-      const networkError = new Error("Network error");
-      
-      mockSupabaseClient.auth.signOut.mockRejectedValue(networkError);
-
-      // Act
-      await POST(context as APIContext);
-
-      // Assert
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Logout error:",
-        networkError,
-      );
-
-      consoleErrorSpy.mockRestore();
     });
 
     it("should handle timeout errors gracefully", async () => {
@@ -330,7 +309,7 @@ describe("POST /api/auth/logout", () => {
     it("should not leak sensitive information in error responses", async () => {
       // Arrange
       mockSupabaseClient.auth.signOut.mockRejectedValue(
-        new Error("Database credentials invalid at connection string postgresql://user:pass@host"),
+        new Error("Database credentials invalid at connection string postgresql://user:pass@host")
       );
 
       // Act
@@ -426,11 +405,7 @@ describe("POST /api/auth/logout", () => {
       });
 
       // Act - Symulacja równoczesnych żądań wylogowania
-      const promises = [
-        POST(context as APIContext),
-        POST(context as APIContext),
-        POST(context as APIContext),
-      ];
+      const promises = [POST(context as APIContext), POST(context as APIContext), POST(context as APIContext)];
 
       const responses = await Promise.all(promises);
 
@@ -473,7 +448,7 @@ describe("POST /api/auth/logout", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Origin": "http://malicious-site.com",
+          Origin: "http://malicious-site.com",
         },
       });
 
@@ -498,7 +473,7 @@ describe("POST /api/auth/logout", () => {
       // Arrange
       const detailedError = new Error("Detailed error with stack trace");
       detailedError.stack = "Error: Detailed error\n    at file.ts:123:45";
-      
+
       mockSupabaseClient.auth.signOut.mockRejectedValue(detailedError);
 
       // Act
@@ -535,7 +510,7 @@ describe("POST /api/auth/logout", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Cookie": "sb-access-token=test-user-token; sb-refresh-token=test-refresh-token",
+            Cookie: "sb-access-token=test-user-token; sb-refresh-token=test-refresh-token",
           },
         }),
         cookies: mockCookies,
@@ -616,7 +591,7 @@ describe("POST /api/auth/logout", () => {
             setTimeout(() => {
               resolve({ error: null });
             }, 100);
-          }),
+          })
       );
 
       // Act

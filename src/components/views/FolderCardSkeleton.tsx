@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
-import { Skeleton } from '../ui/skeleton';
+import React from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 
 /**
  * FolderCardSkeleton - Skeleton component displayed during folder loading

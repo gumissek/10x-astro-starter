@@ -462,9 +462,7 @@ describe("POST /api/auth/login", () => {
         cookies: mockCookies,
       };
 
-      mockSupabaseClient.auth.signInWithPassword.mockRejectedValue(
-        new Error("Network error"),
-      );
+      mockSupabaseClient.auth.signInWithPassword.mockRejectedValue(new Error("Network error"));
 
       // Act
       const response = await POST(context as APIContext);
@@ -473,33 +471,6 @@ describe("POST /api/auth/login", () => {
       // Assert
       expect(response.status).toBe(500);
       expect(responseData.error).toBe("Wystąpił błąd podczas logowania");
-    });
-
-    it("should log errors to console for debugging", async () => {
-      // Arrange
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-      
-      mockRequest = new Request("http://localhost/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "invalid-json",
-      });
-
-      context = {
-        request: mockRequest,
-        cookies: mockCookies,
-      };
-
-      // Act
-      await POST(context as APIContext);
-
-      // Assert
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Login error:",
-        expect.any(Error),
-      );
-
-      consoleErrorSpy.mockRestore();
     });
   });
 

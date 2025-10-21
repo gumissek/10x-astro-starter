@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import type { FlashcardProposalViewModel } from '@/types';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import type { FlashcardProposalViewModel } from "@/types";
 
 interface FlashcardProposalCardProps {
   proposal: FlashcardProposalViewModel;
@@ -9,11 +9,7 @@ interface FlashcardProposalCardProps {
   disabled?: boolean;
 }
 
-const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
-  proposal,
-  onUpdate,
-  disabled = false,
-}) => {
+const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({ proposal, onUpdate, disabled = false }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     front: proposal.front,
@@ -22,11 +18,11 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
 
   // Handle status changes
   const handleAccept = () => {
-    onUpdate({ ...proposal, status: 'accepted' });
+    onUpdate({ ...proposal, status: "accepted" });
   };
 
   const handleReject = () => {
-    onUpdate({ ...proposal, status: 'rejected' });
+    onUpdate({ ...proposal, status: "rejected" });
   };
 
   const handleEdit = () => {
@@ -38,8 +34,8 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
   };
 
   // Handle edit form changes
-  const handleEditFormChange = (field: 'front' | 'back', value: string) => {
-    setEditForm(prev => ({
+  const handleEditFormChange = (field: "front" | "back", value: string) => {
+    setEditForm((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -76,11 +72,11 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
   // Get card styling based on status
   const getCardClassName = () => {
     const baseClasses = "transition-all duration-200";
-    
+
     switch (proposal.status) {
-      case 'accepted':
+      case "accepted":
         return `${baseClasses} border-green-200 bg-green-50`;
-      case 'rejected':
+      case "rejected":
         return `${baseClasses} border-red-200 bg-red-50 opacity-75`;
       default:
         return `${baseClasses} border-gray-200 hover:border-gray-300`;
@@ -88,9 +84,10 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
   };
 
   // Validation for edit form
-  const isEditFormValid = editForm.front.trim().length > 0 && 
-    editForm.front.length <= 200 && 
-    editForm.back.trim().length > 0 && 
+  const isEditFormValid =
+    editForm.front.trim().length > 0 &&
+    editForm.front.length <= 200 &&
+    editForm.back.trim().length > 0 &&
     editForm.back.length <= 500;
 
   return (
@@ -99,22 +96,26 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
         <div className="flex flex-col gap-3">
           {/* Status indicator */}
           <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full shrink-0 ${
-              proposal.status === 'accepted' ? 'bg-green-500' :
-              proposal.status === 'rejected' ? 'bg-red-500' :
-              'bg-gray-300'
-            }`} />
+            <div
+              className={`w-3 h-3 rounded-full shrink-0 ${
+                proposal.status === "accepted"
+                  ? "bg-green-500"
+                  : proposal.status === "rejected"
+                    ? "bg-red-500"
+                    : "bg-gray-300"
+              }`}
+            />
             <span className="text-sm font-medium capitalize text-gray-700">
-              {proposal.status === 'pending' && 'Oczekuje'}
-              {proposal.status === 'accepted' && 'Zaakceptowana'}
-              {proposal.status === 'rejected' && 'Odrzucona'}
+              {proposal.status === "pending" && "Oczekuje"}
+              {proposal.status === "accepted" && "Zaakceptowana"}
+              {proposal.status === "rejected" && "Odrzucona"}
             </span>
           </div>
 
           {/* Action buttons */}
           {!isEditing && (
             <div className="flex flex-col sm:flex-row gap-2 w-full">
-              {proposal.status !== 'accepted' && (
+              {proposal.status !== "accepted" && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -125,8 +126,8 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
                   Akceptuj
                 </Button>
               )}
-              
-              {proposal.status !== 'rejected' && (
+
+              {proposal.status !== "rejected" && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -138,13 +139,7 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
                 </Button>
               )}
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleEdit}
-                disabled={disabled}
-                className="w-full sm:w-auto"
-              >
+              <Button variant="outline" size="sm" onClick={handleEdit} disabled={disabled} className="w-full sm:w-auto">
                 Edytuj
               </Button>
             </div>
@@ -162,12 +157,7 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
               >
                 Zapisz
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCancelEdit}
-                className="w-full sm:w-auto"
-              >
+              <Button variant="outline" size="sm" onClick={handleCancelEdit} className="w-full sm:w-auto">
                 Anuluj
               </Button>
             </div>
@@ -181,62 +171,54 @@ const FlashcardProposalCard: React.FC<FlashcardProposalCardProps> = ({
           <>
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-1">Przód fiszki:</h4>
-              <p className="text-gray-900 bg-white p-3 rounded border">
-                {proposal.front}
-              </p>
+              <p className="text-gray-900 bg-white p-3 rounded border">{proposal.front}</p>
             </div>
 
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-1">Tył fiszki:</h4>
-              <p className="text-gray-900 bg-white p-3 rounded border">
-                {proposal.back}
-              </p>
+              <p className="text-gray-900 bg-white p-3 rounded border">{proposal.back}</p>
             </div>
           </>
         ) : (
           // Edit mode
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="edit-front" className="block text-sm font-medium text-gray-700 mb-1">
                 Przód fiszki:
               </label>
               <textarea
+                id="edit-front"
                 value={editForm.front}
-                onChange={(e) => handleEditFormChange('front', e.target.value)}
+                onChange={(e) => handleEditFormChange("front", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={2}
                 maxLength={200}
                 placeholder="Pytanie lub pojęcie..."
               />
-              <div className="text-xs text-gray-500 mt-1">
-                {editForm.front.length} / 200 znaków
-              </div>
+              <div className="text-xs text-gray-500 mt-1">{editForm.front.length} / 200 znaków</div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="edit-back" className="block text-sm font-medium text-gray-700 mb-1">
                 Tył fiszki:
               </label>
               <textarea
+                id="edit-back"
                 value={editForm.back}
-                onChange={(e) => handleEditFormChange('back', e.target.value)}
+                onChange={(e) => handleEditFormChange("back", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={3}
                 maxLength={500}
                 placeholder="Odpowiedź lub wyjaśnienie..."
               />
-              <div className="text-xs text-gray-500 mt-1">
-                {editForm.back.length} / 500 znaków
-              </div>
+              <div className="text-xs text-gray-500 mt-1">{editForm.back.length} / 500 znaków</div>
             </div>
 
             {/* Validation messages */}
             {editForm.front.trim().length === 0 && (
               <p className="text-xs text-red-600">Przód fiszki nie może być pusty</p>
             )}
-            {editForm.back.trim().length === 0 && (
-              <p className="text-xs text-red-600">Tył fiszki nie może być pusty</p>
-            )}
+            {editForm.back.trim().length === 0 && <p className="text-xs text-red-600">Tył fiszki nie może być pusty</p>}
           </>
         )}
       </CardContent>

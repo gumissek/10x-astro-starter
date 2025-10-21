@@ -19,10 +19,13 @@ export class FolderService {
    * @returns Promise<{folders: FolderDTO[], pagination: PaginationInfo}> - Paginated folders data
    * @throws Error if database operation fails or user validation fails
    */
-  async getUserFolders(userId: string, options: {
-    page: number;
-    limit: number;
-  }): Promise<{
+  async getUserFolders(
+    userId: string,
+    options: {
+      page: number;
+      limit: number;
+    }
+  ): Promise<{
     folders: FolderDTO[];
     pagination: {
       page: number;
@@ -41,18 +44,17 @@ export class FolderService {
       }
 
       // Build query with count for pagination
-      let query = this.supabase
-        .from('folders')
-        .select('id, name, created_at, updated_at', { count: 'exact' })
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false }) // Most recent first
+      const query = this.supabase
+        .from("folders")
+        .select("id, name, created_at, updated_at", { count: "exact" })
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false }) // Most recent first
         .range(offset, offset + limit - 1);
 
       // Execute query
       const { data: foldersData, error: foldersError, count } = await query;
 
       if (foldersError) {
-        console.error("Database error fetching folders:", foldersError);
         throw new Error("Failed to retrieve folders from database");
       }
 
@@ -61,7 +63,7 @@ export class FolderService {
       const totalPages = Math.ceil(total / limit);
 
       // Transform data to DTOs (exclude user_id)
-      const folders: FolderDTO[] = (foldersData || []).map(folder => ({
+      const folders: FolderDTO[] = (foldersData || []).map((folder) => ({
         id: folder.id,
         name: folder.name,
         created_at: folder.created_at,
@@ -77,9 +79,7 @@ export class FolderService {
           totalPages,
         },
       };
-
     } catch (error) {
-      console.error("Error getting user folders:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -107,18 +107,17 @@ export class FolderService {
 
       // Query folder with user_id verification to ensure ownership
       const { data: folderData, error: folderError } = await this.supabase
-        .from('folders')
-        .select('id, name, created_at, updated_at')
-        .eq('id', folderId)
-        .eq('user_id', userId)
+        .from("folders")
+        .select("id, name, created_at, updated_at")
+        .eq("id", folderId)
+        .eq("user_id", userId)
         .single();
 
       if (folderError) {
-        if (folderError.code === 'PGRST116') {
+        if (folderError.code === "PGRST116") {
           // No rows returned - folder not found or not owned by user
           throw new Error("Folder not found or access denied");
         }
-        console.error("Database error fetching folder:", folderError);
         throw new Error("Failed to retrieve folder from database");
       }
 
@@ -128,13 +127,12 @@ export class FolderService {
 
       // Query flashcard count for this folder
       const { count: flashcardCount, error: countError } = await this.supabase
-        .from('flashcards')
-        .select('*', { count: 'exact', head: true })
-        .eq('folder_id', folderId)
-        .eq('user_id', userId);
+        .from("flashcards")
+        .select("*", { count: "exact", head: true })
+        .eq("folder_id", folderId)
+        .eq("user_id", userId);
 
       if (countError) {
-        console.error("Database error counting flashcards:", countError);
         throw new Error("Failed to retrieve flashcard count from database");
       }
 
@@ -148,9 +146,7 @@ export class FolderService {
       };
 
       return folderDetails;
-
     } catch (error) {
-      console.error("Error getting folder details:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -173,15 +169,14 @@ export class FolderService {
 
       // Check if folder with same name already exists for this user
       const { data: existingFolder, error: checkError } = await this.supabase
-        .from('folders')
-        .select('id')
-        .eq('user_id', folderData.user_id)
-        .eq('name', folderData.name)
+        .from("folders")
+        .select("id")
+        .eq("user_id", folderData.user_id)
+        .eq("name", folderData.name)
         .single();
 
-      if (checkError && checkError.code !== 'PGRST116') {
+      if (checkError && checkError.code !== "PGRST116") {
         // PGRST116 means no rows found, which is what we want
-        console.error("Database error checking existing folder:", checkError);
         throw new Error("Failed to validate folder uniqueness");
       }
 
@@ -191,25 +186,23 @@ export class FolderService {
 
       // Create the new folder
       const { data: newFolder, error: insertError } = await this.supabase
-        .from('folders')
+        .from("folders")
         .insert([
           {
             name: folderData.name,
             user_id: folderData.user_id,
-          }
+          },
         ])
-        .select('id, name, created_at, updated_at')
+        .select("id, name, created_at, updated_at")
         .single();
 
       if (insertError) {
-        console.error("Database error creating folder:", insertError);
-        
         // Handle specific database constraints
-        if (insertError.code === '23505') {
+        if (insertError.code === "23505") {
           // Unique constraint violation
           throw new Error("A folder with this name already exists");
         }
-        
+
         throw new Error("Failed to create folder in database");
       }
 
@@ -226,9 +219,7 @@ export class FolderService {
       };
 
       return folderDTO;
-
     } catch (error) {
-      console.error("Error creating folder:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -265,18 +256,17 @@ export class FolderService {
 
       // First, verify the folder exists and belongs to the user
       const { data: existingFolder, error: checkError } = await this.supabase
-        .from('folders')
-        .select('id, name')
-        .eq('id', folderId)
-        .eq('user_id', userId)
+        .from("folders")
+        .select("id, name")
+        .eq("id", folderId)
+        .eq("user_id", userId)
         .single();
 
       if (checkError) {
-        if (checkError.code === 'PGRST116') {
+        if (checkError.code === "PGRST116") {
           // No rows returned - folder not found or not owned by user
           throw new Error("Folder not found or access denied");
         }
-        console.error("Database error checking folder ownership:", checkError);
         throw new Error("Failed to verify folder ownership");
       }
 
@@ -289,22 +279,22 @@ export class FolderService {
         // Name hasn't changed, return current folder data
         const folderDetails = await this.getFolderDetails(folderId, userId);
         // Return without flashcard_count for consistency with update operation
+        //@typescript-eslint/no-unused-vars
         const { flashcard_count, ...folderDTO } = folderDetails;
         return folderDTO;
       }
 
       // Check if another folder with the same name already exists for this user
       const { data: duplicateFolder, error: duplicateError } = await this.supabase
-        .from('folders')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('name', trimmedName)
-        .neq('id', folderId) // Exclude current folder
+        .from("folders")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("name", trimmedName)
+        .neq("id", folderId) // Exclude current folder
         .single();
 
-      if (duplicateError && duplicateError.code !== 'PGRST116') {
+      if (duplicateError && duplicateError.code !== "PGRST116") {
         // PGRST116 means no rows found, which is what we want
-        console.error("Database error checking duplicate folder name:", duplicateError);
         throw new Error("Failed to validate folder name uniqueness");
       }
 
@@ -314,25 +304,23 @@ export class FolderService {
 
       // Update the folder
       const { data: updatedFolder, error: updateError } = await this.supabase
-        .from('folders')
+        .from("folders")
         .update({
           name: trimmedName,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', folderId)
-        .eq('user_id', userId)
-        .select('id, name, created_at, updated_at')
+        .eq("id", folderId)
+        .eq("user_id", userId)
+        .select("id, name, created_at, updated_at")
         .single();
 
       if (updateError) {
-        console.error("Database error updating folder:", updateError);
-        
         // Handle specific database constraints
-        if (updateError.code === '23505') {
+        if (updateError.code === "23505") {
           // Unique constraint violation
           throw new Error("A folder with this name already exists");
         }
-        
+
         throw new Error("Failed to update folder in database");
       }
 
@@ -349,9 +337,7 @@ export class FolderService {
       };
 
       return folderDTO;
-
     } catch (error) {
-      console.error("Error updating folder:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -379,18 +365,17 @@ export class FolderService {
 
       // First, verify the folder exists and belongs to the user
       const { data: existingFolder, error: checkError } = await this.supabase
-        .from('folders')
-        .select('id')
-        .eq('id', folderId)
-        .eq('user_id', userId)
+        .from("folders")
+        .select("id")
+        .eq("id", folderId)
+        .eq("user_id", userId)
         .single();
 
       if (checkError) {
-        if (checkError.code === 'PGRST116') {
+        if (checkError.code === "PGRST116") {
           // No rows returned - folder not found or not owned by user
           throw new Error("Folder not found or access denied");
         }
-        console.error("Database error checking folder ownership:", checkError);
         throw new Error("Failed to verify folder ownership");
       }
 
@@ -400,18 +385,15 @@ export class FolderService {
 
       // Delete the folder (flashcards will be deleted automatically due to CASCADE constraint)
       const { error: deleteError } = await this.supabase
-        .from('folders')
+        .from("folders")
         .delete()
-        .eq('id', folderId)
-        .eq('user_id', userId);
+        .eq("id", folderId)
+        .eq("user_id", userId);
 
       if (deleteError) {
-        console.error("Database error deleting folder:", deleteError);
         throw new Error("Failed to delete folder from database");
       }
-
     } catch (error) {
-      console.error("Error deleting folder:", error);
       if (error instanceof Error) {
         throw error;
       }

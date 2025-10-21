@@ -26,7 +26,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
 
@@ -47,16 +47,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     if (error) {
       return new Response(
         JSON.stringify({
-          error: error.message === "Invalid login credentials"
-            ? "Nieprawidłowy email lub hasło"
-            : error.message,
+          error: error.message === "Invalid login credentials" ? "Nieprawidłowy email lub hasło" : error.message,
         }),
         {
           status: 401,
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
 
@@ -73,10 +71,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   } catch (error) {
-    console.error("Login error:", error);
     return new Response(
       JSON.stringify({
         error: "Wystąpił błąd podczas logowania",
@@ -86,7 +83,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   }
 };

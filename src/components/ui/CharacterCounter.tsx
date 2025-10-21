@@ -1,5 +1,5 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
+import React from "react";
+import { cn } from "../../lib/utils";
 
 interface CharacterCounterProps {
   currentLength: number;
@@ -7,22 +7,18 @@ interface CharacterCounterProps {
   className?: string;
 }
 
-const CharacterCounter: React.FC<CharacterCounterProps> = ({
-  currentLength,
-  maxLength,
-  className,
-}) => {
+const CharacterCounter: React.FC<CharacterCounterProps> = ({ currentLength, maxLength, className }) => {
   const isOverLimit = currentLength > maxLength;
   const isNearLimit = currentLength > maxLength * 0.8;
 
   return (
     <span
       className={cn(
-        'text-sm',
+        "text-sm",
         {
-          'text-red-600': isOverLimit,
-          'text-amber-600': !isOverLimit && isNearLimit,
-          'text-gray-500': !isOverLimit && !isNearLimit,
+          "text-red-600": isOverLimit,
+          "text-amber-600": !isOverLimit && isNearLimit,
+          "text-gray-500": !isOverLimit && !isNearLimit,
         },
         className
       )}

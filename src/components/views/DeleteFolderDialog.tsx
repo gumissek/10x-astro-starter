@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
-import { Button } from '../ui/button';
-import { AlertTriangle } from 'lucide-react';
-import type { FolderViewModel } from '../../types';
+import React, { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "../ui/button";
+import { AlertTriangle } from "lucide-react";
+import type { FolderViewModel } from "../../types";
 
 interface DeleteFolderDialogProps {
   isOpen: boolean;
@@ -21,12 +14,7 @@ interface DeleteFolderDialogProps {
 /**
  * DeleteFolderDialog - Modal with confirmation request for folder deletion
  */
-const DeleteFolderDialog: React.FC<DeleteFolderDialogProps> = ({
-  isOpen,
-  folder,
-  onClose,
-  onConfirm,
-}) => {
+const DeleteFolderDialog: React.FC<DeleteFolderDialogProps> = ({ isOpen, folder, onClose, onConfirm }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +35,7 @@ const DeleteFolderDialog: React.FC<DeleteFolderDialogProps> = ({
       await onConfirm(folder.id);
       // Dialog will be closed by parent component after successful deletion
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Nie udało się usunąć folderu. Spróbuj ponownie.');
+      setError(err instanceof Error ? err.message : "Nie udało się usunąć folderu. Spróbuj ponownie.");
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +47,7 @@ const DeleteFolderDialog: React.FC<DeleteFolderDialogProps> = ({
     }
   };
 
-  const flashcardText = folder?.flashcard_count === 1 ? 'fiszkę' : 'fiszek';
+  const flashcardText = folder?.flashcard_count === 1 ? "fiszkę" : "fiszek";
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -73,20 +61,18 @@ const DeleteFolderDialog: React.FC<DeleteFolderDialogProps> = ({
             Ta akcja jest nieodwracalna. Zostanie usunięty folder i wszystkie fiszki w nim zawarte.
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="py-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <h3 className="font-semibold text-red-800 mb-2">
-              Folder do usunięcia:
-            </h3>
+            <h3 className="font-semibold text-red-800 mb-2">Folder do usunięcia:</h3>
             <p className="text-red-700 mb-1">
-              <strong>"{folder?.name}"</strong>
+              <strong>&quot;{folder?.name}&quot;</strong>
             </p>
             <p className="text-red-600 text-sm">
               Zawiera {folder?.flashcard_count || 0} {flashcardText}
             </p>
           </div>
-          
+
           <p className="text-gray-600 text-sm mt-4">
             Czy na pewno chcesz usunąć ten folder? Wszystkie fiszki w nim zawarte zostaną trwale utracone.
           </p>
@@ -100,21 +86,11 @@ const DeleteFolderDialog: React.FC<DeleteFolderDialogProps> = ({
         )}
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isLoading}
-          >
+          <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
             Anuluj
           </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleConfirm}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Usuwanie...' : 'Usuń folder'}
+          <Button type="button" variant="destructive" onClick={handleConfirm} disabled={isLoading}>
+            {isLoading ? "Usuwanie..." : "Usuń folder"}
           </Button>
         </DialogFooter>
       </DialogContent>

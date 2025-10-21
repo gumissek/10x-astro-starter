@@ -1,20 +1,20 @@
 ---
-import AuthLayout from '../../layouts/AuthLayout.astro';
-import FolderView from '../../components/views/FolderView';
+import AuthLayout from "../../layouts/AuthLayout.astro";
+import FolderView from "../../components/views/FolderView";
 
 export const prerender = false;
 
 const { folderId } = Astro.params;
 
 if (!folderId) {
-  return Astro.redirect('/dashboard');
+  return Astro.redirect("/dashboard");
 }
 
 // Sprawdź czy użytkownik jest zalogowany (middleware powinien przekierować, ale double-check)
 const { user } = Astro.locals;
 
 if (!user) {
-  return Astro.redirect('/login');
+  return Astro.redirect("/login");
 }
 ---
 

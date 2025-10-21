@@ -1,4 +1,10 @@
-import type { GenerateFlashcardsResponseDTO, CreateFlashcardCommand, FlashcardDTO, UpdateFlashcardCommand, BulkSaveFlashcardsCommand } from "../../types";
+import type {
+  GenerateFlashcardsResponseDTO,
+  CreateFlashcardCommand,
+  FlashcardDTO,
+  UpdateFlashcardCommand,
+  BulkSaveFlashcardsCommand,
+} from "../../types";
 import type { SupabaseClient } from "../../db/supabase.client";
 /**
  * Service for generating flashcards using AI
@@ -14,27 +20,27 @@ export class FlashcardGenerationService {
   /**
    * Get a flashcard by its ID
    * @param flashcardId - The UUID of the flashcard to retrieve
-   * @param userId - User ID 
+   * @param userId - User ID
    * @returns Promise<FlashcardDTO | null> - Flashcard data or null if not found
    * @throws Error if database operation fails
    */
-  async getFlashcardById(flashcardId: string, userId: string ): Promise<FlashcardDTO | null> {
+  async getFlashcardById(flashcardId: string, userId: string): Promise<FlashcardDTO | null> {
     try {
       const { data: flashcardData, error: flashcardError } = await this.supabase
-        .from('flashcards')
-        .select('id, front, back, folder_id, generation_source, created_at, updated_at')
-        .eq('id', flashcardId)
-        .eq('user_id', userId) // Ensure user can only access their own flashcards
+        .from("flashcards")
+        .select("id, front, back, folder_id, generation_source, created_at, updated_at")
+        .eq("id", flashcardId)
+        .eq("user_id", userId) // Ensure user can only access their own flashcards
         .single();
 
       // Handle not found case
       if (flashcardError) {
-        if (flashcardError.code === 'PGRST116') { // PostgREST "no rows returned" error
+        if (flashcardError.code === "PGRST116") {
+          // PostgREST "no rows returned" error
           return null; // Flashcard not found
         }
-        
+
         // Log and throw for other database errors
-        console.error("Database error fetching flashcard:", flashcardError);
         throw new Error("Failed to retrieve flashcard from database");
       }
 
@@ -52,9 +58,7 @@ export class FlashcardGenerationService {
         created_at: flashcardData.created_at,
         updated_at: flashcardData.updated_at,
       };
-
     } catch (error) {
-      console.error("Error getting flashcard by ID:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -64,18 +68,21 @@ export class FlashcardGenerationService {
 
   /**
    * Get paginated list of flashcards for a user with optional filtering and sorting
-   * @param userId - User ID 
+   * @param userId - User ID
    * @param options - Query options for filtering, pagination and sorting
    * @returns Promise<{flashcards: FlashcardDTO[], pagination: PaginationInfo}> - Paginated flashcards data
    * @throws Error if database operation fails
    */
-  async getFlashcards(userId: string , options: {
-    folderId?: string;
-    page: number;
-    limit: number;
-    sortBy: string;
-    order: string;
-  }): Promise<{
+  async getFlashcards(
+    userId: string,
+    options: {
+      folderId?: string;
+      page: number;
+      limit: number;
+      sortBy: string;
+      order: string;
+    }
+  ): Promise<{
     flashcards: FlashcardDTO[];
     pagination: {
       page: number;
@@ -90,29 +97,29 @@ export class FlashcardGenerationService {
 
       // Build base query
       let query = this.supabase
-        .from('flashcards')
-        .select('id, front, back, folder_id, generation_source, created_at, updated_at', { count: 'exact' })
-        .eq('user_id', userId);
+        .from("flashcards")
+        .select("id, front, back, folder_id, generation_source, created_at, updated_at", { count: "exact" })
+        .eq("user_id", userId);
 
       // Add folder filter if provided
       if (folderId) {
         // First verify that the folder exists and belongs to the user
         const { data: folderData, error: folderError } = await this.supabase
-          .from('folders')
-          .select('id')
-          .eq('id', folderId)
-          .eq('user_id', userId)
+          .from("folders")
+          .select("id")
+          .eq("id", folderId)
+          .eq("user_id", userId)
           .single();
 
         if (folderError || !folderData) {
           throw new Error("Folder not found or access denied");
         }
 
-        query = query.eq('folder_id', folderId);
+        query = query.eq("folder_id", folderId);
       }
 
       // Add sorting
-      query = query.order(sortBy, { ascending: order === 'asc' });
+      query = query.order(sortBy, { ascending: order === "asc" });
 
       // Add pagination
       query = query.range(offset, offset + limit - 1);
@@ -121,7 +128,6 @@ export class FlashcardGenerationService {
       const { data: flashcardsData, error: flashcardsError, count } = await query;
 
       if (flashcardsError) {
-        console.error("Database error fetching flashcards:", flashcardsError);
         throw new Error("Failed to retrieve flashcards from database");
       }
 
@@ -130,7 +136,7 @@ export class FlashcardGenerationService {
       const totalPages = Math.ceil(total / limit);
 
       // Transform data to DTOs (exclude user_id)
-      const flashcards: FlashcardDTO[] = (flashcardsData || []).map(flashcard => ({
+      const flashcards: FlashcardDTO[] = (flashcardsData || []).map((flashcard) => ({
         id: flashcard.id,
         front: flashcard.front,
         back: flashcard.back,
@@ -149,9 +155,7 @@ export class FlashcardGenerationService {
           totalPages,
         },
       };
-
     } catch (error) {
-      console.error("Error getting flashcards:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -162,17 +166,17 @@ export class FlashcardGenerationService {
   /**
    * Create a new flashcard in the database
    * @param flashcardData - Flashcard data to create
-   * @param userId - User ID 
+   * @param userId - User ID
    * @returns Promise<FlashcardDTO> - Created flashcard data
    */
-  async createFlashcard(flashcardData: CreateFlashcardCommand, userId: string ): Promise<FlashcardDTO> {
+  async createFlashcard(flashcardData: CreateFlashcardCommand, userId: string): Promise<FlashcardDTO> {
     try {
       // First, verify that the folder exists and belongs to the user
       const { data: folderData, error: folderError } = await this.supabase
-        .from('folders')
-        .select('id, user_id')
-        .eq('id', flashcardData.folder_id)
-        .eq('user_id', userId)
+        .from("folders")
+        .select("id, user_id")
+        .eq("id", flashcardData.folder_id)
+        .eq("user_id", userId)
         .single();
 
       if (folderError || !folderData) {
@@ -181,19 +185,19 @@ export class FlashcardGenerationService {
 
       // Create the flashcard
       const { data: flashcardResult, error: flashcardError } = await this.supabase
-        .from('flashcards')
-        .insert([{
-          front: flashcardData.front,
-          back: flashcardData.back,
-          folder_id: flashcardData.folder_id,
-          generation_source: flashcardData.generation_source,
-          user_id: userId,
-        }])
-        .select('id, front, back, folder_id, generation_source, created_at, updated_at')
+        .from("flashcards")
+        .insert([
+          {
+            front: flashcardData.front,
+            back: flashcardData.back,
+            folder_id: flashcardData.folder_id,
+            generation_source: flashcardData.generation_source,
+            user_id: userId,
+          },
+        ])
+        .select("id, front, back, folder_id, generation_source, created_at, updated_at")
         .single();
-        console.log("Flashcard creation result:", flashcardResult, flashcardError);
       if (flashcardError || !flashcardResult) {
-        console.error("Database error creating flashcard:", flashcardError);
         throw new Error("Failed to create flashcard in database");
       }
 
@@ -207,9 +211,7 @@ export class FlashcardGenerationService {
         created_at: flashcardResult.created_at,
         updated_at: flashcardResult.updated_at,
       };
-
     } catch (error) {
-      console.error("Error creating flashcard:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -221,30 +223,30 @@ export class FlashcardGenerationService {
    * Update an existing flashcard
    * @param flashcardId - The UUID of the flashcard to update
    * @param updateData - Data to update the flashcard with
-   * @param userId - User ID 
+   * @param userId - User ID
    * @returns Promise<FlashcardDTO> - Updated flashcard data
    * @throws Error if flashcard not found, folder not found, or database operation fails
    */
   async updateFlashcard(
-    flashcardId: string, 
-    updateData: UpdateFlashcardCommand, 
-    userId: string 
+    flashcardId: string,
+    updateData: UpdateFlashcardCommand,
+    userId: string
   ): Promise<FlashcardDTO> {
     try {
       // First, verify that the flashcard exists and belongs to the user
       const { data: existingFlashcard, error: flashcardError } = await this.supabase
-        .from('flashcards')
-        .select('id, folder_id, user_id')
-        .eq('id', flashcardId)
-        .eq('user_id', userId)
+        .from("flashcards")
+        .select("id, folder_id, user_id")
+        .eq("id", flashcardId)
+        .eq("user_id", userId)
         .single();
 
       if (flashcardError) {
-        if (flashcardError.code === 'PGRST116') { // PostgREST "no rows returned" error
+        if (flashcardError.code === "PGRST116") {
+          // PostgREST "no rows returned" error
           throw new Error("Flashcard not found or access denied");
         }
-        
-        console.error("Database error fetching flashcard for update:", flashcardError);
+
         throw new Error("Failed to retrieve flashcard from database");
       }
 
@@ -255,10 +257,10 @@ export class FlashcardGenerationService {
       // If folder_id is being updated, verify the new folder exists and belongs to the user
       if (updateData.folder_id && updateData.folder_id !== existingFlashcard.folder_id) {
         const { data: folderData, error: folderError } = await this.supabase
-          .from('folders')
-          .select('id, user_id')
-          .eq('id', updateData.folder_id)
-          .eq('user_id', userId)
+          .from("folders")
+          .select("id, user_id")
+          .eq("id", updateData.folder_id)
+          .eq("user_id", userId)
           .single();
 
         if (folderError || !folderData) {
@@ -267,6 +269,7 @@ export class FlashcardGenerationService {
       }
 
       // Prepare update data
+      //@typescript-eslint/no-explicit-any
       const updatePayload: any = {
         front: updateData.front,
         back: updateData.back,
@@ -281,15 +284,14 @@ export class FlashcardGenerationService {
 
       // Update the flashcard
       const { data: updatedFlashcard, error: updateError } = await this.supabase
-        .from('flashcards')
+        .from("flashcards")
         .update(updatePayload)
-        .eq('id', flashcardId)
-        .eq('user_id', userId) // Extra security check
-        .select('id, front, back, folder_id, generation_source, created_at, updated_at')
+        .eq("id", flashcardId)
+        .eq("user_id", userId) // Extra security check
+        .select("id, front, back, folder_id, generation_source, created_at, updated_at")
         .single();
 
       if (updateError || !updatedFlashcard) {
-        console.error("Database error updating flashcard:", updateError);
         throw new Error("Failed to update flashcard in database");
       }
 
@@ -303,9 +305,7 @@ export class FlashcardGenerationService {
         created_at: updatedFlashcard.created_at,
         updated_at: updatedFlashcard.updated_at,
       };
-
     } catch (error) {
-      console.error("Error updating flashcard:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -317,20 +317,19 @@ export class FlashcardGenerationService {
    * Generate flashcards from provided text
    * @param text - Input text to generate flashcards from (max 5000 characters)
    * @returns Promise<GenerateFlashcardsResponseDTO> - Generated flashcards with suggested folder name
-   * 
+   *
    * Authentication will be implemented comprehensively later.
    */
   async generateFlashcards(text: string): Promise<GenerateFlashcardsResponseDTO> {
     try {
       // Simulate processing time for AI call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Extract key concepts from text for mock generation
       const mockResponse = this.generateMockFlashcards(text);
-      
+
       return mockResponse;
     } catch (error) {
-      console.error("Error generating flashcards:", error);
       throw new Error("Failed to generate flashcards from provided text");
     }
   }
@@ -345,12 +344,10 @@ export class FlashcardGenerationService {
     // Simple text analysis for mock purposes
     const wordCount = text.split(/\s+/).length;
     const textLength = text.length;
-    
+
     // Generate suggested folder name based on text content
     const firstWords = text.split(/\s+/).slice(0, 3).join(" ");
-    const suggestedName = firstWords.length > 30 
-      ? `${firstWords.substring(0, 30)}...` 
-      : `Study Notes - ${firstWords}`;
+    const suggestedName = firstWords.length > 30 ? `${firstWords.substring(0, 30)}...` : `Study Notes - ${firstWords}`;
 
     // Generate mock flashcards based on text characteristics
     const flashcardsProposals = [];
@@ -373,7 +370,7 @@ export class FlashcardGenerationService {
 
     if (wordCount > 50) {
       // Try to find questions or important statements
-      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 10);
+      const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 10);
       if (sentences.length > 1) {
         const keysentence = sentences[0].trim();
         flashcardsProposals.push({
@@ -408,7 +405,7 @@ export class FlashcardGenerationService {
    * @throws Error if folder not found, access denied, or database operation fails
    */
   async bulkSaveFlashcards(
-    bulkData: BulkSaveFlashcardsCommand, 
+    bulkData: BulkSaveFlashcardsCommand,
     userId: string
   ): Promise<{
     saved_count: number;
@@ -418,18 +415,18 @@ export class FlashcardGenerationService {
     try {
       // Verify that the folder exists and belongs to the user
       const { data: folderData, error: folderError } = await this.supabase
-        .from('folders')
-        .select('id, user_id, name')
-        .eq('id', bulkData.folder_id)
-        .eq('user_id', userId)
+        .from("folders")
+        .select("id, user_id, name")
+        .eq("id", bulkData.folder_id)
+        .eq("user_id", userId)
         .single();
 
       if (folderError) {
-        if (folderError.code === 'PGRST116') { // PostgREST "no rows returned" error
+        if (folderError.code === "PGRST116") {
+          // PostgREST "no rows returned" error
           throw new Error("Folder not found or access denied");
         }
-        
-        console.error("Database error fetching folder for bulk save:", folderError);
+
         throw new Error("Failed to retrieve folder from database");
       }
 
@@ -438,7 +435,7 @@ export class FlashcardGenerationService {
       }
 
       // Prepare flashcards data for bulk insert
-      const flashcardsToInsert = bulkData.flashcards.map(flashcard => ({
+      const flashcardsToInsert = bulkData.flashcards.map((flashcard) => ({
         front: flashcard.front,
         back: flashcard.back,
         folder_id: bulkData.folder_id,
@@ -448,29 +445,24 @@ export class FlashcardGenerationService {
 
       // Use Supabase transaction-like bulk insert
       const { data: insertedFlashcards, error: insertError } = await this.supabase
-        .from('flashcards')
+        .from("flashcards")
         .insert(flashcardsToInsert)
-        .select('id, front, back, folder_id, generation_source, created_at, updated_at');
+        .select("id, front, back, folder_id, generation_source, created_at, updated_at");
 
       if (insertError || !insertedFlashcards) {
-        console.error("Database error during bulk insert:", insertError);
         throw new Error("Failed to save flashcards to database");
       }
 
       // Extract IDs of successfully created flashcards
-      const flashcardIds = insertedFlashcards.map(flashcard => flashcard.id);
+      const flashcardIds = insertedFlashcards.map((flashcard) => flashcard.id);
       const savedCount = insertedFlashcards.length;
-
-      console.log(`Successfully saved ${savedCount} flashcards to folder: ${folderData.name}`);
 
       return {
         saved_count: savedCount,
         flashcard_ids: flashcardIds,
-        message: `Successfully saved ${savedCount} flashcard${savedCount > 1 ? 's' : ''} to folder "${folderData.name}"`,
+        message: `Successfully saved ${savedCount} flashcard${savedCount > 1 ? "s" : ""} to folder "${folderData.name}"`,
       };
-
     } catch (error) {
-      console.error("Error in bulk save flashcards:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -481,7 +473,7 @@ export class FlashcardGenerationService {
   /**
    * Delete a flashcard by ID
    * @param flashcardId - The UUID of the flashcard to delete
-   * @param userId - User ID 
+   * @param userId - User ID
    * @returns Promise<void> - No data returned on successful deletion
    * @throws Error if flashcard not found, access denied, or database operation fails
    */
@@ -489,18 +481,18 @@ export class FlashcardGenerationService {
     try {
       // First, verify that the flashcard exists and belongs to the user
       const { data: existingFlashcard, error: flashcardError } = await this.supabase
-        .from('flashcards')
-        .select('id, user_id')
-        .eq('id', flashcardId)
-        .eq('user_id', userId)
+        .from("flashcards")
+        .select("id, user_id")
+        .eq("id", flashcardId)
+        .eq("user_id", userId)
         .single();
 
       if (flashcardError) {
-        if (flashcardError.code === 'PGRST116') { // PostgREST "no rows returned" error
+        if (flashcardError.code === "PGRST116") {
+          // PostgREST "no rows returned" error
           throw new Error("Flashcard not found or access denied");
         }
-        
-        console.error("Database error fetching flashcard for deletion:", flashcardError);
+
         throw new Error("Failed to retrieve flashcard from database");
       }
 
@@ -510,21 +502,18 @@ export class FlashcardGenerationService {
 
       // Delete the flashcard
       const { error: deleteError } = await this.supabase
-        .from('flashcards')
+        .from("flashcards")
         .delete()
-        .eq('id', flashcardId)
-        .eq('user_id', userId); // Extra security check to ensure user can only delete their own flashcards
+        .eq("id", flashcardId)
+        .eq("user_id", userId); // Extra security check to ensure user can only delete their own flashcards
 
       if (deleteError) {
-        console.error("Database error deleting flashcard:", deleteError);
         throw new Error("Failed to delete flashcard from database");
       }
 
       // No data returned on successful deletion
       return;
-
     } catch (error) {
-      console.error("Error deleting flashcard:", error);
       if (error instanceof Error) {
         throw error;
       }
@@ -538,6 +527,7 @@ export class FlashcardGenerationService {
    * @param text - Input text
    * @returns Promise<GenerateFlashcardsResponseDTO> - AI generated response
    */
+  //@typescript-eslint/no-unused-vars
   private async callAIService(text: string): Promise<GenerateFlashcardsResponseDTO> {
     // TODO: Implement actual AI API call
     // This would include:
@@ -545,12 +535,12 @@ export class FlashcardGenerationService {
     // 2. Making the API call with proper error handling
     // 3. Parsing and validating the AI response
     // 4. Handling timeouts (60 seconds as per requirements)
-    
+
     // Example of future database integration:
     // const { data, error } = await this.supabase
     //   .from('flashcards')
     //   .insert([{ front: '...', back: '...', user_id:  }]);
-    
+
     throw new Error("AI service integration not yet implemented");
   }
 }

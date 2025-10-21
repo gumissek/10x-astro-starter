@@ -1,4 +1,4 @@
-import { type Page } from '@playwright/test';
+import { type Page } from "@playwright/test";
 
 /**
  * Base Page Object for common page operations
@@ -10,7 +10,7 @@ export class BasePage {
     await this.page.goto(path);
   }
 
-  async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load') {
+  async waitForLoadState(state: "load" | "domcontentloaded" | "networkidle" = "load") {
     await this.page.waitForLoadState(state);
   }
 

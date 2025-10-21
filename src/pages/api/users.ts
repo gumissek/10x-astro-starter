@@ -134,12 +134,13 @@ const dummyUsers: User[] = [
 ];
 
 // GET endpoint - pobieranie wszystkich użytkowników
+//@typescript-eslint/no-unused-vars
 export const GET: APIRoute = async ({ request }) => {
   try {
     // Symulacja opóźnienia serwera (opcjonalne)
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    let users = [...dummyUsers];
+    const users = [...dummyUsers];
 
     return new Response(
       JSON.stringify({
@@ -156,8 +157,6 @@ export const GET: APIRoute = async ({ request }) => {
       }
     );
   } catch (error) {
-    console.error("Error in GET /api/users:", error);
-
     return new Response(
       JSON.stringify({
         success: false,

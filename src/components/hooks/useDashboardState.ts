@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { FolderViewModel } from '../../types';
-
+import { useState, useEffect, useCallback } from "react";
+import type { FolderViewModel } from "../../types";
 
 interface UseDashboardStateReturn {
   // State
@@ -9,7 +8,7 @@ interface UseDashboardStateReturn {
   error: string | null;
   editingFolder: FolderViewModel | null;
   deletingFolder: FolderViewModel | null;
-  
+
   // Actions
   handleRefresh: () => void;
   handleEditFolder: (folderId: string) => void;
@@ -45,16 +44,16 @@ export function useDashboardState(userId: string): UseDashboardStateReturn {
     try {
       // Step 1: Fetch list of folders
       const foldersResponse = await fetch(`/api/folders?user_id=${userId}&limit=50`);
-      
+
       if (!foldersResponse.ok) {
         const errorData = await foldersResponse.json();
-        throw new Error(errorData.message || 'Failed to fetch folders');
+        throw new Error(errorData.message || "Failed to fetch folders");
       }
 
       const foldersResult = await foldersResponse.json();
-      
+
       if (!foldersResult.success) {
-        throw new Error(foldersResult.message || 'Failed to fetch folders');
+        throw new Error(foldersResult.message || "Failed to fetch folders");
       }
 
       const foldersList = foldersResult.data.folders;
@@ -68,10 +67,9 @@ export function useDashboardState(userId: string): UseDashboardStateReturn {
       // Step 2: Fetch details for each folder (including flashcard count)
       const folderDetailsPromises = foldersList.map(async (folder: any) => {
         const detailsResponse = await fetch(`/api/folders/${folder.id}?user_id=${userId}`);
-        
+
         if (!detailsResponse.ok) {
           // If details fetch fails, fallback to basic folder data with 0 count
-          console.warn(`Failed to fetch details for folder ${folder.id}`);
           return {
             id: folder.id,
             name: folder.name,
@@ -82,10 +80,9 @@ export function useDashboardState(userId: string): UseDashboardStateReturn {
         }
 
         const detailsResult = await detailsResponse.json();
-        
+
         if (!detailsResult.success) {
           // If details fetch fails, fallback to basic folder data with 0 count
-          console.warn(`Failed to fetch details for folder ${folder.id}: ${detailsResult.message}`);
           return {
             id: folder.id,
             name: folder.name,
@@ -106,10 +103,8 @@ export function useDashboardState(userId: string): UseDashboardStateReturn {
 
       const foldersWithDetails = await Promise.all(folderDetailsPromises);
       setFolders(foldersWithDetails);
-
     } catch (err) {
-      console.error('Error fetching folders:', err);
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -132,22 +127,28 @@ export function useDashboardState(userId: string): UseDashboardStateReturn {
   /**
    * Handle edit folder action - open edit dialog
    */
-  const handleEditFolder = useCallback((folderId: string) => {
-    const folder = folders.find(f => f.id === folderId);
-    if (folder) {
-      setEditingFolder(folder);
-    }
-  }, [folders]);
+  const handleEditFolder = useCallback(
+    (folderId: string) => {
+      const folder = folders.find((f) => f.id === folderId);
+      if (folder) {
+        setEditingFolder(folder);
+      }
+    },
+    [folders]
+  );
 
   /**
    * Handle delete folder action - open delete confirmation dialog
    */
-  const handleDeleteFolder = useCallback((folderId: string) => {
-    const folder = folders.find(f => f.id === folderId);
-    if (folder) {
-      setDeletingFolder(folder);
-    }
-  }, [folders]);
+  const handleDeleteFolder = useCallback(
+    (folderId: string) => {
+      const folder = folders.find((f) => f.id === folderId);
+      if (folder) {
+        setDeletingFolder(folder);
+      }
+    },
+    [folders]
+  );
 
   /**
    * Close edit dialog
@@ -166,76 +167,78 @@ export function useDashboardState(userId: string): UseDashboardStateReturn {
   /**
    * Save folder name changes
    */
-  const handleSaveFolder = useCallback(async (folderId: string, newName: string) => {
-    try {
-      const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: newName }),
-      });
+  const handleSaveFolder = useCallback(
+    async (folderId: string, newName: string) => {
+      // eslint-disable-next-line no-useless-catch
+      try {
+        const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: newName }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update folder');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to update folder");
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.message || "Failed to update folder");
+        }
+
+        // Update local state with new folder data
+        setFolders((prevFolders) =>
+          prevFolders.map((folder) =>
+            folder.id === folderId ? { ...folder, name: newName, updated_at: result.data.updated_at } : folder
+          )
+        );
+
+        // Close edit dialog
+        setEditingFolder(null);
+      } catch (err) {
+        throw err; // Re-throw to let the component handle the error display
       }
-
-      const result = await response.json();
-      
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to update folder');
-      }
-
-      // Update local state with new folder data
-      setFolders(prevFolders => 
-        prevFolders.map(folder => 
-          folder.id === folderId 
-            ? { ...folder, name: newName, updated_at: result.data.updated_at }
-            : folder
-        )
-      );
-
-      // Close edit dialog
-      setEditingFolder(null);
-
-    } catch (err) {
-      console.error('Error updating folder:', err);
-      throw err; // Re-throw to let the component handle the error display
-    }
-  }, [userId]);
+    },
+    [userId]
+  );
 
   /**
    * Confirm folder deletion
    */
-  const handleConfirmDelete = useCallback(async (folderId: string) => {
-    try {
-      const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`, {
-        method: 'DELETE',
-      });
+  const handleConfirmDelete = useCallback(
+    async (folderId: string) => {
+      // eslint-disable-next-line no-useless-catch
+      try {
+        const response = await fetch(`/api/folders/${folderId}?user_id=${userId}`, {
+          method: "DELETE",
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to delete folder');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to delete folder");
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.message || "Failed to delete folder");
+        }
+
+        // Remove folder from local state
+        setFolders((prevFolders) => prevFolders.filter((folder) => folder.id !== folderId));
+
+        // Close delete dialog
+        setDeletingFolder(null);
+      } catch (err) {
+        throw err; // Re-throw to let the component handle the error display
       }
-
-      const result = await response.json();
-      
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to delete folder');
-      }
-
-      // Remove folder from local state
-      setFolders(prevFolders => prevFolders.filter(folder => folder.id !== folderId));
-
-      // Close delete dialog
-      setDeletingFolder(null);
-
-    } catch (err) {
-      console.error('Error deleting folder:', err);
-      throw err; // Re-throw to let the component handle the error display
-    }
-  }, [userId]);
+    },
+    [userId]
+  );
 
   return {
     folders,

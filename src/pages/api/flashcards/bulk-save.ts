@@ -1,4 +1,4 @@
- import type { APIRoute } from "astro";
+import type { APIRoute } from "astro";
 import { z } from "zod";
 import type { BulkSaveFlashcardsCommand } from "../../../types";
 import { FlashcardGenerationService } from "../../../lib/services/flashcardService";
@@ -7,27 +7,16 @@ export const prerender = false;
 
 // Zod schema for individual flashcard validation in bulk save
 const FlashcardItemSchema = z.object({
-  front: z
-    .string()
-    .min(1, "Front text cannot be empty")
-    .max(200, "Front text cannot exceed 200 characters")
-    .trim(),
-  back: z
-    .string()
-    .min(1, "Back text cannot be empty")
-    .max(500, "Back text cannot exceed 500 characters")
-    .trim(),
-  generation_source: z
-    .literal("ai", {
-      errorMap: () => ({ message: "Generation source must be 'ai' for bulk save operations" })
-    }),
+  front: z.string().min(1, "Front text cannot be empty").max(200, "Front text cannot exceed 200 characters").trim(),
+  back: z.string().min(1, "Back text cannot be empty").max(500, "Back text cannot exceed 500 characters").trim(),
+  generation_source: z.literal("ai", {
+    errorMap: () => ({ message: "Generation source must be 'ai' for bulk save operations" }),
+  }),
 });
 
 // Zod schema for POST request validation - bulk save
 const BulkSaveFlashcardsSchema = z.object({
-  folder_id: z
-    .string()
-    .uuid("Folder ID must be a valid UUID"),
+  folder_id: z.string().uuid("Folder ID must be a valid UUID"),
   flashcards: z
     .array(FlashcardItemSchema)
     .min(1, "At least one flashcard must be provided")
@@ -35,6 +24,7 @@ const BulkSaveFlashcardsSchema = z.object({
 });
 
 // Response type for bulk save operation
+//@typescript-eslint/no-unused-vars
 interface BulkSaveResponse {
   success: boolean;
   message: string;
@@ -68,7 +58,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Parse and validate request body
     let requestData: BulkSaveFlashcardsCommand;
-    
+
     try {
       const body = await request.json();
       requestData = BulkSaveFlashcardsSchema.parse(body);
@@ -78,7 +68,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           JSON.stringify({
             success: false,
             error: "Validation failed",
-            message: error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(", "),
+            message: error.errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", "),
             details: error.errors,
           }),
           {
@@ -89,7 +79,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -107,7 +97,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Get user ID from session (set by middleware)
     const userId = locals.user?.id;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({
@@ -123,19 +113,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
         }
       );
     }
-    
-    console.log("Bulk save request for user ID:", userId);
 
     // Verify that the folder exists and belongs to the user (authorization check)
     const { data: folderData, error: folderError } = await supabase
-      .from('folders')
-      .select('id, user_id, name')
-      .eq('id', requestData.folder_id)
-      .eq('user_id', userId)
+      .from("folders")
+      .select("id, user_id, name")
+      .eq("id", requestData.folder_id)
+      .eq("user_id", userId)
       .single();
 
     if (folderError) {
-      if (folderError.code === 'PGRST116') { // PostgREST "no rows returned" error
+      if (folderError.code === "PGRST116") {
+        // PostgREST "no rows returned" error
         return new Response(
           JSON.stringify({
             success: false,
@@ -150,8 +139,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           }
         );
       }
-      
-      console.error("Database error fetching folder for authorization:", folderError);
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -203,10 +191,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in POST /api/flashcards/bulk-save:", error);
-
     // Handle specific business logic errors
     if (error instanceof Error) {
       if (error.message.includes("Folder not found")) {

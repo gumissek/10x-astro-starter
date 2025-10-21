@@ -41,7 +41,6 @@ const UsersList: React.FC = () => {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nie udało się pobrać użytkowników");
-      console.error("Error fetching users:", err);
     } finally {
       setLoading(false);
     }

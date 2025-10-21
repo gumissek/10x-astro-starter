@@ -1,6 +1,6 @@
 ---
-import GuestLayout from '../layouts/GuestLayout.astro';
-import LoginForm from '../components/auth/LoginForm';
+import GuestLayout from "../layouts/GuestLayout.astro";
+import LoginForm from "../components/auth/LoginForm";
 
 export const prerender = false;
 
@@ -9,7 +9,7 @@ const { user } = Astro.locals;
 
 // Przekieruj zalogowanych użytkowników do dashboardu
 if (user) {
-  return Astro.redirect('/dashboard');
+  return Astro.redirect("/dashboard");
 }
 ---
 

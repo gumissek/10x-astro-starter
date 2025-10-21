@@ -1,13 +1,13 @@
 ---
-import AuthLayout from '@/layouts/AuthLayout.astro';
-import StudySessionView from '@/components/views/StudySessionView';
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import StudySessionView from "@/components/views/StudySessionView";
 
 export const prerender = false;
 
 const { folderId } = Astro.params;
 
 if (!folderId) {
-  return Astro.redirect('/dashboard');
+  return Astro.redirect("/dashboard");
 }
 ---
 

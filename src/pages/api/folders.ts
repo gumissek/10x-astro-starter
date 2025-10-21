@@ -13,14 +13,8 @@ const createFolderSchema = z.object({
     .min(1, "Folder name is required")
     .max(100, "Folder name must not exceed 100 characters")
     .trim()
-    .refine(
-      (name) => name.length > 0,
-      "Folder name cannot be empty or contain only whitespace"
-    ),
-  user_id: z
-    .string()
-    .uuid("user_id must be a valid UUID")
-    .min(1, "user_id is required"),
+    .refine((name) => name.length > 0, "Folder name cannot be empty or contain only whitespace"),
+  user_id: z.string().uuid("user_id must be a valid UUID").min(1, "user_id is required"),
 });
 
 export const prerender = false;
@@ -28,12 +22,12 @@ export const prerender = false;
 /**
  * GET /api/folders
  * Endpoint for retrieving paginated list of folders for a specific user
- * 
+ *
  * Query Parameters:
  * - user_id (required): UUID of the user to retrieve folders for
  * - page (optional): Page number, defaults to 1
  * - limit (optional): Items per page, defaults to 10, max 50
- * 
+ *
  * Response:
  * - 200: Success with folders list (may be empty array) and pagination info
  * - 400: Bad request (invalid parameters)
@@ -43,9 +37,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
   try {
     // Parse query parameters from URL
     const url = new URL(request.url);
-    const userIdParam = url.searchParams.get('user_id');
-    const pageParam = url.searchParams.get('page');
-    const limitParam = url.searchParams.get('limit');
+    const userIdParam = url.searchParams.get("user_id");
+    const pageParam = url.searchParams.get("page");
+    const limitParam = url.searchParams.get("limit");
 
     // Validate required user_id parameter
     if (!userIdParam) {
@@ -133,7 +127,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Get Supabase client from locals (following backend rules)
     const supabase = locals.supabase;
     if (!supabase) {
-      console.error("Supabase client not available in locals");
       return new Response(
         JSON.stringify({
           success: false,
@@ -177,15 +170,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in GET /api/folders:", error);
-
     // Handle specific error types
     if (error instanceof Error) {
       // Database or validation errors
-      if (error.message.includes("Invalid user ID format") || 
-          error.message.includes("Failed to get folders")) {
+      if (error.message.includes("Invalid user ID format") || error.message.includes("Failed to get folders")) {
         return new Response(
           JSON.stringify({
             success: false,
@@ -239,14 +228,14 @@ export const GET: APIRoute = async ({ request, locals }) => {
 /**
  * POST /api/folders
  * Endpoint for creating a new folder for an authenticated user
- * 
+ *
  * Request Body:
  * - name (required): String name for the new folder
  * - user_id (required): UUID of the user creating the folder
- * 
+ *
  * Headers:
  * - Content-Type: application/json
- * 
+ *
  * Response:
  * - 201: Success with created folder data
  * - 400: Bad request (validation errors, duplicate name)
@@ -278,7 +267,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Validate request body against schema
     const validationResult = createFolderSchema.safeParse(requestBody);
     if (!validationResult.success) {
-      const errorMessages = validationResult.error.errors.map(err => err.message);
+      const errorMessages = validationResult.error.errors.map((err) => err.message);
       return new Response(
         JSON.stringify({
           success: false,
@@ -318,7 +307,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // Get Supabase client from locals (following backend rules)
     const supabase = locals.supabase;
     if (!supabase) {
-      console.error("Supabase client not available in locals");
       return new Response(
         JSON.stringify({
           success: false,
@@ -363,15 +351,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in POST /api/folders:", error);
-
     // Handle specific error types
     if (error instanceof Error) {
       // Validation or business logic errors
-      if (error.message.includes("Invalid user ID format") ||
-          error.message.includes("A folder with this name already exists")) {
+      if (
+        error.message.includes("Invalid user ID format") ||
+        error.message.includes("A folder with this name already exists")
+      ) {
         return new Response(
           JSON.stringify({
             success: false,
@@ -388,8 +375,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
 
       // Database connection errors
-      if (error.message.includes("Failed to create folder in database") ||
-          error.message.includes("Failed to validate folder uniqueness")) {
+      if (
+        error.message.includes("Failed to create folder in database") ||
+        error.message.includes("Failed to validate folder uniqueness")
+      ) {
         return new Response(
           JSON.stringify({
             success: false,

@@ -1,8 +1,8 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import FlashcardListItem from './FlashcardListItem';
-import LoadingSpinner from './LoadingSpinner';
-import type { FlashcardViewModel, Pagination } from '../../types';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import FlashcardListItem from "./FlashcardListItem";
+import LoadingSpinner from "./LoadingSpinner";
+import type { FlashcardViewModel, Pagination } from "../../types";
 
 interface FlashcardListProps {
   flashcards: FlashcardViewModel[];
@@ -20,7 +20,7 @@ const PaginationControls: React.FC<{
   if (pagination.totalPages <= 1) return null;
 
   const { page, totalPages } = pagination;
-  
+
   // Generate page numbers to show
   const getVisiblePages = () => {
     const delta = 2;
@@ -32,7 +32,7 @@ const PaginationControls: React.FC<{
     }
 
     if (page - delta > 2) {
-      rangeWithDots.push(1, '...');
+      rangeWithDots.push(1, "...");
     } else {
       rangeWithDots.push(1);
     }
@@ -40,7 +40,7 @@ const PaginationControls: React.FC<{
     rangeWithDots.push(...range);
 
     if (page + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
+      rangeWithDots.push("...", totalPages);
     } else {
       rangeWithDots.push(totalPages);
     }
@@ -68,7 +68,7 @@ const PaginationControls: React.FC<{
       <div className="flex items-center gap-1">
         {getVisiblePages().map((pageNum, index) => (
           <React.Fragment key={index}>
-            {pageNum === '...' ? (
+            {pageNum === "..." ? (
               <span className="px-2 sm:px-3 py-2 text-gray-500 text-sm">...</span>
             ) : (
               <Button
@@ -137,12 +137,7 @@ const FlashcardList: React.FC<FlashcardListProps> = ({
       {/* Flashcards Grid */}
       <div className="space-y-4">
         {flashcards.map((flashcard) => (
-          <FlashcardListItem
-            key={flashcard.id}
-            flashcard={flashcard}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
+          <FlashcardListItem key={flashcard.id} flashcard={flashcard} onEdit={onEdit} onDelete={onDelete} />
         ))}
       </div>
 
@@ -150,7 +145,7 @@ const FlashcardList: React.FC<FlashcardListProps> = ({
       {pagination && (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-gray-600 mt-6">
           <div>
-            Widok od {Math.min((pagination.page - 1) * pagination.limit + 1, pagination.total)} do {' '}
+            Widok od {Math.min((pagination.page - 1) * pagination.limit + 1, pagination.total)} do{" "}
             {Math.min(pagination.page * pagination.limit, pagination.total)} z {pagination.total} fiszek w folderze
           </div>
           <div className="text-gray-500">
@@ -160,12 +155,7 @@ const FlashcardList: React.FC<FlashcardListProps> = ({
       )}
 
       {/* Pagination Controls */}
-      {pagination && (
-        <PaginationControls
-          pagination={pagination}
-          onPageChange={onPageChange}
-        />
-      )}
+      {pagination && <PaginationControls pagination={pagination} onPageChange={onPageChange} />}
     </div>
   );
 };

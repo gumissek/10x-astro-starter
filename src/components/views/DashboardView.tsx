@@ -1,9 +1,9 @@
-import React from 'react';
-import { useDashboardState } from '../hooks/useDashboardState';
-import { Button } from '../ui/button';
-import FolderGrid from './FolderGrid.tsx';
-import EditFolderDialog from './EditFolderDialog.tsx';
-import DeleteFolderDialog from './DeleteFolderDialog.tsx';
+import React from "react";
+import { useDashboardState } from "../hooks/useDashboardState";
+import { Button } from "../ui/button";
+import FolderGrid from "./FolderGrid.tsx";
+import EditFolderDialog from "./EditFolderDialog.tsx";
+import DeleteFolderDialog from "./DeleteFolderDialog.tsx";
 
 interface DashboardViewProps {
   userId: string;
@@ -34,25 +34,19 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
       {/* Header */}
       <header className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-gray-900" data-testid="dashboard-title">Twoje foldery</h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900" data-testid="dashboard-title">
+            Twoje foldery
+          </h1>
+
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <a href="/generate">
-              <Button 
-                size="lg"
-                className="w-full sm:w-auto"
-                data-testid="generate-cards-button"
-              >
+              <Button size="lg" className="w-full sm:w-auto" data-testid="generate-cards-button">
                 Generuj fiszki
               </Button>
             </a>
             <a href="/manual-save">
-              <Button 
-                size="lg"
-                variant="outline" 
-                className="w-full sm:w-auto"
-                data-testid="add-card-button">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto" data-testid="add-card-button">
                 Dodaj fiszkę
               </Button>
             </a>
@@ -66,9 +60,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
           /* Error State */
           <div className="text-center py-12">
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-              <h2 className="text-lg font-semibold text-red-800 mb-2">
-                Wystąpił błąd
-              </h2>
+              <h2 className="text-lg font-semibold text-red-800 mb-2">Wystąpił błąd</h2>
               <p className="text-red-600 mb-4">{error}</p>
               <Button onClick={handleRefresh} variant="outline">
                 Spróbuj ponownie
@@ -79,17 +71,13 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
           /* Empty State */
           <div className="text-center py-12">
             <div className="max-w-md mx-auto">
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">
-                Nie masz jeszcze żadnych folderów
-              </h2>
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">Nie masz jeszcze żadnych folderów</h2>
               <p className="text-gray-500 mb-6">
                 Rozpocznij od wygenerowania fiszek lub dodania pierwszej fiszki ręcznie.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <a href="/generate">
-                  <Button className="w-full sm:w-auto">
-                    Generuj pierwsze fiszki
-                  </Button>
+                  <Button className="w-full sm:w-auto">Generuj pierwsze fiszki</Button>
                 </a>
                 <a href="/manual-save">
                   <Button variant="outline" className="w-full sm:w-auto">
@@ -101,12 +89,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ userId }) => {
           </div>
         ) : (
           /* Folder Grid */
-          <FolderGrid
-            folders={folders}
-            isLoading={isLoading}
-            onEdit={handleEditFolder}
-            onDelete={handleDeleteFolder}
-          />
+          <FolderGrid folders={folders} isLoading={isLoading} onEdit={handleEditFolder} onDelete={handleDeleteFolder} />
         )}
       </main>
 

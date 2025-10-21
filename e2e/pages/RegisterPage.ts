@@ -1,5 +1,5 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { type Page, type Locator, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 /**
  * RegisterPage - Page Object Model for the registration page
@@ -7,30 +7,30 @@ import { BasePage } from './BasePage';
  */
 export class RegisterPage extends BasePage {
   // Page URL
-  readonly path = '/register';
+  readonly path = "/register";
 
   // Locators - using data-testid for resilient selectors
   readonly pageContainer: Locator;
   readonly formTitle: Locator;
   readonly formDescription: Locator;
   readonly registerForm: Locator;
-  
+
   // Email field
   readonly emailField: Locator;
   readonly emailInput: Locator;
   readonly emailError: Locator;
-  
+
   // Password field
   readonly passwordField: Locator;
   readonly passwordInput: Locator;
   readonly passwordError: Locator;
   readonly passwordHints: Locator;
-  
+
   // Confirm password field
   readonly confirmPasswordField: Locator;
   readonly confirmPasswordInput: Locator;
   readonly confirmPasswordError: Locator;
-  
+
   // Actions
   readonly generalErrorMessage: Locator;
   readonly submitButton: Locator;
@@ -39,34 +39,34 @@ export class RegisterPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    
+
     // Initialize locators
-    this.pageContainer = page.getByTestId('register-form-container');
-    this.formTitle = page.getByTestId('register-form-title');
-    this.formDescription = page.getByTestId('register-form-description');
-    this.registerForm = page.getByTestId('register-form');
-    
+    this.pageContainer = page.getByTestId("register-form-container");
+    this.formTitle = page.getByTestId("register-form-title");
+    this.formDescription = page.getByTestId("register-form-description");
+    this.registerForm = page.getByTestId("register-form");
+
     // Email field locators
-    this.emailField = page.getByTestId('register-email-field');
-    this.emailInput = page.getByTestId('register-email-input');
-    this.emailError = page.getByTestId('register-email-error');
-    
+    this.emailField = page.getByTestId("register-email-field");
+    this.emailInput = page.getByTestId("register-email-input");
+    this.emailError = page.getByTestId("register-email-error");
+
     // Password field locators
-    this.passwordField = page.getByTestId('register-password-field');
-    this.passwordInput = page.getByTestId('register-password-input');
-    this.passwordError = page.getByTestId('register-password-error');
-    this.passwordHints = page.getByTestId('register-password-hints');
-    
+    this.passwordField = page.getByTestId("register-password-field");
+    this.passwordInput = page.getByTestId("register-password-input");
+    this.passwordError = page.getByTestId("register-password-error");
+    this.passwordHints = page.getByTestId("register-password-hints");
+
     // Confirm password field locators
-    this.confirmPasswordField = page.getByTestId('register-confirm-password-field');
-    this.confirmPasswordInput = page.getByTestId('register-confirm-password-input');
-    this.confirmPasswordError = page.getByTestId('register-confirm-password-error');
-    
+    this.confirmPasswordField = page.getByTestId("register-confirm-password-field");
+    this.confirmPasswordInput = page.getByTestId("register-confirm-password-input");
+    this.confirmPasswordError = page.getByTestId("register-confirm-password-error");
+
     // Action locators
-    this.generalErrorMessage = page.getByTestId('register-error-message');
-    this.submitButton = page.getByTestId('register-submit-button');
-    this.loginLinkSection = page.getByTestId('register-login-link-section');
-    this.loginLink = page.getByTestId('register-login-link');
+    this.generalErrorMessage = page.getByTestId("register-error-message");
+    this.submitButton = page.getByTestId("register-submit-button");
+    this.loginLinkSection = page.getByTestId("register-login-link-section");
+    this.loginLink = page.getByTestId("register-login-link");
   }
 
   /**
@@ -81,8 +81,8 @@ export class RegisterPage extends BasePage {
    * Wait for the page to fully load
    */
   async waitForPageLoad(): Promise<void> {
-    await this.pageContainer.waitFor({ state: 'visible' });
-    await this.waitForLoadState('networkidle');
+    await this.pageContainer.waitFor({ state: "visible" });
+    await this.waitForLoadState("networkidle");
   }
 
   /**
@@ -115,11 +115,7 @@ export class RegisterPage extends BasePage {
    * @param password - Password
    * @param confirmPassword - Confirm password (defaults to password if not provided)
    */
-  async fillRegistrationForm(
-    email: string, 
-    password: string, 
-    confirmPassword?: string
-  ): Promise<void> {
+  async fillRegistrationForm(email: string, password: string, confirmPassword?: string): Promise<void> {
     await this.fillEmail(email);
     await this.fillPassword(password);
     await this.fillConfirmPassword(confirmPassword || password);
@@ -168,11 +164,7 @@ export class RegisterPage extends BasePage {
    * @param password - Password
    * @param confirmPassword - Confirm password (defaults to password if not provided)
    */
-  async submitRegistration(
-    email: string, 
-    password: string, 
-    confirmPassword?: string
-  ): Promise<void> {
+  async submitRegistration(email: string, password: string, confirmPassword?: string): Promise<void> {
     await this.fillRegistrationForm(email, password, confirmPassword);
     await this.clickSubmit();
   }
@@ -183,13 +175,9 @@ export class RegisterPage extends BasePage {
    * @param password - Password
    * @param confirmPassword - Confirm password (defaults to password if not provided)
    */
-  async register(
-    email: string, 
-    password: string, 
-    confirmPassword?: string
-  ): Promise<void> {
+  async register(email: string, password: string, confirmPassword?: string): Promise<void> {
     await this.submitRegistration(email, password, confirmPassword);
-    await this.page.waitForURL('/dashboard', { timeout: 10000 });
+    await this.page.waitForURL("/dashboard", { timeout: 10000 });
   }
 
   /**
@@ -198,11 +186,7 @@ export class RegisterPage extends BasePage {
    * @param password - Password
    * @param confirmPassword - Confirm password (defaults to password if not provided)
    */
-  async attemptRegistration(
-    email: string, 
-    password: string, 
-    confirmPassword?: string
-  ): Promise<void> {
+  async attemptRegistration(email: string, password: string, confirmPassword?: string): Promise<void> {
     await this.submitRegistration(email, password, confirmPassword);
     // Don't wait for navigation, stay on the same page
   }
@@ -239,7 +223,7 @@ export class RegisterPage extends BasePage {
    * Generate a unique email address for testing
    * @param prefix - Optional prefix for the email (defaults to 'user')
    */
-  generateUniqueEmail(prefix: string = 'user'): string {
+  generateUniqueEmail(prefix = "user"): string {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 1000);
     return `${prefix}${timestamp}${random}@example.pl`;
@@ -263,7 +247,7 @@ export class RegisterPage extends BasePage {
    * Get the submit button text
    */
   async getSubmitButtonText(): Promise<string> {
-    return await this.submitButton.textContent() || '';
+    return (await this.submitButton.textContent()) || "";
   }
 
   /**
@@ -302,43 +286,43 @@ export class RegisterPage extends BasePage {
    * Get email error message text
    */
   async getEmailErrorText(): Promise<string> {
-    return await this.emailError.textContent() || '';
+    return (await this.emailError.textContent()) || "";
   }
 
   /**
    * Get password error message text
    */
   async getPasswordErrorText(): Promise<string> {
-    return await this.passwordError.textContent() || '';
+    return (await this.passwordError.textContent()) || "";
   }
 
   /**
    * Get confirm password error message text
    */
   async getConfirmPasswordErrorText(): Promise<string> {
-    return await this.confirmPasswordError.textContent() || '';
+    return (await this.confirmPasswordError.textContent()) || "";
   }
 
   /**
    * Get general error message text
    */
   async getGeneralErrorText(): Promise<string> {
-    await this.generalErrorMessage.waitFor({ state: 'visible', timeout: 5000 });
-    return await this.generalErrorMessage.textContent() || '';
+    await this.generalErrorMessage.waitFor({ state: "visible", timeout: 5000 });
+    return (await this.generalErrorMessage.textContent()) || "";
   }
 
   /**
    * Wait for general error message to appear
    */
   async waitForGeneralError(): Promise<void> {
-    await this.generalErrorMessage.waitFor({ state: 'visible', timeout: 5000 });
+    await this.generalErrorMessage.waitFor({ state: "visible", timeout: 5000 });
   }
 
   /**
    * Wait for successful registration (redirect to dashboard)
    */
   async waitForSuccessfulRegistration(): Promise<void> {
-    await this.page.waitForURL('/dashboard', { timeout: 10000 });
+    await this.page.waitForURL("/dashboard", { timeout: 10000 });
   }
 
   // ============================================================================
@@ -358,7 +342,7 @@ export class RegisterPage extends BasePage {
    */
   async expectFormTitleVisible(): Promise<void> {
     await expect(this.formTitle).toBeVisible();
-    await expect(this.formTitle).toHaveText('Utwórz konto');
+    await expect(this.formTitle).toHaveText("Utwórz konto");
   }
 
   /**

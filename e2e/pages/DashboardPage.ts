@@ -1,5 +1,5 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { type Page, type Locator, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 /**
  * DashboardPage - Page Object Model for the dashboard page
@@ -7,7 +7,7 @@ import { BasePage } from './BasePage';
  */
 export class DashboardPage extends BasePage {
   // Page URL
-  readonly path = '/dashboard';
+  readonly path = "/dashboard";
 
   // Locators - using data-testid for resilient selectors
   readonly dashboardContainer: Locator;
@@ -17,12 +17,12 @@ export class DashboardPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    
+
     // Initialize locators
-    this.dashboardContainer = page.getByTestId('dashboard-container');
-    this.dashboardTitle = page.getByTestId('dashboard-title');
-    this.generateCardsButton = page.getByTestId('generate-cards-button');
-    this.addCardButton = page.getByTestId('add-card-button');
+    this.dashboardContainer = page.getByTestId("dashboard-container");
+    this.dashboardTitle = page.getByTestId("dashboard-title");
+    this.generateCardsButton = page.getByTestId("generate-cards-button");
+    this.addCardButton = page.getByTestId("add-card-button");
   }
 
   /**
@@ -37,8 +37,8 @@ export class DashboardPage extends BasePage {
    * Wait for the page to fully load
    */
   async waitForPageLoad(): Promise<void> {
-    await this.dashboardContainer.waitFor({ state: 'visible' });
-    await this.waitForLoadState('networkidle');
+    await this.dashboardContainer.waitFor({ state: "visible" });
+    await this.waitForLoadState("networkidle");
   }
 
   /**
@@ -59,7 +59,7 @@ export class DashboardPage extends BasePage {
    * Get the dashboard title text
    */
   async getDashboardTitle(): Promise<string> {
-    return await this.dashboardTitle.textContent() || '';
+    return (await this.dashboardTitle.textContent()) || "";
   }
 
   /**
@@ -79,7 +79,7 @@ export class DashboardPage extends BasePage {
 
   async expectDashboardTitleVisible(): Promise<void> {
     await expect(this.dashboardTitle).toBeVisible();
-    await expect(this.dashboardTitle).toHaveText('Twoje foldery');
+    await expect(this.dashboardTitle).toHaveText("Twoje foldery");
   }
 
   async expectGenerateCardsButtonVisible(): Promise<void> {

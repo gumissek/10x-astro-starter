@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import React, { useState, useCallback } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface ForgotPasswordFormViewModel {
   email: string;
@@ -14,7 +14,7 @@ interface ValidationErrors {
 
 const ForgotPasswordForm: React.FC = () => {
   const [formData, setFormData] = useState<ForgotPasswordFormViewModel>({
-    email: '',
+    email: "",
   });
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -24,14 +24,14 @@ const ForgotPasswordForm: React.FC = () => {
   // Walidacja email
   const validateEmail = useCallback((email: string): string | undefined => {
     if (!email.trim()) {
-      return 'Email jest wymagany';
+      return "Email jest wymagany";
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return 'Wprowadź poprawny adres email';
+      return "Wprowadź poprawny adres email";
     }
-    
+
     return undefined;
   }, []);
 
@@ -41,22 +41,25 @@ const ForgotPasswordForm: React.FC = () => {
   };
 
   // Obsługa zmiany wartości pól
-  const handleFieldChange = useCallback((value: string) => {
-    setFormData({ email: value });
-    
-    // Walidacja w czasie rzeczywistym
-    const error = validateEmail(value);
-    setValidationErrors(prev => ({
-      ...prev,
-      email: error,
-      general: undefined, // Wyczyść błąd globalny przy zmianie danych
-    }));
-  }, [validateEmail]);
+  const handleFieldChange = useCallback(
+    (value: string) => {
+      setFormData({ email: value });
+
+      // Walidacja w czasie rzeczywistym
+      const error = validateEmail(value);
+      setValidationErrors((prev) => ({
+        ...prev,
+        email: error,
+        general: undefined, // Wyczyść błąd globalny przy zmianie danych
+      }));
+    },
+    [validateEmail]
+  );
 
   // Obsługa blur - walidacja po opuszczeniu pola
   const handleBlur = useCallback(() => {
     const error = validateEmail(formData.email);
-    setValidationErrors(prev => ({
+    setValidationErrors((prev) => ({
       ...prev,
       email: error,
     }));
@@ -65,35 +68,30 @@ const ForgotPasswordForm: React.FC = () => {
   // Obsługa wysłania formularza
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isFormValid()) {
       setValidationErrors({
         email: validateEmail(formData.email),
       });
       return;
     }
-    
+
     setIsLoading(true);
     setValidationErrors({});
-    
+
     try {
       // TODO: Implementacja odzyskiwania hasła z Supabase
       // await supabase.auth.resetPasswordForEmail(formData.email.trim(), {
       //   redirectTo: `${window.location.origin}/password-reset`,
       // });
-      
+
       // Symulacja wywołania API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       setIsSuccess(true);
-      console.log('Link resetujący wysłany na:', formData.email);
-      
     } catch (error) {
-      console.error('Error during password reset:', error);
       setValidationErrors({
-        general: error instanceof Error 
-          ? error.message 
-          : 'Wystąpił błąd podczas wysyłania linku resetującego'
+        general: error instanceof Error ? error.message : "Wystąpił błąd podczas wysyłania linku resetującego",
       });
     } finally {
       setIsLoading(false);
@@ -113,8 +111,7 @@ const ForgotPasswordForm: React.FC = () => {
 
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-sm text-green-700">
-            Sprawdź swoją skrzynkę pocztową i kliknij w link, aby zresetować hasło.
-            Link jest ważny przez 1 godzinę.
+            Sprawdź swoją skrzynkę pocztową i kliknij w link, aby zresetować hasło. Link jest ważny przez 1 godzinę.
           </p>
         </div>
 
@@ -125,7 +122,7 @@ const ForgotPasswordForm: React.FC = () => {
           <button
             onClick={() => {
               setIsSuccess(false);
-              setFormData({ email: '' });
+              setFormData({ email: "" });
             }}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
@@ -140,9 +137,7 @@ const ForgotPasswordForm: React.FC = () => {
     <div className="space-y-6">
       <div className="space-y-2 text-center">
         <h1 className="text-2xl font-bold">Resetuj hasło</h1>
-        <p className="text-muted-foreground">
-          Wprowadź swój adres email, a wyślemy Ci link do resetowania hasła
-        </p>
+        <p className="text-muted-foreground">Wprowadź swój adres email, a wyślemy Ci link do resetowania hasła</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -153,18 +148,14 @@ const ForgotPasswordForm: React.FC = () => {
             id="email"
             type="email"
             value={formData.email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-              handleFieldChange(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(e.target.value)}
             onBlur={handleBlur}
             placeholder="twoj.email@example.com"
-            className={validationErrors.email ? 'border-red-500' : ''}
+            className={validationErrors.email ? "border-red-500" : ""}
             disabled={isLoading}
             autoComplete="email"
           />
-          {validationErrors.email && (
-            <span className="text-sm text-red-600">{validationErrors.email}</span>
-          )}
+          {validationErrors.email && <span className="text-sm text-red-600">{validationErrors.email}</span>}
         </div>
 
         {/* Błąd globalny */}
@@ -175,12 +166,8 @@ const ForgotPasswordForm: React.FC = () => {
         )}
 
         {/* Przycisk wysłania */}
-        <Button
-          type="submit"
-          disabled={!isFormValid() || isLoading}
-          className="w-full"
-        >
-          {isLoading ? 'Wysyłanie...' : 'Wyślij link resetujący'}
+        <Button type="submit" disabled={!isFormValid() || isLoading} className="w-full">
+          {isLoading ? "Wysyłanie..." : "Wyślij link resetujący"}
         </Button>
       </form>
 

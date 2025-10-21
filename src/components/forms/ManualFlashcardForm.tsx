@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import type { Folder, CreateFlashcardCommand } from '../../types';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { Label } from '../ui/label';
-import FolderSelectManual from '../ui/FolderSelectManual';
-import CharacterCounter from '../ui/CharacterCounter';
+import React, { useState } from "react";
+import type { Folder, CreateFlashcardCommand } from "../../types";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import FolderSelectManual from "../ui/FolderSelectManual";
+import CharacterCounter from "../ui/CharacterCounter";
 
 interface ManualFlashcardFormViewModel {
   front: string;
@@ -26,17 +26,12 @@ interface ValidationErrors {
   folder?: string;
 }
 
-const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
-  folders,
-  isLoading,
-  onSave,
-  onCreateFolder,
-}) => {
+const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({ folders, isLoading, onSave, onCreateFolder }) => {
   const [formData, setFormData] = useState<ManualFlashcardFormViewModel>({
-    front: '',
-    back: '',
+    front: "",
+    back: "",
     folderId: null,
-    newFolderName: '',
+    newFolderName: "",
   });
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -46,24 +41,24 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
   // Walidacja pól formularza
   const validateField = (field: keyof ManualFlashcardFormViewModel, value: string): string | undefined => {
     switch (field) {
-      case 'front':
+      case "front":
         if (!value.trim()) {
-          return 'Treść przodu fiszki jest wymagana';
+          return "Treść przodu fiszki jest wymagana";
         }
         if (value.length > 200) {
-          return 'Treść przodu nie może przekraczać 200 znaków';
+          return "Treść przodu nie może przekraczać 200 znaków";
         }
         return undefined;
-      
-      case 'back':
+
+      case "back":
         if (!value.trim()) {
-          return 'Treść tyłu fiszki jest wymagana';
+          return "Treść tyłu fiszki jest wymagana";
         }
         if (value.length > 500) {
-          return 'Treść tyłu nie może przekraczać 500 znaków';
+          return "Treść tyłu nie może przekraczać 500 znaków";
         }
         return undefined;
-      
+
       default:
         return undefined;
     }
@@ -74,21 +69,21 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
     const frontValid = formData.front.trim().length > 0 && formData.front.length <= 200;
     const backValid = formData.back.trim().length > 0 && formData.back.length <= 500;
     const folderValid = formData.folderId !== null;
-    
+
     return frontValid && backValid && folderValid;
   };
 
   // Obsługa zmiany wartości pól
   const handleFieldChange = (field: keyof ManualFlashcardFormViewModel, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
     // Walidacja w czasie rzeczywistym
     const error = validateField(field, value);
-    setValidationErrors(prev => ({
+    setValidationErrors((prev) => ({
       ...prev,
       [field]: error,
     }));
-    
+
     // Wyczyść błąd zapisu przy zmianie danych
     if (saveError) {
       setSaveError(null);
@@ -97,49 +92,42 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
 
   // Obsługa wyboru folderu
   const handleFolderSelect = (folderId: string) => {
-    setFormData(prev => ({ ...prev, folderId }));
-    setValidationErrors(prev => ({ ...prev, folder: undefined }));
+    setFormData((prev) => ({ ...prev, folderId }));
+    setValidationErrors((prev) => ({ ...prev, folder: undefined }));
   };
 
   // Obsługa wysłania formularza
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isFormValid()) {
       return;
     }
-    
+
     setIsSaving(true);
     setSaveError(null);
-    
+
     try {
       const command: CreateFlashcardCommand = {
         front: formData.front.trim(),
         back: formData.back.trim(),
         folder_id: formData.folderId!,
-        generation_source: 'manual',
+        generation_source: "manual",
       };
-      
+
       await onSave(command);
-      
+
       // Wyczyść formularz po pomyślnym zapisie
       setFormData({
-        front: '',
-        back: '',
+        front: "",
+        back: "",
         folderId: null,
-        newFolderName: '',
+        newFolderName: "",
       });
-      
+
       // Pokaż powiadomienie o sukcesie (do implementacji później)
-      console.log('Fiszka została pomyślnie zapisana');
-      
     } catch (error) {
-      console.error('Error saving flashcard:', error);
-      setSaveError(
-        error instanceof Error 
-          ? error.message 
-          : 'Wystąpił błąd podczas zapisywania fiszki'
-      );
+      setSaveError(error instanceof Error ? error.message : "Wystąpił błąd podczas zapisywania fiszki");
     } finally {
       setIsSaving(false);
     }
@@ -153,19 +141,14 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
         <Textarea
           id="front"
           value={formData.front}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFieldChange('front', e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFieldChange("front", e.target.value)}
           placeholder="Wprowadź treść przodu fiszki..."
-          className={validationErrors.front ? 'border-red-500' : ''}
+          className={validationErrors.front ? "border-red-500" : ""}
           rows={3}
         />
         <div className="flex justify-between items-center">
-          <CharacterCounter 
-            currentLength={formData.front.length} 
-            maxLength={200} 
-          />
-          {validationErrors.front && (
-            <span className="text-sm text-red-600">{validationErrors.front}</span>
-          )}
+          <CharacterCounter currentLength={formData.front.length} maxLength={200} />
+          {validationErrors.front && <span className="text-sm text-red-600">{validationErrors.front}</span>}
         </div>
       </div>
 
@@ -175,19 +158,14 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
         <Textarea
           id="back"
           value={formData.back}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFieldChange('back', e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFieldChange("back", e.target.value)}
           placeholder="Wprowadź treść tyłu fiszki..."
-          className={validationErrors.back ? 'border-red-500' : ''}
+          className={validationErrors.back ? "border-red-500" : ""}
           rows={4}
         />
         <div className="flex justify-between items-center">
-          <CharacterCounter 
-            currentLength={formData.back.length} 
-            maxLength={500} 
-          />
-          {validationErrors.back && (
-            <span className="text-sm text-red-600">{validationErrors.back}</span>
-          )}
+          <CharacterCounter currentLength={formData.back.length} maxLength={500} />
+          {validationErrors.back && <span className="text-sm text-red-600">{validationErrors.back}</span>}
         </div>
       </div>
 
@@ -201,9 +179,7 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
           onCreateFolder={onCreateFolder}
           disabled={isLoading}
         />
-        {validationErrors.folder && (
-          <span className="text-sm text-red-600">{validationErrors.folder}</span>
-        )}
+        {validationErrors.folder && <span className="text-sm text-red-600">{validationErrors.folder}</span>}
       </div>
 
       {/* Błąd zapisu */}
@@ -215,12 +191,8 @@ const ManualFlashcardForm: React.FC<ManualFlashcardFormProps> = ({
 
       {/* Przycisk zapisu */}
       <div className="flex justify-end">
-        <Button
-          type="submit"
-          disabled={!isFormValid() || isSaving || isLoading}
-          className="min-w-[120px]"
-        >
-          {isSaving ? 'Zapisywanie...' : 'Zapisz fiszkę'}
+        <Button type="submit" disabled={!isFormValid() || isSaving || isLoading} className="min-w-[120px]">
+          {isSaving ? "Zapisywanie..." : "Zapisz fiszkę"}
         </Button>
       </div>
     </form>

@@ -6,7 +6,7 @@
 - **Plik testowy:** `src/pages/api/auth/__tests__/login.test.ts`
 - **Framework:** Vitest
 - **Data utworzenia:** 17 października 2025
-- **Liczba testów:** 20
+- **Liczba testów:** 19
 
 ## 🎯 Cel testów
 
@@ -227,17 +227,6 @@ Hasło: Haslo123@
 - Error: `"Wystąpił błąd podczas logowania"`
 
 **Obsługa błędu:** Główny try-catch łapie wszystkie nieobsłużone błędy.
-
----
-
-#### 📝 Test: Logowanie błędów do konsoli
-**Opis:** Weryfikuje czy błędy są logowane dla celów debugowania.
-
-**Oczekiwane zachowanie:**
-- `console.error("Login error:", error)` jest wywoływany
-- Ułatwia diagnozowanie problemów w produkcji
-
----
 
 ### 5. Walidacja formatu odpowiedzi (3 testy)
 
@@ -463,16 +452,16 @@ npm test -- login.test.ts -t "should successfully login"
 | **Błędy serwera** | 3 |
 | **Format odpowiedzi** | 3 |
 | **Edge cases** | 3 |
-| **TOTAL** | **20** |
+| **TOTAL** | **19** |
 
 ## ✅ Status testów
 
 ```
-✓ POST /api/auth/login (20 tests)
+✓ POST /api/auth/login (19 tests)
   ✓ Successful login scenarios (2)
   ✓ Validation errors (6)
   ✓ Authentication errors (3)
-  ✓ Server errors (3)
+  ✓ Server errors (2)
   ✓ Response format validation (3)
   ✓ Edge cases (3)
 ```

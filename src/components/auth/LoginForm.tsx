@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import React, { useState, useCallback } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface LoginFormViewModel {
   email: string;
@@ -16,8 +16,8 @@ interface ValidationErrors {
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormViewModel>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -26,23 +26,23 @@ const LoginForm: React.FC = () => {
   // Walidacja email
   const validateEmail = useCallback((email: string): string | undefined => {
     if (!email.trim()) {
-      return 'Email jest wymagany';
+      return "Email jest wymagany";
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return 'Wprowadź poprawny adres email';
+      return "Wprowadź poprawny adres email";
     }
-    
+
     return undefined;
   }, []);
 
   // Walidacja hasła
   const validatePassword = useCallback((password: string): string | undefined => {
     if (!password.trim()) {
-      return 'Hasło jest wymagane';
+      return "Hasło jest wymagane";
     }
-    
+
     return undefined;
   }, []);
 
@@ -50,50 +50,56 @@ const LoginForm: React.FC = () => {
   const isFormValid = (): boolean => {
     const emailValid = validateEmail(formData.email) === undefined;
     const passwordValid = validatePassword(formData.password) === undefined;
-    
+
     return emailValid && passwordValid;
   };
 
   // Obsługa zmiany wartości pól
-  const handleFieldChange = useCallback((field: keyof LoginFormViewModel, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Walidacja w czasie rzeczywistym
-    let error: string | undefined;
-    if (field === 'email') {
-      error = validateEmail(value);
-    } else if (field === 'password') {
-      error = validatePassword(value);
-    }
-    
-    setValidationErrors(prev => ({
-      ...prev,
-      [field]: error,
-      general: undefined, // Wyczyść błąd globalny przy zmianie danych
-    }));
-  }, [validateEmail, validatePassword]);
+  const handleFieldChange = useCallback(
+    (field: keyof LoginFormViewModel, value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+
+      // Walidacja w czasie rzeczywistym
+      let error: string | undefined;
+      if (field === "email") {
+        error = validateEmail(value);
+      } else if (field === "password") {
+        error = validatePassword(value);
+      }
+
+      setValidationErrors((prev) => ({
+        ...prev,
+        [field]: error,
+        general: undefined, // Wyczyść błąd globalny przy zmianie danych
+      }));
+    },
+    [validateEmail, validatePassword]
+  );
 
   // Obsługa blur - walidacja po opuszczeniu pola
-  const handleBlur = useCallback((field: keyof LoginFormViewModel) => {
-    const value = formData[field];
-    let error: string | undefined;
-    
-    if (field === 'email') {
-      error = validateEmail(value);
-    } else if (field === 'password') {
-      error = validatePassword(value);
-    }
-    
-    setValidationErrors(prev => ({
-      ...prev,
-      [field]: error,
-    }));
-  }, [formData, validateEmail, validatePassword]);
+  const handleBlur = useCallback(
+    (field: keyof LoginFormViewModel) => {
+      const value = formData[field];
+      let error: string | undefined;
+
+      if (field === "email") {
+        error = validateEmail(value);
+      } else if (field === "password") {
+        error = validatePassword(value);
+      }
+
+      setValidationErrors((prev) => ({
+        ...prev,
+        [field]: error,
+      }));
+    },
+    [formData, validateEmail, validatePassword]
+  );
 
   // Obsługa wysłania formularza
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isFormValid()) {
       // Pokazuj wszystkie błędy walidacji
       setValidationErrors({
@@ -102,16 +108,16 @@ const LoginForm: React.FC = () => {
       });
       return;
     }
-    
+
     setIsLoading(true);
     setValidationErrors({});
-    
+
     try {
       // Wysłanie żądania do API logowania
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: formData.email.trim(),
@@ -122,18 +128,14 @@ const LoginForm: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Nieprawidłowy email lub hasło');
+        throw new Error(data.error || "Nieprawidłowy email lub hasło");
       }
 
       // Przekieruj do dashboardu po pomyślnym logowaniu
-      window.location.href = '/dashboard';
-      
+      window.location.href = "/dashboard";
     } catch (error) {
-      console.error('Error during login:', error);
       setValidationErrors({
-        general: error instanceof Error 
-          ? error.message 
-          : 'Nieprawidłowy email lub hasło'
+        general: error instanceof Error ? error.message : "Nieprawidłowy email lub hasło",
       });
     } finally {
       setIsLoading(false);
@@ -143,10 +145,10 @@ const LoginForm: React.FC = () => {
   return (
     <div className="space-y-6" data-testid="login-form-container">
       <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold" data-testid="login-form-title">Zaloguj się</h1>
-        <p className="text-muted-foreground">
-          Wprowadź swoje dane, aby uzyskać dostęp do konta
-        </p>
+        <h1 className="text-2xl font-bold" data-testid="login-form-title">
+          Zaloguj się
+        </h1>
+        <p className="text-muted-foreground">Wprowadź swoje dane, aby uzyskać dostęp do konta</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
@@ -157,18 +159,18 @@ const LoginForm: React.FC = () => {
             id="email"
             type="email"
             value={formData.email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-              handleFieldChange('email', e.target.value)
-            }
-            onBlur={() => handleBlur('email')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("email", e.target.value)}
+            onBlur={() => handleBlur("email")}
             placeholder="twoj.email@example.com"
-            className={validationErrors.email ? 'border-red-500' : ''}
+            className={validationErrors.email ? "border-red-500" : ""}
             disabled={isLoading}
             autoComplete="email"
             data-testid="login-email-input"
           />
           {validationErrors.email && (
-            <span className="text-sm text-red-600" data-testid="email-error-message">{validationErrors.email}</span>
+            <span className="text-sm text-red-600" data-testid="email-error-message">
+              {validationErrors.email}
+            </span>
           )}
         </div>
 
@@ -179,18 +181,18 @@ const LoginForm: React.FC = () => {
             id="password"
             type="password"
             value={formData.password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-              handleFieldChange('password', e.target.value)
-            }
-            onBlur={() => handleBlur('password')}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("password", e.target.value)}
+            onBlur={() => handleBlur("password")}
             placeholder="Wprowadź hasło"
-            className={validationErrors.password ? 'border-red-500' : ''}
+            className={validationErrors.password ? "border-red-500" : ""}
             disabled={isLoading}
             autoComplete="current-password"
             data-testid="login-password-input"
           />
           {validationErrors.password && (
-            <span className="text-sm text-red-600" data-testid="password-error-message">{validationErrors.password}</span>
+            <span className="text-sm text-red-600" data-testid="password-error-message">
+              {validationErrors.password}
+            </span>
           )}
         </div>
 
@@ -208,7 +210,7 @@ const LoginForm: React.FC = () => {
           className="w-full"
           data-testid="login-submit-button"
         >
-          {isLoading ? 'Logowanie...' : 'Zaloguj się'}
+          {isLoading ? "Logowanie..." : "Zaloguj się"}
         </Button>
 
         {/* Link do odzyskiwania hasła */}

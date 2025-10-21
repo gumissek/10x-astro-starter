@@ -7,7 +7,7 @@
 **Plik testów:** `src/pages/api/auth/__tests__/logout.test.ts`  
 **Data utworzenia:** 17 października 2025  
 **Framework testowy:** Vitest  
-**Liczba testów:** 30  
+**Liczba testów:** 29
 **Status:** ✅ Wszystkie testy przeszły
 
 ## Test User
@@ -62,7 +62,7 @@ Testy wykorzystują dane testowego użytkownika:
 - **Opis:** Obsługa błędu nieautoryzowanej sesji
 - **Oczekiwany rezultat:** Status 400, komunikat "Unauthorized"
 
-### 3. Server Errors and Exceptions (5 testów)
+### 3. Server Errors and Exceptions (4 testów)
 
 #### 3.1 Wyjątek z Supabase client
 - **Test:** `should return 500 error when Supabase client throws exception`
@@ -74,17 +74,12 @@ Testy wykorzystują dane testowego użytkownika:
 - **Opis:** Obsługa błędów podczas tworzenia Supabase instance
 - **Oczekiwany rezultat:** Status 500, komunikat "Wystąpił błąd podczas wylogowania"
 
-#### 3.3 Logowanie błędów
-- **Test:** `should log errors to console for debugging`
-- **Opis:** Weryfikacja logowania błędów do konsoli
-- **Oczekiwany rezultat:** Wywołanie `console.error` z odpowiednimi parametrami
-
-#### 3.4 Timeout
+#### 3.3 Timeout
 - **Test:** `should handle timeout errors gracefully`
 - **Opis:** Obsługa błędów timeout
 - **Oczekiwany rezultat:** Status 500, graceful error handling
 
-#### 3.5 Błędy połączenia z bazą
+#### 3.4 Błędy połączenia z bazą
 - **Test:** `should handle database connection errors`
 - **Opis:** Obsługa błędów połączenia z bazą danych
 - **Oczekiwany rezultat:** Status 500, komunikat błędu
@@ -251,13 +246,13 @@ mockRequest = new Request("http://localhost/api/auth/logout", {
 |-----------|---------------|--------|
 | Successful Scenarios | 4 | ✅ |
 | Supabase Errors | 4 | ✅ |
-| Server Errors | 5 | ✅ |
+| Server Errors | 4 | ✅ |
 | Response Format | 3 | ✅ |
 | Edge Cases | 6 | ✅ |
 | Security | 3 | ✅ |
 | Integration | 3 | ✅ |
 | Performance | 3 | ✅ |
-| **TOTAL** | **30** | **✅** |
+| **TOTAL** | **29** | **✅** |
 
 ## Uruchomienie Testów
 
@@ -299,8 +294,7 @@ npm test src/pages/api/auth/__tests__/logout.test.ts -- --coverage
 1. **Status 204 No Content** - Endpoint zwraca 204 dla sukcesu (bez body)
 2. **Polska lokalizacja** - Komunikaty błędów po polsku
 3. **Graceful error handling** - Wszystkie błędy obsługiwane bez rzucania wyjątków
-4. **Console logging** - Błędy logowane dla debugowania
-5. **Security first** - Brak eksponowania szczegółów technicznych
+4. **Security first** - Brak eksponowania szczegółów technicznych
 
 ## Możliwe Rozszerzenia
 

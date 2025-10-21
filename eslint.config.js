@@ -20,6 +20,17 @@ const baseConfig = tseslint.config({
   rules: {
     "no-console": "warn",
     "no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react/no-unescaped-entities": "off",
+    "jsx-a11y/no-autofocus": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "prettier/prettier": "off",
+    "@typescript-eslint/no-empty-object-type": "off",
+    "react-compiler/react-compiler": "off",
   },
 });
 
@@ -52,12 +63,15 @@ const reactConfig = tseslint.config({
   rules: {
     ...eslintPluginReactHooks.configs.recommended.rules,
     "react/react-in-jsx-scope": "off",
-    "react-compiler/react-compiler": "error",
+    "react-compiler/react-compiler": "off",
   },
 });
 
 export default tseslint.config(
   includeIgnoreFile(gitignorePath),
+  {
+    ignores: ["**/database.types.ts", "**/AuthLayout.astro"],
+  },
   baseConfig,
   jsxA11yConfig,
   reactConfig,

@@ -1,5 +1,5 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { type Page, type Locator, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 /**
  * LoginPage - Page Object Model for the login page
@@ -7,7 +7,7 @@ import { BasePage } from './BasePage';
  */
 export class LoginPage extends BasePage {
   // Page URL
-  readonly path = '/login';
+  readonly path = "/login";
 
   // Locators - using data-testid for resilient selectors
   readonly pageContainer: Locator;
@@ -26,21 +26,21 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    
+
     // Initialize locators
-    this.pageContainer = page.getByTestId('login-page-container');
-    this.formContainer = page.getByTestId('login-form-container');
-    this.formTitle = page.getByTestId('login-form-title');
-    this.loginForm = page.getByTestId('login-form');
-    this.emailInput = page.getByTestId('login-email-input');
-    this.passwordInput = page.getByTestId('login-password-input');
-    this.emailFieldContainer = page.getByTestId('email-field-container');
-    this.passwordFieldContainer = page.getByTestId('password-field-container');
-    this.emailErrorMessage = page.getByTestId('email-error-message');
-    this.passwordErrorMessage = page.getByTestId('password-error-message');
-    this.generalErrorMessage = page.getByTestId('login-error-message');
-    this.submitButton = page.getByTestId('login-submit-button');
-    this.registerLink = page.getByTestId('register-link');
+    this.pageContainer = page.getByTestId("login-page-container");
+    this.formContainer = page.getByTestId("login-form-container");
+    this.formTitle = page.getByTestId("login-form-title");
+    this.loginForm = page.getByTestId("login-form");
+    this.emailInput = page.getByTestId("login-email-input");
+    this.passwordInput = page.getByTestId("login-password-input");
+    this.emailFieldContainer = page.getByTestId("email-field-container");
+    this.passwordFieldContainer = page.getByTestId("password-field-container");
+    this.emailErrorMessage = page.getByTestId("email-error-message");
+    this.passwordErrorMessage = page.getByTestId("password-error-message");
+    this.generalErrorMessage = page.getByTestId("login-error-message");
+    this.submitButton = page.getByTestId("login-submit-button");
+    this.registerLink = page.getByTestId("register-link");
   }
 
   /**
@@ -55,8 +55,8 @@ export class LoginPage extends BasePage {
    * Wait for the page to fully load
    */
   async waitForPageLoad(): Promise<void> {
-    await this.formContainer.waitFor({ state: 'visible' });
-    await this.waitForLoadState('networkidle');
+    await this.formContainer.waitFor({ state: "visible" });
+    await this.waitForLoadState("networkidle");
   }
 
   /**
@@ -109,7 +109,7 @@ export class LoginPage extends BasePage {
    */
   async login(email: string, password: string): Promise<void> {
     await this.submitLogin(email, password);
-    await this.page.waitForURL('/dashboard', { timeout: 10000 });
+    await this.page.waitForURL("/dashboard", { timeout: 10000 });
   }
 
   /**
@@ -137,7 +137,7 @@ export class LoginPage extends BasePage {
    * Get the submit button text
    */
   async getSubmitButtonText(): Promise<string> {
-    return await this.submitButton.textContent() || '';
+    return (await this.submitButton.textContent()) || "";
   }
 
   /**
@@ -165,21 +165,21 @@ export class LoginPage extends BasePage {
    * Get email error message text
    */
   async getEmailErrorText(): Promise<string> {
-    return await this.emailErrorMessage.textContent() || '';
+    return (await this.emailErrorMessage.textContent()) || "";
   }
 
   /**
    * Get password error message text
    */
   async getPasswordErrorText(): Promise<string> {
-    return await this.passwordErrorMessage.textContent() || '';
+    return (await this.passwordErrorMessage.textContent()) || "";
   }
 
   /**
    * Get general error message text
    */
   async getGeneralErrorText(): Promise<string> {
-    return await this.generalErrorMessage.textContent() || '';
+    return (await this.generalErrorMessage.textContent()) || "";
   }
 
   /**
@@ -192,7 +192,7 @@ export class LoginPage extends BasePage {
 
   async expectFormTitleVisible(): Promise<void> {
     await expect(this.formTitle).toBeVisible();
-    await expect(this.formTitle).toHaveText('Zaloguj się');
+    await expect(this.formTitle).toHaveText("Zaloguj się");
   }
 
   async expectEmailErrorToContain(text: string): Promise<void> {

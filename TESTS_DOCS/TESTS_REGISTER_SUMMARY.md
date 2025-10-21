@@ -2,7 +2,7 @@
 
 ## Podsumowanie
 
-Testy jednostkowe dla endpointu rejestracji użytkowników (`/api/auth/register`) weryfikują kluczowe funkcjonalności, walidację danych oraz obsługę błędów. Wszystkie 37 testów przechodzą pomyślnie.
+Testy jednostkowe dla endpointu rejestracji użytkowników (`/api/auth/register`) weryfikują kluczowe funkcjonalności, walidację danych oraz obsługę błędów. Wszystkie 36 testów przechodzą pomyślnie.
 
 ## Struktura Testów
 
@@ -80,7 +80,6 @@ Obsługa błędów serwera i sieci:
 
 - ✅ **Nieprawidłowy JSON** - błąd 500: "Wystąpił nieoczekiwany błąd"
 - ✅ **Błąd Supabase client** - błąd 500 przy awarii sieci
-- ✅ **Logowanie błędów** - console.error jest wywoływany dla debugowania
 
 ### 8. Response Format Validation (4 testy)
 Weryfikacja formatu odpowiedzi:
@@ -140,7 +139,6 @@ Weryfikacja logiki biznesowej:
 - Użytkownik już istnieje: 400 z polskim komunikatem
 - Błędy Supabase: 400 z odpowiednim polskim komunikatem
 - Błędy serwera: 500 z ogólnym polskim komunikatem
-- Wszystkie błędy logowane do console dla debugowania
 
 ## Testowy Użytkownik
 

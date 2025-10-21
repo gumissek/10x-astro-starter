@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import type { FlashcardDTO, UpdateFlashcardCommand } from "../../../types";
+import type { UpdateFlashcardCommand } from "../../../types";
 import { FlashcardGenerationService } from "../../../lib/services/flashcardService";
 
 export const prerender = false;
@@ -10,24 +10,12 @@ const FlashcardIdSchema = z.string().uuid("Flashcard ID must be a valid UUID");
 
 // Zod schema for PUT request validation
 const UpdateFlashcardSchema = z.object({
-  front: z
-    .string()
-    .min(1, "Front text cannot be empty")
-    .max(200, "Front text cannot exceed 200 characters")
-    .trim(),
-  back: z
-    .string()
-    .min(1, "Back text cannot be empty")
-    .max(500, "Back text cannot exceed 500 characters")
-    .trim(),
-  folder_id: z
-    .string()
-    .uuid("Folder ID must be a valid UUID")
-    .optional(),
-  generation_source: z
-    .enum(["manual", "ai"], {
-      errorMap: () => ({ message: "Generation source must be either 'manual' or 'ai'" })
-    }),
+  front: z.string().min(1, "Front text cannot be empty").max(200, "Front text cannot exceed 200 characters").trim(),
+  back: z.string().min(1, "Back text cannot be empty").max(500, "Back text cannot exceed 500 characters").trim(),
+  folder_id: z.string().uuid("Folder ID must be a valid UUID").optional(),
+  generation_source: z.enum(["manual", "ai"], {
+    errorMap: () => ({ message: "Generation source must be either 'manual' or 'ai'" }),
+  }),
 });
 
 /**
@@ -38,7 +26,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
   try {
     // Extract and validate flashcard ID from URL parameters
     const { flashcardId } = params;
-    
+
     if (!flashcardId) {
       return new Response(
         JSON.stringify({
@@ -76,7 +64,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -94,7 +82,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
 
     // TODO: Add authentication and authorization logic
     const userId = locals.user?.id;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({
@@ -165,10 +153,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in GET /api/flashcards/[flashcardId]:", error);
-
     return new Response(
       JSON.stringify({
         success: false,
@@ -193,7 +178,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
   try {
     // Extract and validate flashcard ID from URL parameters
     const { flashcardId } = params;
-    
+
     if (!flashcardId) {
       return new Response(
         JSON.stringify({
@@ -231,7 +216,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -249,7 +234,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
 
     // Parse and validate request body
     let requestData: UpdateFlashcardCommand;
-    
+
     try {
       const body = await request.json();
       requestData = UpdateFlashcardSchema.parse(body);
@@ -259,7 +244,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
           JSON.stringify({
             success: false,
             error: "Validation failed",
-            message: error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(", "),
+            message: error.errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", "),
             details: error.errors,
           }),
           {
@@ -270,7 +255,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -288,7 +273,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
 
     // TODO: Add authentication and authorization logic
     const userId = locals.user?.id;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({
@@ -327,11 +312,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     const flashcardService = new FlashcardGenerationService(supabase);
 
     // Update the flashcard using the service
-    const updatedFlashcard = await flashcardService.updateFlashcard(
-      validatedFlashcardId, 
-      requestData, 
-      userId
-    );
+    const updatedFlashcard = await flashcardService.updateFlashcard(validatedFlashcardId, requestData, userId);
 
     // Return successful response
     return new Response(
@@ -346,10 +327,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in PUT /api/flashcards/[flashcardId]:", error);
-
     // Handle specific business logic errors
     if (error instanceof Error) {
       if (error.message.includes("Flashcard not found")) {
@@ -425,7 +403,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
   try {
     // Extract and validate flashcard ID from URL parameters
     const { flashcardId } = params;
-    
+
     if (!flashcardId) {
       return new Response(
         JSON.stringify({
@@ -463,7 +441,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
           }
         );
       }
-      
+
       return new Response(
         JSON.stringify({
           success: false,
@@ -481,7 +459,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
 
     // TODO: Add authentication and authorization logic
     const userId = locals.user?.id;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({
@@ -535,10 +513,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
         },
       }
     );
-
   } catch (error) {
-    console.error("Error in DELETE /api/flashcards/[flashcardId]:", error);
-
     // Handle specific business logic errors
     if (error instanceof Error) {
       if (error.message.includes("Flashcard not found") || error.message.includes("access denied")) {

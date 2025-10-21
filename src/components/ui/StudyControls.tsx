@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 interface StudyControlsProps {
   onKnowClick: () => void;
@@ -8,7 +8,7 @@ interface StudyControlsProps {
 export default function StudyControls({ onKnowClick, onDontKnowClick }: StudyControlsProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full">
-      <Button 
+      <Button
         onClick={onDontKnowClick}
         variant="outline"
         size="lg"
@@ -17,8 +17,8 @@ export default function StudyControls({ onKnowClick, onDontKnowClick }: StudyCon
         <span className="mr-2">✗</span>
         Nie znam
       </Button>
-      
-      <Button 
+
+      <Button
         onClick={onKnowClick}
         variant="default"
         size="lg"
