@@ -30,17 +30,21 @@ function parseCookieHeader(cookieHeader: string): { name: string; value: string 
 
 // Server-side Supabase client z obsługą cookies
 export const createSupabaseServerInstance = (context: { headers: Headers; cookies: AstroCookies }) => {
-  const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL.trim() ?? "", import.meta.env.SUPABASE_KEY.trim() ?? "", {
-    cookieOptions,
-    cookies: {
-      getAll() {
-        return parseCookieHeader(context.headers.get("Cookie") ?? "");
+  const supabase = createServerClient<Database>(
+    import.meta.env.SUPABASE_URL.trim() ?? "",
+    import.meta.env.SUPABASE_KEY.trim() ?? "",
+    {
+      cookieOptions,
+      cookies: {
+        getAll() {
+          return parseCookieHeader(context.headers.get("Cookie") ?? "");
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => context.cookies.set(name, value, options));
+        },
       },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => context.cookies.set(name, value, options));
-      },
-    },
-  });
+    }
+  );
 
   return supabase;
 };
