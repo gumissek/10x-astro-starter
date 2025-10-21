@@ -53,50 +53,50 @@ jobs:
           path: coverage/
           retention-days: 7
 
-  # e2e-test:
-  #   name: E2E Tests
-  #   runs-on: ubuntu-latest
-  #   # needs: lint
-  #   environment: integration
-  #   env:
-  #     SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-  #     SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-  #     OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-  #     AI_MODELNAME: ${{ secrets.AI_MODELNAME }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v5
+  e2e-test:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    # needs: lint
+    environment: integration
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      AI_MODELNAME: ${{ secrets.AI_MODELNAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v6
-  #       with:
-  #         node-version-file: '.nvmrc'
-  #         cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-  #     - name: Install dependencies
-  #       run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-  #     - name: Install Playwright browsers
-  #       run: npx playwright install chromium --with-deps
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
 
-  #     - name: Run E2E tests
-  #       run: npm run test:e2e
+      - name: Run E2E tests
+        run: npm run test:e2e
 
-  #     - name: Upload E2E test report
-  #       uses: actions/upload-artifact@v4
-  #       if: always()
-  #       with:
-  #         name: playwright-report
-  #         path: playwright-report/
-  #         retention-days: 7
+      - name: Upload E2E test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
-  #     - name: Upload E2E test results
-  #       uses: actions/upload-artifact@v4
-  #       if: always()
-  #       with:
-  #         name: test-results
-  #         path: test-results/
-  #         retention-days: 7
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
   # dostaje jakis dziwny bład mimo ze mam ustawione wszystko [WebServer] 17:29:19 [ERROR] [MiddlewareCantBeLoaded] An unknown error was thrown while loading your middleware.
   # [WebServer]   Error reference:
   # [WebServer]     https://docs.astro.build/en/reference/errors/middleware-cant-be-loaded/
@@ -110,7 +110,7 @@ jobs:
   status-comment:
     name: Status Comment
     runs-on: ubuntu-latest
-    needs: [ unit-test , lint ] # e2e-test
+    needs: [ unit-test , lint, e2e-test ] 
     if: always()
     permissions:
       contents: read
@@ -126,11 +126,13 @@ jobs:
           script: |
             const lintResult = '${{ needs.lint.result }}';
             const unitTestResult = '${{ needs.unit-test.result }}';
+            const e2eTestResult = '${{ needs.e2e-test.result }}';
             
             const lintStatus = lintResult === 'success' ? '✅ Linting' : '❌ Linting';
             const unitTestStatus = unitTestResult === 'success' ? '✅ Unit Tests' : '❌ Unit Tests';
+            const e2eTestStatus = e2eTestResult === 'success' ? '✅ E2E Tests' : '❌ E2E Tests';
             
-            const allPassed = lintResult === 'success' && unitTestResult === 'success';
+            const allPassed = lintResult === 'success' && unitTestResult === 'success' && e2eTestResult === 'success';
             
             const title = allPassed 
               ? '## ✅ Pull Request Checks Passed' 
