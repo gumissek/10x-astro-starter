@@ -4,8 +4,8 @@ import { createServerClient, type CookieOptionsWithName } from "@supabase/ssr";
 
 import type { Database } from "../db/database.types";
 
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
+const supabaseUrl = import.meta.env.SUPABASE_URL.trim() ?? "";
+const supabaseAnonKey = import.meta.env.SUPABASE_KEY.trim() ?? "";
 
 // Client-side Supabase client (do użytku w komponentach React bez SSR)
 export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
@@ -30,7 +30,7 @@ function parseCookieHeader(cookieHeader: string): { name: string; value: string 
 
 // Server-side Supabase client z obsługą cookies
 export const createSupabaseServerInstance = (context: { headers: Headers; cookies: AstroCookies }) => {
-  const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL, import.meta.env.SUPABASE_KEY, {
+  const supabase = createServerClient<Database>(import.meta.env.SUPABASE_URL.trim() ?? "", import.meta.env.SUPABASE_KEY.trim() ?? "", {
     cookieOptions,
     cookies: {
       getAll() {
@@ -44,7 +44,3 @@ export const createSupabaseServerInstance = (context: { headers: Headers; cookie
 
   return supabase;
 };
-
-export const DEFAULT_FOLDER_ID = "7330b870-9f71-4031-9403-408840bac739";
-
-export const DEFAULT_FLASHCARD_ID = "94d14360-733c-4b0f-81d9-00d22ca251a5";
