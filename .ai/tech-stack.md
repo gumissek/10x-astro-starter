@@ -1,8 +1,4 @@
 Technologie:
-
-- - CI/CD i Hosting:
-  - Github Actions do tworzenia pipeline'ów CI/CD
-  - DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker
 - Testowanie:
   - Vitest jako framework do testów jednostkowych i integracyjnych
   - React Testing Library do testowania komponentów React
@@ -22,4 +18,4 @@ Technologie:
   - Pozwala na ustawianie limitów finansowych na klucze API
 - CI/CD i Hosting:
   - Github Actions do tworzenia pipeline’ów CI/CD
-  - DigitalOcean do hostowania aplikacji za pośrednictwem obrazu docker
+  - CloudFlare Pages do hostowania aplikacji
