@@ -11,7 +11,7 @@ const GenerateFlashcardsSchema = z.object({
 });
 
 // POST endpoint /api/flashcards/generate - generate flashcards from text input
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     // Parse and validate request body
     let requestData: GenerateFlashcardsCommand;
@@ -53,10 +53,12 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Initialize the OpenRouter service for AI generation
-    const openRouterService = new OpenRouterService();
+    // Pobierz zmienne środowiskowe z runtime (dla Cloudflare) lub z import.meta.env (dla lokalnego devu)
+    const apiKey = locals.runtime?.env?.OPENROUTER_API_KEY || import.meta.env.OPENROUTER_API_KEY;
+    const openRouterService = new OpenRouterService(apiKey);
 
-    // Model name from environment variables
-    const modelName = import.meta.env.AI_MODELNAME || "openai/gpt-4o-mini";
+    // Model name from environment variables (runtime dla Cloudflare, import.meta.env dla lokalnego devu)
+    const modelName = locals.runtime?.env?.AI_MODELNAME || import.meta.env.AI_MODELNAME || "openai/gpt-4o-mini";
 
     // Generate flashcards using OpenRouter AI
     const aiResult = await openRouterService.generateFlashcards(requestData.text, modelName);

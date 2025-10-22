@@ -2,7 +2,11 @@
 
 ## Podsumowanie
 
-Testy jednostkowe dla endpointu rejestracji użytkowników (`/api/auth/register`) weryfikują kluczowe funkcjonalności, walidację danych oraz obsługę błędów. Wszystkie 36 testów przechodzą pomyślnie.
+Testy jednostkowe dla endpointu rejestracji użytkowników (`/api/auth/register`) weryfikują kluczowe funkcjonal### 3. Type Safety
+- Pełne typowanie TypeScript w testach
+- Użycie `type Mock` z Vitest
+- Type-safe mock responses
+- Poprawne mockowanie `APIContext` z `locals`, `cookies` i `request`i, walidację danych oraz obsługę błędów. Wszystkie 36 testów przechodzą pomyślnie.
 
 ## Struktura Testów
 
@@ -75,7 +79,7 @@ Weryfikacja kompletności danych po rejestracji:
 - ✅ **Brak session** - błąd 500: "Nie udało się utworzyć konta"
 - ✅ **Brak user i session** - błąd 500: "Nie udało się utworzyć konta"
 
-### 7. Server Errors (3 testy)
+### 7. Server Errors (2 testy)
 Obsługa błędów serwera i sieci:
 
 - ✅ **Nieprawidłowy JSON** - błąd 500: "Wystąpił nieoczekiwany błąd"
@@ -103,7 +107,7 @@ Obsługa przypadków brzegowych:
 ### 10. Business Logic Validation (3 testy)
 Weryfikacja logiki biznesowej:
 
-- ✅ **Parametry createSupabaseServerInstance** - przekazuje cookies i headers
+- ✅ **Parametry createSupabaseServerInstance** - przekazuje cookies, headers i env (z locals.runtime)
 - ✅ **Kolejność walidacji** - Zod waliduje PRZED wywołaniem Supabase
 - ✅ **Wyłączenie potwierdzenia email** - `emailRedirectTo: undefined`
 
@@ -169,8 +173,9 @@ vi.mock("@/db/supabase.client", () => ({
 
 ### 2. BeforeEach Setup
 - Reset wszystkich mocków przed każdym testem
-- Świeża konfiguracja mock cookies i Supabase client
+- Świeża konfiguracja mock cookies, locals z runtime env i Supabase client
 - Zapewnienie izolacji testów
+- Mock `locals.runtime.env` zawiera `SUPABASE_URL` i `SUPABASE_KEY`
 
 ### 3. Arrange-Act-Assert Pattern
 Każdy test jest strukturyzowany:
@@ -208,8 +213,39 @@ npm test -- register.test.ts --coverage
 src/pages/api/auth/
 ├── register.ts                    # Endpoint rejestracji
 └── __tests__/
-    └── register.test.ts           # 37 testów jednostkowych
+    └── register.test.ts           # 36 testów jednostkowych
 ```
+
+## Ważne Uwagi Techniczne
+
+### Mockowanie dla Cloudflare Workers
+Endpoint register.ts jest przygotowany do deploy na Cloudflare Workers, co wymaga specjalnego podejścia do zmiennych środowiskowych:
+
+```typescript
+// W testach mockujemy locals.runtime.env
+mockLocals = {
+  runtime: {
+    env: {
+      SUPABASE_URL: "https://test.supabase.co",
+      SUPABASE_KEY: "test-key",
+    },
+  },
+} as unknown as APIContext["locals"];
+```
+
+Implementacja w register.ts:
+```typescript
+// Pobierz zmienne środowiskowe z runtime (dla Cloudflare) lub z import.meta.env (dla lokalnego devu)
+const env = locals.runtime?.env || {
+  SUPABASE_URL: import.meta.env.SUPABASE_URL,
+  SUPABASE_KEY: import.meta.env.SUPABASE_KEY,
+};
+```
+
+To zapewnia, że:
+1. Testy działają poprawnie z mockowanymi wartościami
+2. Kod działa na Cloudflare Workers (używa `locals.runtime.env`)
+3. Kod działa lokalnie (używa `import.meta.env` jako fallback)
 
 ## Zależności
 
@@ -220,9 +256,9 @@ src/pages/api/auth/
 
 ## Metryki
 
-- **Liczba testów:** 37
+- **Liczba testów:** 36
 - **Status:** ✅ Wszystkie przechodzą
-- **Czas wykonania:** ~51ms
+- **Czas wykonania:** ~43ms
 - **Grupy testowe:** 10
 - **Pokrycie:** Kompletne (wszystkie ścieżki kodu)
 
@@ -238,5 +274,6 @@ src/pages/api/auth/
 ---
 
 **Data utworzenia:** 17 października 2025  
-**Ostatnia aktualizacja:** 17 października 2025  
-**Wersja:** 1.0.0
+**Ostatnia aktualizacja:** 22 października 2025  
+**Wersja:** 1.1.0  
+**Changelog v1.1.0:** Naprawiono wszystkie testy - dodano poprawne mockowanie `locals` z `runtime.env` dla kompatybilności z Cloudflare Workers

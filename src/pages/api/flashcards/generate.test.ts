@@ -70,6 +70,23 @@ function createMockRequest(body: any): Request {
 }
 
 /**
+ * Create a mock Astro context object for testing
+ */
+function createMockContext(request: Request) {
+  return {
+    request,
+    locals: {
+      runtime: {
+        env: {
+          OPENROUTER_API_KEY: "test-api-key",
+          AI_MODELNAME: import.meta.env.AI_MODELNAME || "openai/gpt-4o-mini",
+        },
+      },
+    },
+  };
+}
+
+/**
  * Parse Response object to get JSON data
  */
 async function parseResponse(response: Response) {
@@ -129,10 +146,11 @@ describe("POST /api/flashcards/generate", () => {
       mockGenerateFlashcards.mockResolvedValue(mockAIResponse);
 
       const request = createMockRequest(validInput);
+      const context = createMockContext(request);
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -158,10 +176,11 @@ describe("POST /api/flashcards/generate", () => {
       mockGenerateFlashcards.mockResolvedValue(mockAIResponse);
 
       const request = createMockRequest(validInput);
+      const context = createMockContext(request);
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -180,7 +199,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -202,7 +222,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       await parseResponse(response);
 
       // Assert
@@ -224,7 +245,8 @@ describe("POST /api/flashcards/generate", () => {
       const request = createMockRequest(validInput);
 
       // Act
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       await parseResponse(response);
 
       // Assert
@@ -243,7 +265,8 @@ describe("POST /api/flashcards/generate", () => {
       const request = createMockRequest(validInput);
 
       // Act
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -263,7 +286,8 @@ describe("POST /api/flashcards/generate", () => {
       const request = createMockRequest(invalidInput);
 
       // Act
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -286,7 +310,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert - Zod's min(1) validation after trim() should catch this
@@ -305,7 +330,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -323,7 +349,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -340,7 +367,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -357,7 +385,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -383,7 +412,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -403,7 +433,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -419,7 +450,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -444,7 +476,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -463,7 +496,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -482,7 +516,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -501,7 +536,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -520,7 +556,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -539,7 +576,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -557,7 +595,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -576,7 +615,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -608,7 +648,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -639,7 +680,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -664,7 +706,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -691,7 +734,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -712,7 +756,8 @@ describe("POST /api/flashcards/generate", () => {
       const request = createMockRequest(validInput);
 
       // Act
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -738,7 +783,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -757,7 +803,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -777,7 +824,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert - After trim, this becomes empty and should be rejected by min(1) validation
@@ -799,7 +847,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -818,7 +867,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -839,13 +889,15 @@ describe("POST /api/flashcards/generate", () => {
       mockGenerateFlashcards.mockResolvedValue(mockAIResponse);
 
       const request1 = createMockRequest(validInput);
+      const context1 = createMockContext(request1);
       const request2 = createMockRequest(validInput);
+      const context2 = createMockContext(request2);
 
       // Act
       //@typescript-eslint/no-explicit-any
-      await POST({ request: request1 } as any);
+      await POST(context1 as any);
       //@typescript-eslint/no-explicit-any
-      await POST({ request: request2 } as any);
+      await POST(context2 as any);
 
       // Assert
       expect(OpenRouterService).toHaveBeenCalledTimes(2);
@@ -862,7 +914,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert
@@ -896,7 +949,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert - Request processing
@@ -952,7 +1006,8 @@ describe("POST /api/flashcards/generate", () => {
 
       // Act
       //@typescript-eslint/no-explicit-any
-      const response = await POST({ request } as any);
+      const context = createMockContext(request);
+      const response = await POST(context as any);
       const result = await parseResponse(response);
 
       // Assert

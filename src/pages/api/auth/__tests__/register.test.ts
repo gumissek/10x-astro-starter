@@ -13,12 +13,13 @@ import { createSupabaseServerInstance } from "@/db/supabase.client";
 describe("POST /api/auth/register", () => {
   let mockRequest: Request;
   let mockCookies: APIContext["cookies"];
+  let mockLocals: APIContext["locals"];
   let mockSupabaseClient: {
     auth: {
       signUp: Mock;
     };
   };
-  let context: Pick<APIContext, "request" | "cookies">;
+  let context: Pick<APIContext, "request" | "cookies" | "locals">;
 
   beforeEach(() => {
     // Reset all mocks before each test
@@ -32,6 +33,16 @@ describe("POST /api/auth/register", () => {
       delete: vi.fn(),
       headers: vi.fn(),
     } as unknown as APIContext["cookies"];
+
+    // Setup mock locals with runtime env
+    mockLocals = {
+      runtime: {
+        env: {
+          SUPABASE_URL: "https://test.supabase.co",
+          SUPABASE_KEY: "test-key",
+        },
+      },
+    } as unknown as APIContext["locals"];
 
     // Setup mock Supabase client
     mockSupabaseClient = {
@@ -61,6 +72,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       const mockUser = {
@@ -105,6 +117,10 @@ describe("POST /api/auth/register", () => {
       expect(createSupabaseServerInstance).toHaveBeenCalledWith({
         cookies: mockCookies,
         headers: mockRequest.headers,
+        env: {
+          SUPABASE_URL: "https://test.supabase.co",
+          SUPABASE_KEY: "test-key",
+        },
       });
     });
 
@@ -125,6 +141,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -154,6 +171,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -201,6 +219,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -231,6 +250,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -260,6 +280,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -290,6 +311,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -320,6 +342,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -349,6 +372,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -379,6 +403,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -409,6 +434,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -439,6 +465,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -468,6 +495,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -497,6 +525,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -529,6 +558,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -572,6 +602,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -610,6 +641,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -646,6 +678,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -682,6 +715,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -720,6 +754,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -758,6 +793,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -797,6 +833,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -829,6 +866,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -858,6 +896,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockRejectedValue(new Error("Network error"));
@@ -890,6 +929,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -929,6 +969,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -955,6 +996,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -1008,6 +1050,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -1039,6 +1082,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -1081,6 +1125,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -1122,6 +1167,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -1161,6 +1207,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -1207,6 +1254,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -1238,6 +1286,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({
@@ -1260,6 +1309,10 @@ describe("POST /api/auth/register", () => {
       expect(createSupabaseServerInstance).toHaveBeenCalledWith({
         cookies: mockCookies,
         headers: mockRequest.headers,
+        env: {
+          SUPABASE_URL: "https://test.supabase.co",
+          SUPABASE_KEY: "test-key",
+        },
       });
       expect(createSupabaseServerInstance).toHaveBeenCalledTimes(1);
     });
@@ -1281,6 +1334,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       // Act
@@ -1309,6 +1363,7 @@ describe("POST /api/auth/register", () => {
       context = {
         request: mockRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signUp.mockResolvedValue({

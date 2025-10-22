@@ -6,9 +6,10 @@
 **Plik testowany:** `src/pages/api/auth/logout.ts`  
 **Plik testów:** `src/pages/api/auth/__tests__/logout.test.ts`  
 **Data utworzenia:** 17 października 2025  
+**Data aktualizacji:** 22 października 2025  
 **Framework testowy:** Vitest  
 **Liczba testów:** 29
-**Status:** ✅ Wszystkie testy przeszły
+**Status:** ✅ Wszystkie testy przeszły (29/29)
 
 ## Test User
 
@@ -229,7 +230,19 @@ mockCookies = {
   has: vi.fn(),
   delete: vi.fn(),
   headers: vi.fn(),
-};
+} as unknown as APIContext["cookies"];
+```
+
+### Locals (z env)
+```typescript
+mockLocals = {
+  runtime: {
+    env: {
+      SUPABASE_URL: "http://localhost:54321",
+      SUPABASE_KEY: "test-anon-key",
+    },
+  },
+} as APIContext["locals"];
 ```
 
 ### Request
@@ -238,6 +251,15 @@ mockRequest = new Request("http://localhost/api/auth/logout", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
 });
+```
+
+### Context
+```typescript
+context = {
+  request: mockRequest,
+  cookies: mockCookies,
+  locals: mockLocals,
+};
 ```
 
 ## Pokrycie Testami
@@ -295,14 +317,64 @@ npm test src/pages/api/auth/__tests__/logout.test.ts -- --coverage
 2. **Polska lokalizacja** - Komunikaty błędów po polsku
 3. **Graceful error handling** - Wszystkie błędy obsługiwane bez rzucania wyjątków
 4. **Security first** - Brak eksponowania szczegółów technicznych
+5. **Environment variables** - Obsługa env przez `locals.runtime.env` (Cloudflare) lub `import.meta.env` (lokalnie)
+6. **Server-side Supabase client** - Wymaga przekazania `cookies`, `headers` i `env`
+
+## Kluczowe Zmiany (22.10.2025)
+
+### Naprawione Problemy
+1. **Dodano parametr `locals`** - Wszystkie testy teraz prawidłowo przekazują obiekt `locals` z `runtime.env`
+2. **Poprawiono mockowanie środowiska** - Dodano mockowanie `SUPABASE_URL` i `SUPABASE_KEY` w `locals.runtime.env`
+3. **Zaktualizowano kontekst testowy** - Wszystkie testy używają pełnego kontekstu z `request`, `cookies` i `locals`
+4. **Poprawiono asercje** - Wszystkie sprawdzenia wywołania `createSupabaseServerInstance` zawierają parametr `env`
+
+### Przed naprawą
+```typescript
+context = {
+  request: mockRequest,
+  cookies: mockCookies,
+};
+```
+
+### Po naprawie
+```typescript
+context = {
+  request: mockRequest,
+  cookies: mockCookies,
+  locals: mockLocals,
+};
+```
+
+## Wymagania dla Implementacji
+
+Endpoint `POST /api/auth/logout` wymaga:
+- **cookies**: `AstroCookies` - do zarządzania ciasteczkami sesji
+- **request.headers**: `Headers` - nagłówki żądania HTTP
+- **locals.runtime.env**: `{ SUPABASE_URL, SUPABASE_KEY }` - zmienne środowiskowe
 
 ## Możliwe Rozszerzenia
 
 1. **Integracja z real Supabase** - Testy integracyjne z prawdziwą bazą
-2. **E2E testy** - Playwright tests dla pełnego flow
+2. **E2E testy** - Playwright tests dla pełnego flow (patrz: `e2e/login.spec.ts`)
 3. **Performance benchmarks** - Dokładniejsze testy wydajności
 4. **Rate limiting tests** - Testy ograniczania requestów
 5. **Audit logging** - Weryfikacja logowania zdarzeń wylogowania
+6. **Session cleanup tests** - Weryfikacja czyszczenia wszystkich danych sesji
+
+## Podsumowanie Zmian
+
+### Naprawione w wersji z 22.10.2025:
+✅ Dodano brakujący parametr `locals` we wszystkich testach  
+✅ Poprawiono mockowanie środowiska (`SUPABASE_URL`, `SUPABASE_KEY`)  
+✅ Zaktualizowano wszystkie asercje `createSupabaseServerInstance`  
+✅ Wszystkie 29 testów przechodzą poprawnie  
+
+### Statystyki Testów:
+- **Liczba testów:** 29
+- **Powodzenie:** 29 ✅
+- **Niepowodzenie:** 0 ❌
+- **Czas wykonania:** ~135ms
+- **Pokrycie:** 100% logiki endpointu
 
 ## Wnioski
 

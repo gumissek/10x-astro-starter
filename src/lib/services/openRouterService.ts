@@ -95,19 +95,19 @@ export class OpenRouterService {
    * Konstruktor serwisu OpenRouter
    * Inicjalizuje klucz API i waliduje konfigurację
    *
-   * @throws {Error} Jeśli klucz API nie jest dostępny w zmiennych środowiskowych
+   * @param apiKey - Klucz API OpenRouter (opcjonalny, domyślnie pobiera z import.meta.env)
+   * @throws {Error} Jeśli klucz API nie jest dostępny
    */
-  constructor() {
-    // Wczytanie klucza API ze zmiennych środowiskowych
-    // Zgodnie z dokumentacją Astro, używamy `import.meta.env`
-    const apiKey = import.meta.env.OPENROUTER_API_KEY;
+  constructor(apiKey?: string) {
+    // Wczytanie klucza API - z parametru lub ze zmiennych środowiskowych
+    const key = apiKey || import.meta.env.OPENROUTER_API_KEY;
 
-    if (!apiKey) {
+    if (!key) {
       // Rzucenie błędu, jeśli klucz API nie jest dostępny
       throw new Error("OPENROUTER_API_KEY is not set in environment variables.");
     }
 
-    this.openRouterApiKey = apiKey;
+    this.openRouterApiKey = key;
   }
 
   /**

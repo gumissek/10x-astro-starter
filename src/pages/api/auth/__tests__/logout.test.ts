@@ -13,12 +13,13 @@ import { createSupabaseServerInstance } from "@/db/supabase.client";
 describe("POST /api/auth/logout", () => {
   let mockRequest: Request;
   let mockCookies: APIContext["cookies"];
+  let mockLocals: APIContext["locals"];
   let mockSupabaseClient: {
     auth: {
       signOut: Mock;
     };
   };
-  let context: Pick<APIContext, "request" | "cookies">;
+  let context: Pick<APIContext, "request" | "cookies" | "locals">;
 
   beforeEach(() => {
     // Reset all mocks before each test
@@ -39,6 +40,16 @@ describe("POST /api/auth/logout", () => {
       headers: { "Content-Type": "application/json" },
     });
 
+    // Setup mock locals with env
+    mockLocals = {
+      runtime: {
+        env: {
+          SUPABASE_URL: "http://localhost:54321",
+          SUPABASE_KEY: "test-anon-key",
+        },
+      },
+    } as APIContext["locals"];
+
     // Setup mock Supabase client
     mockSupabaseClient = {
       auth: {
@@ -52,6 +63,7 @@ describe("POST /api/auth/logout", () => {
     context = {
       request: mockRequest,
       cookies: mockCookies,
+      locals: mockLocals,
     };
   });
 
@@ -71,6 +83,10 @@ describe("POST /api/auth/logout", () => {
       expect(createSupabaseServerInstance).toHaveBeenCalledWith({
         cookies: mockCookies,
         headers: mockRequest.headers,
+        env: {
+          SUPABASE_URL: "http://localhost:54321",
+          SUPABASE_KEY: "test-anon-key",
+        },
       });
     });
 
@@ -102,6 +118,10 @@ describe("POST /api/auth/logout", () => {
       expect(createSupabaseServerInstance).toHaveBeenCalledWith({
         cookies: mockCookies,
         headers: mockRequest.headers,
+        env: {
+          SUPABASE_URL: "http://localhost:54321",
+          SUPABASE_KEY: "test-anon-key",
+        },
       });
       expect(createSupabaseServerInstance).toHaveBeenCalledTimes(1);
     });
@@ -121,6 +141,7 @@ describe("POST /api/auth/logout", () => {
       const testContext = {
         request: mockRequest,
         cookies: testUserCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signOut.mockResolvedValue({
@@ -360,6 +381,7 @@ describe("POST /api/auth/logout", () => {
       const contextWithoutCookies = {
         request: mockRequest,
         cookies: undefined,
+        locals: mockLocals,
       } as unknown as APIContext;
 
       // Act
@@ -381,6 +403,7 @@ describe("POST /api/auth/logout", () => {
       const contextWithInvalidRequest = {
         request: invalidRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signOut.mockResolvedValue({
@@ -395,6 +418,10 @@ describe("POST /api/auth/logout", () => {
       expect(createSupabaseServerInstance).toHaveBeenCalledWith({
         cookies: mockCookies,
         headers: invalidRequest.headers,
+        env: {
+          SUPABASE_URL: "http://localhost:54321",
+          SUPABASE_KEY: "test-anon-key",
+        },
       });
     });
 
@@ -428,6 +455,7 @@ describe("POST /api/auth/logout", () => {
       const tamperedContext = {
         request: mockRequest,
         cookies: tamperededCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signOut.mockResolvedValue({
@@ -455,6 +483,7 @@ describe("POST /api/auth/logout", () => {
       const suspiciousContext = {
         request: suspiciousRequest,
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signOut.mockResolvedValue({
@@ -514,6 +543,7 @@ describe("POST /api/auth/logout", () => {
           },
         }),
         cookies: mockCookies,
+        locals: mockLocals,
       };
 
       mockSupabaseClient.auth.signOut.mockResolvedValue({
@@ -529,6 +559,10 @@ describe("POST /api/auth/logout", () => {
       expect(createSupabaseServerInstance).toHaveBeenCalledWith({
         cookies: mockCookies,
         headers: testUserContext.request.headers,
+        env: {
+          SUPABASE_URL: "http://localhost:54321",
+          SUPABASE_KEY: "test-anon-key",
+        },
       });
     });
 

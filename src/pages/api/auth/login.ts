@@ -10,7 +10,7 @@ const loginSchema = z.object({
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies, locals }) => {
   try {
     // Parsuj i waliduj dane wejściowe
     const body = await request.json();
@@ -32,10 +32,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     const { email, password } = validationResult.data;
 
+    // Pobierz zmienne środowiskowe z runtime (dla Cloudflare) lub z import.meta.env (dla lokalnego devu)
+    const env = locals.runtime?.env || {
+      SUPABASE_URL: import.meta.env.SUPABASE_URL,
+      SUPABASE_KEY: import.meta.env.SUPABASE_KEY,
+    };
+
     // Utwórz server-side Supabase client
     const supabase = createSupabaseServerInstance({
       cookies,
       headers: request.headers,
+      env,
     });
 
     // Zaloguj użytkownika

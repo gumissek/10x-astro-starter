@@ -21,10 +21,17 @@ const PUBLIC_PATHS = [
 const GUEST_ONLY_PATHS = ["/login", "/register", "/forgot-password"];
 
 export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {
+  // Pobierz zmienne środowiskowe z runtime (dla Cloudflare) lub z import.meta.env (dla lokalnego devu)
+  const env = locals.runtime?.env || {
+    SUPABASE_URL: import.meta.env.SUPABASE_URL,
+    SUPABASE_KEY: import.meta.env.SUPABASE_KEY,
+  };
+
   // Utwórz server-side Supabase client
   const supabase = createSupabaseServerInstance({
     cookies,
     headers: request.headers,
+    env,
   });
 
   // Zapisz supabase client w locals dla kompatybilności
