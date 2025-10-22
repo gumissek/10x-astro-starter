@@ -38,7 +38,14 @@ export const createSupabaseServerInstance = (context: {
     SUPABASE_KEY: string;
   };
 }) => {
-  const supabase = createServerClient<Database>(context.env.SUPABASE_URL.trim(), context.env.SUPABASE_KEY.trim(), {
+  const supabaseUrl = context.env.SUPABASE_URL?.trim();
+  const supabaseKey = context.env.SUPABASE_KEY?.trim();
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("SUPABASE_URL and SUPABASE_KEY must be defined in environment variables");
+  }
+
+  const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
     cookieOptions,
     cookies: {
       getAll() {
