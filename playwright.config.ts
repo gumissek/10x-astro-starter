@@ -38,14 +38,14 @@ export default defineConfig({
     stderr: "pipe",
     env: {
       // Przekaż wszystkie zmienne środowiskowe potrzebne aplikacji
+      // Vite/Astro potrzebuje tych zmiennych dostępnych w process.env
       SUPABASE_URL: process.env.SUPABASE_URL || "",
       SUPABASE_KEY: process.env.SUPABASE_KEY || "",
       OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || "",
       AI_MODELNAME: process.env.AI_MODELNAME || "",
-      // W CI zmienne są już ustawione przez GitHub Actions
-      ...(process.env.CI && {
-        CI: "true",
-      }),
+      NODE_ENV: process.env.NODE_ENV || "test",
+      // Przekaż wszystkie inne zmienne środowiskowe
+      ...process.env,
     },
   },
 });
