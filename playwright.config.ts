@@ -30,22 +30,22 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "npm run dev",
+    command: process.env.CI 
+      ? "npm run dev" 
+      : "npm run dev",
     url: "http://localhost:4321",
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     stdout: "pipe",
     stderr: "pipe",
     env: {
-      // Przekaż wszystkie zmienne środowiskowe potrzebne aplikacji
-      // Vite/Astro potrzebuje tych zmiennych dostępnych w process.env
+      // W CI i lokalnie, przekaż wszystkie zmienne środowiskowe
+      // Astro v5 z env schema wymaga aby zmienne były dostępne w process.env
       SUPABASE_URL: process.env.SUPABASE_URL || "",
       SUPABASE_KEY: process.env.SUPABASE_KEY || "",
       OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || "",
-      AI_MODELNAME: process.env.AI_MODELNAME || "openrouter-gpt4o-mini",
+      AI_MODELNAME: process.env.AI_MODELNAME || "openai/gpt-4o-mini",
       NODE_ENV: process.env.NODE_ENV || "test",
-      // Przekaż wszystkie inne zmienne środowiskowe
-      ...process.env,
     },
   },
 });

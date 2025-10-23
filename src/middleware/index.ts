@@ -21,10 +21,10 @@ const PUBLIC_PATHS = [
 const GUEST_ONLY_PATHS = ["/login", "/register", "/forgot-password"];
 
 export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {
-  // Pobierz zmienne środowiskowe z runtime (dla Cloudflare), process.env (dla CI/Node), lub z import.meta.env (dla lokalnego devu z Vite)
+  // Pobierz zmienne środowiskowe z runtime (dla Cloudflare) lub import.meta.env (dla lokalnego devu z Vite i CI)
   const env = locals.runtime?.env || {
-    SUPABASE_URL: process.env.SUPABASE_URL || import.meta.env.SUPABASE_URL,
-    SUPABASE_KEY: process.env.SUPABASE_KEY || import.meta.env.SUPABASE_KEY,
+    SUPABASE_URL: import.meta.env.SUPABASE_URL,
+    SUPABASE_KEY: import.meta.env.SUPABASE_KEY,
   };
 
   // Jeśli zmienne środowiskowe nie są dostępne (np. w testach bez odpowiedniej konfiguracji),
