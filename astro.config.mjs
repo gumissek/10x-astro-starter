@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, envField} from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
@@ -25,6 +25,6 @@ export default defineConfig({
       SUPABASE_KEY: envField.string({ context: "server", access: "secret" }),
       OPENROUTER_API_KEY: envField.string({ context: "server", access: "secret" }),
       AI_MODELNAME: envField.string({ context: "server", access: "public", default: "openai/gpt-4o-mini" }),
-    }
+    },
   },
 });
