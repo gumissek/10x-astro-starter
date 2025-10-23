@@ -39,9 +39,9 @@ export default defineConfig({
     env: {
       // Przekaż wszystkie zmienne środowiskowe potrzebne aplikacji
       // Vite/Astro potrzebuje tych zmiennych dostępnych w process.env
-      SUPABASE_URL:  process.env.SUPABASE_URL || "",
-      SUPABASE_KEY:  process.env.SUPABASE_KEY || "",
-      OPENROUTER_API_KEY:  process.env.OPENROUTER_API_KEY || "",
+      SUPABASE_URL: process.env.SUPABASE_URL || "",
+      SUPABASE_KEY: process.env.SUPABASE_KEY || "",
+      OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || "",
       AI_MODELNAME: process.env.AI_MODELNAME || "openrouter-gpt4o-mini",
       NODE_ENV: process.env.NODE_ENV || "test",
       // Przekaż wszystkie inne zmienne środowiskowe
