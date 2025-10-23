@@ -31,7 +31,7 @@
   - **OpenRouter.ai** – Access a wide range of large language models (including GPT-4o-mini) for efficient AI-driven flashcard generation.
 - **CI/CD & Hosting:**
   - **GitHub Actions** – Automate build and deployment pipelines.
-  - **DigitalOcean** – Host the application via Docker images.
+  - **Cloudflare Pages** – Host the application.
 - **Testing:**
   - **Vitest** – JavaScript testing framework for unit and integration tests.
   - **React Testing Library** – Test React components with focus on user behavior.
